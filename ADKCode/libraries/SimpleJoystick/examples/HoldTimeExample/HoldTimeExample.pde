@@ -1,5 +1,6 @@
-/*  SimpleJoystick library example
-*/
+/*  SimpleJoystick library example.
+ *  Using TimeToHold.
+ */
    
 #include <SimpleJoystick.h>
 
@@ -14,6 +15,7 @@ SimpleJoystick joystick;
 void setup() {
   delay(1000);
   joystick.setup(upPin, downPin, leftPin, rightPin, buttonPin);
+  joystick.setTimeToHold(250);
   Serial.begin(9600);
 }
 
@@ -22,7 +24,7 @@ void loop() {
     int c = joystick.read();
     
     switch (c) {
-      case 0: Serial.println("None");    break;
+      //case 0: Serial.println("None");    break;
       case 1: Serial.println("Up");      break;
       case 2: Serial.println("Down");    break;
       case 3: Serial.println("Left");    break;
@@ -30,4 +32,6 @@ void loop() {
       case 5: Serial.println("Button");  break;
       default: break;
     }
+
+    //delay(100);
 }
