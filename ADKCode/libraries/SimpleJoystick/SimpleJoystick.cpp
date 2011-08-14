@@ -30,7 +30,11 @@
 
 int SimpleJoystick::read() {
 
-	if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
+    if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
+        return 5;
+    }
+
+    if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
         return 1;
     }
 
@@ -44,11 +48,7 @@ int SimpleJoystick::read() {
 
     if (!digitalRead(this->_rightPin)){//Negado, pois aterra quando pressionado
         return 4;
-    }
-
-    if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
-        return 5;
-    }
+    }    
 
 	return 0;
 }
