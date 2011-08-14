@@ -20,9 +20,7 @@
 #ifndef SimpleJoystick_h
 #define SimpleJoystick_h
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/pgmspace.h>
+#include <inttypes.h>
 
 /**
  * Purpose: Provides an easy access to a basic Joystick

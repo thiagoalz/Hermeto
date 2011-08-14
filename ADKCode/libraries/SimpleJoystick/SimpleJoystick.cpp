@@ -17,20 +17,20 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/pgmspace.h>
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h" // for attachInterrupt, FALLING
-#else
+
+#include <inttypes.h>
 #include "WProgram.h"
-#endif
+
 #include "SimpleJoystick.h"
 
 
 int SimpleJoystick::read() {
 
-	if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
+    if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
+        return 5;
+    }
+
+    if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
         return 1;
     }
 
@@ -44,11 +44,7 @@ int SimpleJoystick::read() {
 
     if (!digitalRead(this->_rightPin)){//Negado, pois aterra quando pressionado
         return 4;
-    }
-
-    if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
-        return 5;
-    }
+    }    
 
 	return 0;
 }
