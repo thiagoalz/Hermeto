@@ -24,33 +24,10 @@
 #include "SimpleJoystick.h"
 
 
-int SimpleJoystick::read() {
-
-    if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
-        return 5;
-    }
-
-    if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
-        return 1;
-    }
-
-    if (!digitalRead(this->_downPin)){//Negado, pois aterra quando pressionado
-        return 2;
-    }
-
-    if (!digitalRead(this->_leftPin)){//Negado, pois aterra quando pressionado
-        return 3;
-    }
-
-    if (!digitalRead(this->_rightPin)){//Negado, pois aterra quando pressionado
-        return 4;
-    }    
-
-	return 0;
-}
-
 SimpleJoystick::SimpleJoystick() {
-    //Do nothing;
+    this->_lastState = 0;
+    this->_lastStateTime = millis();
+    this->_timeToHold = 0;
 }
 
 void SimpleJoystick::setup(uint8_t upPin, uint8_t downPin, uint8_t leftPin, uint8_t rightPin, uint8_t buttonPin){
@@ -78,3 +55,42 @@ void SimpleJoystick::setup(uint8_t upPin, uint8_t downPin, uint8_t leftPin, uint
     digitalWrite(this->_buttonPin, HIGH);
 
 }
+
+void SimpleJoystick::setTimeToHold(long timeToHold){
+    this->_timeToHold = timeToHold;
+}
+
+int SimpleJoystick::read() {
+
+    int answer = 0;
+
+    if(this->_lastState == 0 || (millis() - this->_lastStateTime) > this->_timeToHold){
+
+        if (!digitalRead(this->_upPin)){//Negado, pois aterra quando pressionado
+            answer = 1;
+        }
+
+        if (!digitalRead(this->_downPin)){//Negado, pois aterra quando pressionado
+            answer = 2;
+        }
+
+        if (!digitalRead(this->_leftPin)){//Negado, pois aterra quando pressionado
+            answer = 3;
+        }
+
+        if (!digitalRead(this->_rightPin)){//Negado, pois aterra quando pressionado
+            answer = 4;
+        }
+
+        if (!digitalRead(this->_buttonPin)){//Negado, pois aterra quando pressionado
+            answer = 5;
+        }
+
+        this->_lastState = answer;
+        this->_lastStateTime = millis();
+    }
+
+
+	return answer;
+}
+

@@ -28,10 +28,22 @@
  */
 class SimpleJoystick {
   public:
-  	/**
-  	 * Contructor.
-  	 */
+    /**
+     * Contructor.
+     */
     SimpleJoystick();
+
+
+    /**
+     * Setup pins.
+     */
+    void setup(uint8_t upPin, uint8_t downPin, uint8_t leftPin, uint8_t rightPin, uint8_t buttonPin);
+
+    /**
+     * Setup time do hold each value.
+     */
+    void setTimeToHold(long timeToHold);
+
     
     /**
      * Returns the control status.
@@ -39,17 +51,17 @@ class SimpleJoystick {
      */
     int read();
 
-    /**
-  	 * Setup pins.
-  	 */
-    void setup(uint8_t upPin, uint8_t downPin, uint8_t leftPin, uint8_t rightPin, uint8_t buttonPin);
-
   private:
     uint8_t _upPin;
     uint8_t _downPin;
     uint8_t _leftPin;
     uint8_t _rightPin;
     uint8_t _buttonPin;
+
+    int _lastState;   // the previous reading
+    long _lastStateTime;  // the last time the read result toggled
+    long _timeToHold;    // tempo que a leitura retorna apenas zeros depois de uma leitura != de zero.
+                         // Pode ser usado para diminuir a sensibilidade da leitura.
      
 };
 
