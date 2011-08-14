@@ -1,5 +1,6 @@
 /*
   SimpleJoystick.h - A simple Joystick library
+  Copyright (c) 2011 Thiago Alvarenga Lechuga.  All right reserved.
   Written by Thiago A. Lechuga <thiagoalz@gmail.com>
 
   This library is free software; you can redistribute it and/or
