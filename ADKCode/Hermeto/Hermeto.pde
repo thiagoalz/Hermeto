@@ -394,7 +394,7 @@ void read_simpleJoysticks(){
             default: break;
           }
           
-          if(action!=""){
+          if(c > 0){
             Serial.print("[");Serial.print(i);Serial.print("] ");
             Serial.println(action);
             
