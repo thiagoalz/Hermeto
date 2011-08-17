@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, main!</string>
+    <string name="app_name">simple Joystick</string>
+<string name="test">test</string>
+<string name="up">up</string>
+<string name="down">down</string>
+<string name="left">left</string>
+<string name="right">right</string>
+<string name="center">center</string>
+<string name="connect">connect</string>
+</resources>
