@@ -1,24 +1,23 @@
-package net.thiagoalz.hermeto.hardware;
+package net.thiagoalz.hermeto.player;
 
-import net.thiagoalz.hermeto.Player;
 import net.thiagoalz.hermeto.Position;
 import net.thiagoalz.hermeto.panel.SquarePanelManager;
 
-/**
- * User that is playing by the hardware.
- */
-public class HardwarePlayer implements Player {
+public class AbstractPlayer implements Player {
+
 	private String name;
 	private String id;
 	private Position position;
 	
 	private SquarePanelManager squarePanelManager; 
 	
-	public HardwarePlayer(String name) {
-		this(name, null);
+	public AbstractPlayer(String name, String id) {
+		this(name, id, null);
 	}
 	
-	public HardwarePlayer(String id, SquarePanelManager squarePanelManager) {
+	public AbstractPlayer(String name, String id, SquarePanelManager squarePanelManager) {
+		this.name = name;
+		this.id = id;
 		this.squarePanelManager = squarePanelManager;
 	}
 	
@@ -30,21 +29,15 @@ public class HardwarePlayer implements Player {
 	}
 
 	@Override
-	
 	public boolean mark() {
 		if (squarePanelManager == null)
 			throw new IllegalStateException("The Panel Manager wasn't set.");
 		return squarePanelManager.mark(this);
-		
 	}
 
 	@Override
 	public Position getPosition() {
 		return position;
-	}
-	
-	public void setPosition(Position position) {
-		this.position = position;
 	}
 
 	@Override
@@ -52,16 +45,9 @@ public class HardwarePlayer implements Player {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
 }

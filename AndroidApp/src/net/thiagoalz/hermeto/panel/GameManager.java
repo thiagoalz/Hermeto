@@ -3,13 +3,16 @@ package net.thiagoalz.hermeto.panel;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.thiagoalz.hermeto.Player;
-import net.thiagoalz.hermeto.Player.Direction;
-import net.thiagoalz.hermeto.PlayersManager;
+import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.PlayersManager;
+import net.thiagoalz.hermeto.player.Player.Direction;
 import net.thiagoalz.hermeto.Position;
 
 /**
  * Manages the interaction of the users and the panel.
+ * 
+ * @author Gabriel Ozeas de Oliveira
+ * @version 0.1
  */
 public class GameManager implements SquarePanelManager, PlayersManager {
 	

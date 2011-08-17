@@ -1,7 +1,12 @@
-package net.thiagoalz.hermeto;
+package net.thiagoalz.hermeto.player;
+
+import net.thiagoalz.hermeto.Position;
 
 /**
  * User that is is active and playing in the game.
+ * 
+ * @author Gabriel Ozeas de Oliveira
+ * @version 0.1
  */
 public interface Player {
 	/**

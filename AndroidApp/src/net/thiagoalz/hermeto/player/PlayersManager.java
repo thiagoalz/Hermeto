@@ -1,9 +1,12 @@
-package net.thiagoalz.hermeto;
+package net.thiagoalz.hermeto.player;
 
 import java.util.List;
 
 /**
  * Manage the users that are playing the game.
+ * 
+ * @author Gabriel Ozeas de Oliveira
+ * @version 0.1
  */
 public interface PlayersManager {
 	/**
