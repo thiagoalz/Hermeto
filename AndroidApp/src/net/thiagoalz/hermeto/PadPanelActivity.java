@@ -10,7 +10,7 @@ public class PadPanelActivity extends Activity {
 	
 	private static final int COLUMN_NUMBER = 15;
 	private static final int ROW_NUMBER = 15;
-	
+		
 	ImageButton[][] padsMatrix;
 	TableLayout tableLayout;
 	

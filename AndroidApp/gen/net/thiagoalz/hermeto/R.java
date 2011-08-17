@@ -18,13 +18,16 @@ public final class R {
         public static final int player_ping=0x7f020004;
         public static final int player_red=0x7f020005;
         public static final int player_yellow=0x7f020006;
-        public static final int wood=0x7f020007;
+        public static final int presentation_bg=0x7f020007;
+        public static final int wood=0x7f020008;
     }
     public static final class id {
         public static final int padpanelgrid=0x7f050000;
+        public static final int play=0x7f050001;
     }
     public static final class layout {
         public static final int padpanel=0x7f030000;
+        public static final int presentation=0x7f030001;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
