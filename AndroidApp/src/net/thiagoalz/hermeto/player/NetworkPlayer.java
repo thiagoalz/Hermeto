@@ -10,7 +10,7 @@ import net.thiagoalz.hermeto.Position;
  *
  */
 public class NetworkPlayer implements Player {
-
+	
 	@Override
 	public boolean move(Direction direction) {
 		// TODO Auto-generated method stub

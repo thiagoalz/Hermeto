@@ -1,12 +1,14 @@
 package net.thiagoalz.hermeto.panel;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import net.thiagoalz.hermeto.player.Player;
-import net.thiagoalz.hermeto.player.PlayersManager;
-import net.thiagoalz.hermeto.player.Player.Direction;
 import net.thiagoalz.hermeto.Position;
+import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.Player.Direction;
+import net.thiagoalz.hermeto.player.PlayersManager;
 
 /**
  * Manages the interaction of the users and the panel.
@@ -19,7 +21,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	private int columns;
 	private int rows;
 	
-	private List<Player> players = new ArrayList<Player>();
+	private Map<String, Player> players = new LinkedHashMap<String, Player>();
 	private List<Position> markedSquares = new ArrayList<Position>();
 	
 	/**
@@ -39,7 +41,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	 * @param rows The number of rows of the panel.
 	 * @param players The list of players.
 	 */
-	public GameManager(int columns, int rows, List<Player> players) {
+	public GameManager(int columns, int rows, Map<String, Player> players) {
 		if (players != null) {
 			this.players = players;
 		}
@@ -112,18 +114,25 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	}
 
 	@Override
-	public void addPlayer(Player player) {
-		players.add(player);		
+	public Player connectPlayer() {
+		String playerID = "playerID-" + System.currentTimeMillis();
+		players.put(playerID, null);
+		return null;
 	}
 
 	@Override
-	public void removePlayer(Player player) {
+	public void disconnectPlayer(Player player) {
 		players.remove(player);
 		
 	}
 
 	@Override
-	public List<Player> getPlayers() {
+	public Map<String, Player> getPlayers() {
 		return players;
+	}
+	
+	@Override
+	public Player getPlayer(String playerID) {
+		return players.get(playerID);
 	}
 }
