@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import net.thiagoalz.hermeto.panel.GameManager;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -8,23 +9,32 @@ import android.widget.TableRow;
 
 public class PadPanelActivity extends Activity {
 	
-	private static final int COLUMN_NUMBER = 15;
-	private static final int ROW_NUMBER = 15;
+	private static final int COLUMNS = 15;
+	private static final int ROWS = 15;
+		
+	private GameManager gameManager;
 	
-	ImageButton[][] padsMatrix;
-	TableLayout tableLayout;
+	private ImageButton[][] padsMatrix;
+	private TableLayout tableLayout;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.padpanel);
 		
-		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
-		initializePadPanel();
+		gameManager = new GameManager(COLUMNS, ROWS);
+		addCurrentPlayer();
+		constructView();
+		
 	}
 	
-	private void initializePadPanel() {
-		padsMatrix = new ImageButton[ROW_NUMBER][COLUMN_NUMBER];
+	private void constructView() {
+		setContentView(R.layout.padpanel);
+		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
+		initializeSquarePanel();
+	}
+	
+	private void initializeSquarePanel() {
+		padsMatrix = new ImageButton[COLUMNS][ROWS];
 		for (int i = 0; i < padsMatrix.length; i++) {
 			TableRow tableRow = new TableRow(this);
 			for (int j = 0; j < padsMatrix[i].length; j++) {
@@ -33,5 +43,9 @@ public class PadPanelActivity extends Activity {
 			}
 			tableLayout.addView(tableRow);
 		}
+	}
+	
+	private void addCurrentPlayer() {
+		 gameManager.connectPlayer();
 	}
 }
