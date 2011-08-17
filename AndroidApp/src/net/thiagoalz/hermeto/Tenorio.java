@@ -1,14 +1,7 @@
 package net.thiagoalz.hermeto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,7 +18,7 @@ public class Tenorio extends View {
 		super(context);
 		Log.d(ACTIVITY_NAME, "constructor");
 		this.context = context;
-		this.setBackgroundResource(R.drawable.wood9);
+		this.setBackgroundResource(R.drawable.mainbg);
 	}
 
 	@Override
