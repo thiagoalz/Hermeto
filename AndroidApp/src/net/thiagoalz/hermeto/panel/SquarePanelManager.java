@@ -2,7 +2,6 @@ package net.thiagoalz.hermeto.panel;
 
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
-import net.thiagoalz.hermeto.Position;
 
 /**
  * Panel where the pads are, and where the users play.

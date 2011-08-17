@@ -1,8 +1,6 @@
 package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.player.LocalPlayer;
-import net.thiagoalz.hermeto.player.Player;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -48,7 +46,6 @@ public class PadPanelActivity extends Activity {
 	}
 	
 	private void addCurrentPlayer() {
-		 Player player = new LocalPlayer("Player 1", "player01", gameManager);
 		 gameManager.connectPlayer();
 	}
 }

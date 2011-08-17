@@ -1,9 +1,9 @@
 package net.thiagoalz.hermeto.player;
 
-import net.thiagoalz.hermeto.Position;
+import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.SquarePanelManager;
 
-public class AbstractPlayer implements Player {
+public class DefaultPlayer implements Player {
 
 	private String name;
 	private String id;
@@ -11,11 +11,11 @@ public class AbstractPlayer implements Player {
 	
 	private SquarePanelManager squarePanelManager; 
 	
-	public AbstractPlayer(String name, String id) {
+	public DefaultPlayer(String name, String id) {
 		this(name, id, null);
 	}
 	
-	public AbstractPlayer(String name, String id, SquarePanelManager squarePanelManager) {
+	public DefaultPlayer(String name, String id, SquarePanelManager squarePanelManager) {
 		this.name = name;
 		this.id = id;
 		this.squarePanelManager = squarePanelManager;

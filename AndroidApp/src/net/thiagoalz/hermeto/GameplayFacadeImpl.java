@@ -47,8 +47,7 @@ public class GameplayFacadeImpl implements GameplayFacade {
 
 	@Override
 	public String connectPlayer() {
-		
-		return null;
+		return gameManager.connectPlayer().getId();
 	}
 
 	public GameManager getGameManager() {

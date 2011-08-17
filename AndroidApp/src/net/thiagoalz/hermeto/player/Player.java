@@ -1,6 +1,6 @@
 package net.thiagoalz.hermeto.player;
 
-import net.thiagoalz.hermeto.Position;
+import net.thiagoalz.hermeto.panel.Position;
 
 /**
  * User that is is active and playing in the game.

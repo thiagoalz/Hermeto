@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto;
+package net.thiagoalz.hermeto.panel;
 
 /**
  * Position where the player is in the panel.

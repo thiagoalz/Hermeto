@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.thiagoalz.hermeto.Position;
+import net.thiagoalz.hermeto.player.DefaultPlayer;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
 import net.thiagoalz.hermeto.player.PlayersManager;
@@ -22,6 +22,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	private int rows;
 	
 	private Map<String, Player> players = new LinkedHashMap<String, Player>();
+	private int playerCounter = 0;
 	private List<Position> markedSquares = new ArrayList<Position>();
 	
 	/**
@@ -116,14 +117,15 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	@Override
 	public Player connectPlayer() {
 		String playerID = "playerID-" + System.currentTimeMillis();
-		players.put(playerID, null);
-		return null;
+		String playerName = "Player " + (++playerCounter);
+		Player player = new DefaultPlayer(playerName, playerID);
+		players.put(player.getId(), player);
+		return player;
 	}
 
 	@Override
 	public void disconnectPlayer(Player player) {
-		players.remove(player);
-		
+		players.remove(player.getId());
 	}
 
 	@Override
