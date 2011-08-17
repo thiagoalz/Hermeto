@@ -22,15 +22,51 @@ public final class R {
         public static final int wood=0x7f020008;
     }
     public static final class id {
-        public static final int padpanelgrid=0x7f050000;
-        public static final int play=0x7f050001;
+        public static final int padpanelgrid=0x7f060000;
+        public static final int play=0x7f060001;
     }
     public static final class layout {
         public static final int padpanel=0x7f030000;
         public static final int presentation=0x7f030001;
     }
+    public static final class raw {
+        public static final int 2075_opm_ch_set1=0x7f040000;
+        public static final int 2076_opm_ch_set2=0x7f040001;
+        public static final int 2077_opm_ch_set4=0x7f040002;
+        public static final int 2078_opm_ch_set5=0x7f040003;
+        public static final int 2079_opm_ch_sset3=0x7f040004;
+        public static final int 2080_opm_ch_set1=0x7f040005;
+        public static final int 2081_opm_ch_set2=0x7f040006;
+        public static final int 2082_opm_ch_set3=0x7f040007;
+        public static final int 2083_opm_ch_set4=0x7f040008;
+        public static final int 2084_opm_cp_set5=0x7f040009;
+        public static final int 2085_opm_kk_set1=0x7f04000a;
+        public static final int 2086_opm_kk_set2=0x7f04000b;
+        public static final int 2087_opm_kk_set3=0x7f04000c;
+        public static final int 2088_opm_kk_set4=0x7f04000d;
+        public static final int 2089_opm_kk_set5=0x7f04000e;
+        public static final int 2090_opm_oh_set1=0x7f04000f;
+        public static final int 2091_opm_oh_set2=0x7f040010;
+        public static final int 2092_opm_oh_set3=0x7f040011;
+        public static final int 2093_opm_oh_set4=0x7f040012;
+        public static final int 2094_opm_oh_set5=0x7f040013;
+        public static final int 2095_opm_rs_set1=0x7f040014;
+        public static final int 2096_opm_rs_set2=0x7f040015;
+        public static final int 2097_opm_rs_set3=0x7f040016;
+        public static final int 2098_opm_rs_set4=0x7f040017;
+        public static final int 2099_opm_rs_set5=0x7f040018;
+        public static final int 2100_opm_sn_set1=0x7f040019;
+        public static final int 2101_opm_sn_set2=0x7f04001a;
+        public static final int 2102_opm_sn_set3=0x7f04001b;
+        public static final int 2103_opm_sn_set4=0x7f04001c;
+        public static final int 2104_opm_sn_set5=0x7f04001d;
+        public static final int 2105_opm_tm_set1=0x7f04001e;
+        public static final int 2106_opm_tm_set2=0x7f04001f;
+        public static final int 2107_opm_tm_set3=0x7f040020;
+        public static final int 2108_opm_tm_set4=0x7f040021;
+        public static final int 2109_opm_tm_set5=0x7f040022;
+    }
     public static final class string {
-        public static final int app_name=0x7f040000;
+        public static final int app_name=0x7f050000;
     }
 }
->>>>>>> 0e82c1e717a5f53d7cac5372bf8f10d83b48c5bd:AndroidApp/gen/net/thiagoalz/hermeto/R.java
