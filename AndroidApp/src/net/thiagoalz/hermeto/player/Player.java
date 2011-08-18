@@ -13,7 +13,17 @@ public interface Player {
 	 * Directions that the player can go.
 	 */
 	public enum Direction {
-		LEFT, RIGHT, TOP, DOWN;
+		LEFT("left"), RIGHT("right"), TOP("top"), DOWN("down");
+		
+		private String value;
+		
+		private Direction(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
 	}
 
 	/**

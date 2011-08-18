@@ -39,6 +39,10 @@ public class DefaultPlayer implements Player {
 	public Position getPosition() {
 		return position;
 	}
+	
+	public void setPosition(Position position) {
+		this.position = position;
+	}
 
 	@Override
 	public String getName() {

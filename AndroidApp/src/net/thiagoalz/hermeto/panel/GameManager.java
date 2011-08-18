@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 import net.thiagoalz.hermeto.player.DefaultPlayer;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
@@ -17,6 +19,8 @@ import net.thiagoalz.hermeto.player.PlayersManager;
  * @version 0.1
  */
 public class GameManager implements SquarePanelManager, PlayersManager {
+	
+	private static final String tag = GameManager.class.getCanonicalName();
 	
 	private int columns;
 	private int rows;
@@ -46,6 +50,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 		if (players != null) {
 			this.players = players;
 		}
+		Log.d(tag, "Creating game with [" + columns + ", " + rows + "]");
 		this.columns = columns > 1 ? columns : 2;
 		this.rows = rows > 1 ? columns : 2;
 	}
@@ -55,11 +60,14 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 		int x = player.getPosition().getX();
 		int y = player.getPosition().getY();
 		
+		Log.d(tag, "Actual position of the player: [" + x + ", " + y + "]");
+		
 		switch (direction) {
 			case LEFT:
 				if (x - 1 < 1) {
 					return false;
 				} else {
+					Log.d(tag, "Changing position of the player: [" + (x - 1) + ", " + y + "]");
 					player.getPosition().setX(x - 1);
 					return true;
 				}
@@ -68,6 +76,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 				if (x + 1 > columns) {
 					return false;
 				} else {
+					Log.d(tag, "Changing position of the player: [" + (x + 1) + ", " + y + "]");
 					player.getPosition().setX(x + 1);
 					return true;
 				}
@@ -76,6 +85,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 				if (y - 1 < 1) {
 					return false;
 				} else {
+					Log.d(tag, "Changing position of the player: [" + x + ", " + (y - 1) + "]");
 					player.getPosition().setY(y - 1);
 					return true;
 				}
@@ -84,6 +94,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 				if (y + 1 > rows) {
 					return false;
 				} else {
+					Log.d(tag, "Changing position of the player: [" + x + ", " + (y + 1) + "]");
 					player.getPosition().setY(y + 1);
 					return true;
 				}
@@ -96,6 +107,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 		if (markedSquares.contains(player.getPosition())) {
 			return false;
 		} else {
+			Log.d(tag, "Marking square [" + player.getPosition().getX() + ", "+ player.getPosition().getY() +"]");
 			markedSquares.add(player.getPosition());
 			return true;
 		}
@@ -103,6 +115,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	
 	@Override
 	public Position[] getMarkedSquares() {
+		Log.d(tag, markedSquares.size() + " squares marked");
 		return (Position[]) markedSquares.toArray();
 	}
 
@@ -118,7 +131,19 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	public Player connectPlayer() {
 		String playerID = "playerID-" + System.currentTimeMillis();
 		String playerName = "Player " + (++playerCounter);
-		Player player = new DefaultPlayer(playerName, playerID);
+		
+		Position position = null;
+		if (playerCounter % 2 != 0) {
+			position = new Position(1,1);
+		} else {
+			position = new Position(columns, rows);
+		}
+		
+		DefaultPlayer player = new DefaultPlayer(playerName, playerID);
+		player.setPosition(position);
+		
+		Log.d(tag, "Connection " + playerName + "("+ playerID +") at the position [" 
+				+ position.getX() + ", " + position.getY() + "]");
 		players.put(player.getId(), player);
 		return player;
 	}
