@@ -2,13 +2,15 @@ package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
+import net.thiagoalz.hermeto.panel.SelectionEvent;
+import net.thiagoalz.hermeto.panel.SelectionListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-public class PadPanelActivity extends Activity {
+public class PadPanelActivity extends Activity implements SelectionListener {
 	
 	private static final int COLUMNS = 15;
 	private static final int ROWS = 15;
@@ -44,5 +46,17 @@ public class PadPanelActivity extends Activity {
 			}
 			tableLayout.addView(tableRow);
 		}
+	}
+
+	@Override
+	public void onSelected(SelectionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDeselected(SelectionEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

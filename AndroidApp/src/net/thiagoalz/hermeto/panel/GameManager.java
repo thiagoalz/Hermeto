@@ -2,15 +2,16 @@ package net.thiagoalz.hermeto.panel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-
-import android.util.Log;
+import java.util.Set;
 
 import net.thiagoalz.hermeto.player.DefaultPlayer;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
 import net.thiagoalz.hermeto.player.PlayersManager;
+import android.util.Log;
 
 /**
  * Manages the interaction of the users and the panel.
@@ -27,7 +28,10 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	
 	private Map<String, Player> players = new LinkedHashMap<String, Player>();
 	private int playerCounter = 0;
-	private List<Position> markedSquares = new ArrayList<Position>();
+	
+	private Set<Position> markedSquares = new LinkedHashSet<Position>();
+	
+	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	
 	/**
 	 * Constructor that receives the dimension of the panel.
@@ -104,11 +108,15 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 
 	@Override
 	public boolean mark(Player player) {
-		if (markedSquares.contains(player.getPosition())) {
+		Position selectedPosition = new Position(player.getPosition().getX(), player.getPosition().getY());
+		if (markedSquares.contains(selectedPosition)) {
+			markedSquares.remove(selectedPosition);
+			notifyDeselection(player, selectedPosition);
 			return false;
 		} else {
 			Log.d(tag, "Marking square [" + player.getPosition().getX() + ", "+ player.getPosition().getY() +"]");
 			markedSquares.add(player.getPosition());
+			notifySelection(player, selectedPosition);
 			return true;
 		}
 	}
@@ -161,5 +169,27 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	@Override
 	public Player getPlayer(String playerID) {
 		return players.get(playerID);
+	}
+	
+	public void addSelectionListener(SelectionListener selectionListener) {
+		this.selectionListeners.add(selectionListener);
+	}
+	
+	public void removeSelectionListener(SelectionListener selectionListener) {
+		this.selectionListeners.remove(selectionListener);
+	}
+	
+	private void notifySelection(Player player, Position position) {
+		SelectionEvent event = new SelectionEvent(player, position);
+		for (SelectionListener listener : selectionListeners) {
+			listener.onSelected(event);
+		}
+	}
+	
+	private void notifyDeselection(Player player, Position position) {
+		SelectionEvent event = new SelectionEvent(player, position);
+		for (SelectionListener listener : selectionListeners) {
+			listener.onDeselected(event);
+		}
 	}
 }
