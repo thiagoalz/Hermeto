@@ -7,26 +7,68 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import android.util.Log;
+
 public class XMPPClient implements MessageListener {
-	private static final int SERVER_PORT = 5222;
-	private static final String DESTINATION = "a@lilab.info";
-	private static final String SERVER_ADDRESS = "lilab.info";
-	private static final String USERNAME = "b@lilab.info";
-	private static final String PASSWORD = "2";
+	private int port;
+	private String messagesDestination;
+	private String serverAddress;
+	private String username;
+	private String password;
 	
 	protected XMPPConnection connection;
 
-	public void login(String userName, String password, String serverAddress, int port) throws XMPPException
+	public XMPPClient(int port, String messagesDestination,
+			String serverAddress, String username, String password, String serviceName) {
+		super();
+		this.port = port;
+		this.messagesDestination = messagesDestination;
+		this.serverAddress = serverAddress;
+		this.username = username;
+		this.password = password;
+		try {
+			this.login(this.username, this.password, this.serverAddress, this.port, serviceName);
+		} catch (XMPPException e) {
+			Log.e("hermeto", "Oooops! An error ocurred while initiating XMPP server connection!");
+			e.printStackTrace();
+		}
+	}
+	
+	public XMPPClient(int port, String messagesDestination,
+			String serverAddress, String username, String password) {
+		super();
+		this.port = port;
+		this.messagesDestination = messagesDestination;
+		this.serverAddress = serverAddress;
+		this.username = username;
+		this.password = password;
+		try {
+			this.login(this.username, this.password, this.serverAddress, this.port);
+		} catch (XMPPException e) {
+			Log.e("hermeto", "Oooops! An error ocurred while initiating XMPP server connection!");
+			e.printStackTrace();
+		}
+	}	
+	
+	private synchronized void login(String userName, String password, String serverAddress, int port) throws XMPPException
 	{
-		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "work");
+		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port);
 		connection = new XMPPConnection(config);
 		connection.connect();
 		connection.login(userName, password);
 	}
-
-	public void sendMessage(String message, String destination) throws XMPPException
+	
+	private synchronized void login(String userName, String password, String serverAddress, int port, String serviceName) throws XMPPException
 	{
-		Chat chat = connection.getChatManager().createChat(destination, this);
+		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "Hermeto");
+		connection = new XMPPConnection(config);
+		connection.connect();
+		connection.login(userName, password);
+	}	
+
+	public void sendMessage(String message) throws XMPPException
+	{
+		Chat chat = connection.getChatManager().createChat(this.messagesDestination, this);
 		chat.sendMessage(message);
 	}
 
