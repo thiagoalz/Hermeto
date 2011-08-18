@@ -10,11 +10,11 @@ import org.jivesoftware.smack.packet.Message;
 import android.util.Log;
 
 public class XMPPClient implements MessageListener {
-	private int port;
-	private String messagesDestination;
-	private String serverAddress;
-	private String username;
-	private String password;
+	protected int port;
+	protected String messagesDestination;
+	protected String serverAddress;
+	protected String username;
+	protected String password;
 	
 	protected XMPPConnection connection;
 
@@ -50,7 +50,7 @@ public class XMPPClient implements MessageListener {
 		}
 	}	
 	
-	private synchronized void login(String userName, String password, String serverAddress, int port) throws XMPPException
+	protected synchronized void login(String userName, String password, String serverAddress, int port) throws XMPPException
 	{
 		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port);
 		connection = new XMPPConnection(config);
@@ -58,7 +58,7 @@ public class XMPPClient implements MessageListener {
 		connection.login(userName, password);
 	}
 	
-	private synchronized void login(String userName, String password, String serverAddress, int port, String serviceName) throws XMPPException
+	protected synchronized void login(String userName, String password, String serverAddress, int port, String serviceName) throws XMPPException
 	{
 		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "Hermeto");
 		connection = new XMPPConnection(config);
