@@ -18,10 +18,13 @@ public class DefaultGameplayControl implements GameplayControl {
 	@Override
 	public boolean execute(int playerID, int command) {
 		if (command > 0 && command <= 4) {
+			Log.d(tag, "Executing moving command");
 			return movePlayer(playerID, command);			
 		} else if (command == 5){
+			Log.d(tag, "Executing mark command");
 			return markSquare(playerID);
 		} else if (command == 6) {
+			Log.d(tag, "Executing connecting command");
 			return connectPlayer(playerID);
 		}
 		return false;

@@ -27,7 +27,7 @@ public interface Player {
 	}
 
 	/**
-	 * Move the player the especified direction.
+	 * Move the player the specified direction.
 	 * 
 	 * @param direction
 	 *            The direction where the player need to be moved.
