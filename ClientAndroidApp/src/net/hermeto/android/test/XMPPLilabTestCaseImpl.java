@@ -32,7 +32,7 @@ public class XMPPLilabTestCaseImpl extends TestCase {
 		}
 
 		try {
-			this.client.sendMessage(msg);
+			this.client.sendMessage(msg, "b@lilab.info");
 		} catch (XMPPException e) {
 			Log.e("hermeto","XMPP Message Sending Failed");			
 			e.printStackTrace();
