@@ -18,15 +18,15 @@ public class XMPPClient implements MessageListener {
 
 	public void login(String userName, String password, String serverAddress, int port) throws XMPPException
 	{
-		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "Work");
+		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "work");
 		connection = new XMPPConnection(config);
 		connection.connect();
 		connection.login(userName, password);
 	}
 
-	public void sendMessage(String message) throws XMPPException
+	public void sendMessage(String message, String destination) throws XMPPException
 	{
-		Chat chat = connection.getChatManager().createChat(XMPPClient.DESTINATION, this);
+		Chat chat = connection.getChatManager().createChat(destination, this);
 		chat.sendMessage(message);
 	}
 
