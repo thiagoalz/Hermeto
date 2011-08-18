@@ -18,7 +18,7 @@ public class XMPPGtalkTestCaseImpl extends TestCase {
 		String msg = "Test message;";
 
 		try {
-			this.client.login("paulo.aug@gmail.com", "googleMONK*$<<PP>103", "talk.google.com", 5222);
+			this.client.login("", "", "talk.google.com", 5222);
 		} catch (XMPPException e) {
 			Log.e("hermeto","XMPP Authentication Failed");
 			e.printStackTrace();
