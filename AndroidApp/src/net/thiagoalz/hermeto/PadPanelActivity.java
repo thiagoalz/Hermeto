@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ public class PadPanelActivity extends Activity {
 	private static final int ROWS = 15;
 		
 	private GameManager gameManager;
+	private SoundManager soundManager;
 	
 	private ImageButton[][] padsMatrix;
 	private TableLayout tableLayout;
@@ -22,7 +24,6 @@ public class PadPanelActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		gameManager = new GameManager(COLUMNS, ROWS);
-		addCurrentPlayer();
 		constructView();
 		
 	}
@@ -43,9 +44,5 @@ public class PadPanelActivity extends Activity {
 			}
 			tableLayout.addView(tableRow);
 		}
-	}
-	
-	private void addCurrentPlayer() {
-		 gameManager.connectPlayer();
 	}
 }
