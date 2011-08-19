@@ -2,8 +2,11 @@ package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.panel.SelectionEvent;
-import net.thiagoalz.hermeto.panel.SelectionListener;
+import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
+import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
+import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
+import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
+import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-public class PadPanelActivity extends Activity implements SelectionListener {
+public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener {
 	
 	private static final int COLUMNS = 15;
 	private static final int ROWS = 15;
@@ -64,6 +67,18 @@ public class PadPanelActivity extends Activity implements SelectionListener {
 
 	@Override
 	public void onDeselected(SelectionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPlayerMove(MoveEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPlayerConnect(ConnectEvent event) {
 		// TODO Auto-generated method stub
 		
 	}
