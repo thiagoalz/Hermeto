@@ -1,13 +1,13 @@
 package net.thiagoalz.hermeto;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.Button;
 
 public class HermetoActivity extends Activity {
 
@@ -16,15 +16,16 @@ public class HermetoActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 		configureScreen();
 		setContentView(R.layout.presentation);
-		
-		ImageButton play = (ImageButton) findViewById(R.id.play);
-		play.setOnClickListener(new OnClickListener() {
+		Button button = (Button) findViewById(R.id.presentationplay);
+		button.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				
-				
+			public void onClick(View view) {
+				Intent intent = new Intent(view.getContext(), PadPanelActivity.class);
+				startActivity(intent);
+				HermetoActivity.this.finish();
 			}
 		});
+		
     }
     
     private void configureScreen() {

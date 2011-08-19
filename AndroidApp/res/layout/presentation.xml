@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:background="@drawable/presentation_bg">
-    <selector android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dip"
-        android:layout_marginTop="100dip"
-        android:text="Play"/>
-</RelativeLayout>
+  android:background="@drawable/presentation_bg" android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+  
+  <ImageView  
+        android:layout_height="fill_parent"
+        android:scaleType="center"
+        android:src="@drawable/presentation" android:layout_width="match_parent"/>
+   <Button android:layout_width="wrap_content" android:layout_gravity="center_horizontal|center_vertical" android:background="@drawable/presentationplay" android:id="@+id/presentationplay" android:padding="10dp" android:layout_height="wrap_content" android:layout_marginLeft="430dip" android:layout_marginTop="230dip"></Button>
+</FrameLayout>
