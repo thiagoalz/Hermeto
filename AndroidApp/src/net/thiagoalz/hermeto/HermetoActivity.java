@@ -16,15 +16,6 @@ public class HermetoActivity extends Activity {
 	    super.onCreate(savedInstanceState);
 		configureScreen();
 		setContentView(R.layout.presentation);
-		
-		ImageButton play = (ImageButton) findViewById(R.id.play);
-		play.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				
-				
-			}
-		});
     }
     
     private void configureScreen() {
