@@ -1,16 +1,14 @@
 package net.thiagoalz.hermeto;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.app.AlertDialog;
-import android.content.pm.ActivityInfo;
-import android.util.Log;
 
 import com.google.android.DemoKit.DemoKitActivity;
 
