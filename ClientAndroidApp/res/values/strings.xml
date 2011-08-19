@@ -9,4 +9,8 @@
 <string name="right">right</string>
 <string name="center">center</string>
 <string name="connect">connect</string>
+<string name="d_text">Digite seu nome para conectar:</string>
+<string name="d_title">Connect</string>
+<string name="d_ok">Ok</string>
+<string name="d_cancel">Cancel</string>
 </resources>
