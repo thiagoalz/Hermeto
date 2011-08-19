@@ -1,5 +1,6 @@
-package net.thiagoalz.hermeto.panel;
+package net.thiagoalz.hermeto.panel.listeners;
 
+import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.player.Player;
 
 /**
