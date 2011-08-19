@@ -77,6 +77,7 @@ public class XMPPClient implements MessageListener {
 		connection.disconnect();
 	}
 
+	@Override
 	public void processMessage(Chat chat, Message message)
 	{
 		if(message.getType() == Message.Type.chat)
