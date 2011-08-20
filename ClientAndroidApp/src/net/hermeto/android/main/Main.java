@@ -95,15 +95,10 @@ public class Main extends Activity {
 			public void onClick(View v) {
 
 				AlertDialog.Builder dialogo = new AlertDialog.Builder(Main.this);
-				//dialogo.setView(getLayoutInflater().inflate(R.layout.dialog, null));
 				dialogo.setTitle(R.string.d_title);
 				dialogo.setIcon(R.drawable.net_fail);
 				dialogo.setMessage(R.string.d_text);
 
-				// Com a master ajuda do gabriel-ozeas,
-				//
-				// Input maldito, input maldito!! .. lalalalalalala
-				//
 				final EditText input = new EditText(Main.this);
 				input.setSingleLine();
 
