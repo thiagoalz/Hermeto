@@ -27,7 +27,7 @@ public abstract class AbstractXMPPTestCase extends TestCase {
 		try {
 			this.client.sendMessage(msg);
 		} catch (XMPPException e) {
-			Log.e("hermeto","XMPP Message Sending Failed");			
+			Log.e("hermeto","XMPP Message Sending Failed");
 			e.printStackTrace();
 		}
 
@@ -37,6 +37,7 @@ public abstract class AbstractXMPPTestCase extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		this.client = this.constructXMPPClient();
+		this.client.startChat(this.client);
 	}
 	
 	protected abstract XMPPClient constructXMPPClient();

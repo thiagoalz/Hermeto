@@ -5,23 +5,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class Main extends Activity {
+	
+	ConnectionController mConnectionController;
+	Toast ConnToast;
 		
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 
+		//Setup Controller
+		mConnectionController = new ConnectionController(Main.this);
+		
+		ConnToast=Toast.makeText(Main.this, "Connected!", Toast.LENGTH_LONG);
 		Window janela = getWindow();
 		janela.requestFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.main);
@@ -34,8 +38,7 @@ public class Main extends Activity {
 
 			public void onClick(View v) {
 
-				Toast.makeText(Main.this, R.string.up, Toast.LENGTH_SHORT)
-				.show();
+				mConnectionController.upClick();
 
 			}
 		});
@@ -46,8 +49,7 @@ public class Main extends Activity {
 
 			public void onClick(View v) {
 
-				Toast.makeText(Main.this, R.string.left, Toast.LENGTH_SHORT)
-				.show();
+				mConnectionController.leftClick();
 
 			}
 		});
@@ -58,8 +60,7 @@ public class Main extends Activity {
 
 			public void onClick(View v) {
 
-				Toast.makeText(Main.this, R.string.right, Toast.LENGTH_SHORT)
-				.show();
+				mConnectionController.rightClick();
 
 			}
 		});
@@ -70,8 +71,7 @@ public class Main extends Activity {
 
 			public void onClick(View v) {
 
-				Toast.makeText(Main.this, R.string.down, Toast.LENGTH_SHORT)
-				.show();
+				mConnectionController.downClick();
 
 			}
 		});
@@ -81,10 +81,7 @@ public class Main extends Activity {
 		b_Center.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-
-				Toast.makeText(Main.this, R.string.center, Toast.LENGTH_SHORT)
-				.show();
-
+				mConnectionController.buttonClick();
 			}
 		});
 
@@ -111,10 +108,9 @@ public class Main extends Activity {
 					public void onClick(DialogInterface dialog,
 							int which) {
 						
-						String value = input.getText().toString();
+						String nickname = input.getText().toString();
 
-						Toast.makeText(Main.this, value.toString(),
-								Toast.LENGTH_SHORT).show();
+						mConnectionController.connect(nickname);
 
 
 					}
@@ -137,4 +133,11 @@ public class Main extends Activity {
 		});
 
 	}
+	
+	//TODO: COuldnt find another way to controller start the toast.
+	//This way just works the 1 time :/
+	public void toastConnected(){
+		ConnToast.show();
+	}
+		
 }

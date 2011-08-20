@@ -15,6 +15,7 @@ public class XMPPClient implements MessageListener {
 	protected String serverAddress;
 	protected String username;
 	protected String password;
+	protected Chat chat;
 	
 	protected XMPPConnection connection;
 
@@ -64,12 +65,27 @@ public class XMPPClient implements MessageListener {
 		connection = new XMPPConnection(config);
 		connection.connect();
 		connection.login(userName, password);
-	}	
+	}
+	
+	public void startChat(MessageListener listener){
+		this.chat = connection.getChatManager().createChat(this.messagesDestination, listener);
+	}
 
 	public void sendMessage(String message) throws XMPPException
-	{
-		Chat chat = connection.getChatManager().createChat(this.messagesDestination, this);
-		chat.sendMessage(message);
+	{		
+		//Another method to send messages
+//		Message messageObj = new Message();
+//		messageObj.setTo("a@lilab.info");
+//		messageObj.setSubject("Titulo Teste");
+//		messageObj.setBody("Msg Teste");
+//		messageObj.setType(Type.chat);
+//	    connection.sendPacket(messageObj);
+	    
+		if(chat!=null){
+			chat.sendMessage(message);
+		}else{
+			throw new IllegalStateException("You need to start a chat first!");
+		}
 	}
 
 	public void disconnect()
