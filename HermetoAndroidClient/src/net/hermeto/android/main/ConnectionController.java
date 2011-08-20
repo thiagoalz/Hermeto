@@ -119,11 +119,11 @@ public class ConnectionController implements MessageListener {
 			this.connectionStatus = Status.DISCONNECTED;
 		}
 
-		this.chatClient = new XMPPClient(5222, SERVER_LOGIN, SERVER_ADDRESS, CLIENT_LOGIN, CLIENT_PASSWORD);
-		Log.d("XMPP", "Conected");
-		this.chatClient.startChat(this);
-		Log.d("XMPP", "Chat Started");
 		try {
+			this.chatClient = new XMPPClient(5222, SERVER_LOGIN, SERVER_ADDRESS, CLIENT_LOGIN, CLIENT_PASSWORD);
+			Log.d("XMPP", "Conected");
+			this.chatClient.startChat(this);
+			Log.d("XMPP", "Chat Started");
 			this.connectionStatus = Status.WAITING_RESPONSE;
 			this.chatClient.sendMessage("HELLO " + nickname);
 			Log.d("XMPP", "Hello Message Sent: HELLO "+ nickname);
