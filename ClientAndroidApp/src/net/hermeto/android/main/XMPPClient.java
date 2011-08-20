@@ -60,7 +60,7 @@ public class XMPPClient implements MessageListener {
 	
 	protected synchronized void login(String userName, String password, String serverAddress, int port, String serviceName) throws XMPPException
 	{
-		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, "Hermeto");
+		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, serviceName);
 		connection = new XMPPConnection(config);
 		connection.connect();
 		connection.login(userName, password);
