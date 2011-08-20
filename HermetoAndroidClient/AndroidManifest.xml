@@ -11,10 +11,8 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<uses-library android:name="android.test.runner" />
 	</application>
 	<uses-sdk android:minSdkVersion="8" />
-    <instrumentation android:targetPackage="net.hermeto.android" android:name="android.test.InstrumentationTestRunner" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>    		
 </manifest> 
