@@ -1,18 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:orientation="vertical" 
+	android:layout_height="fill_parent" 
+	android:id="@+id/panelBoxLayout" 
+	android:layout_width="fill_parent"
+	android:background="@drawable/presentation_bg">
+	
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/playerLocationLayout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	
+	</RelativeLayout>
 
-<LinearLayout android:orientation="horizontal" android:id="@+id/linearLayout1" android:layout_height="fill_parent" android:background="@drawable/presentation_bg" xmlns:android="http://schemas.android.com/apk/res/android" android:weightSum="1" android:layout_width="fill_parent">    	
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="horizontal" 
+		android:layout_height="wrap_content" 
+		android:id="@+id/panelMenuLayout" 
+		android:layout_width="fill_parent"
+		android:paddingBottom="10dp"
+		android:paddingRight="3dp" android:gravity="right">
+		
+		<ImageButton android:text="Button" android:id="@+id/play" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:background="@drawable/panel_play_button"
+			android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
+			
+		<ImageButton android:text="Button" android:id="@+id/stop" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:background="@drawable/panel_stop_button"
+			android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
+			
+		<ImageButton android:text="Button" android:id="@+id/reset" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"
+			android:background="@drawable/panel_reset_button"
+			android:gravity="right" android:layout_marginRight="30dp"></ImageButton>
+	</LinearLayout>
 	
-	<TableLayout
-	  xmlns:android="http://schemas.android.com/apk/res/android"
-	  android:id="@+id/padpanelgrid"
-	  android:shrinkColumns="*"
-	  android:stretchColumns="*"
-	  android:weightSum="1" android:layout_height="wrap_content" android:layout_width="900dp">
-	</TableLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:orientation="vertical" 
+		android:layout_height="wrap_content" 
+		android:id="@+id/panelpadlayout" 
+		android:layout_width="fill_parent">
 	
+		<TableLayout
+		  android:id="@+id/padpanelgrid"
+		  android:layout_width="fill_parent"  
+		  android:layout_height="fill_parent" 
+		  android:stretchColumns="*"
+		  android:shrinkColumns="*">
+
+		</TableLayout>
+	
+	</LinearLayout>
 </LinearLayout>
-    
-  
 
 

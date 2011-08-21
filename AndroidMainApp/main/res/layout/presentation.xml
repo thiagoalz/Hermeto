@@ -7,7 +7,16 @@
   <ImageView  
         android:layout_height="fill_parent"
         android:scaleType="center"
-        android:src="@drawable/presentation" android:layout_width="match_parent"/>
-   <Button android:layout_width="wrap_content" android:layout_gravity="center_horizontal|center_vertical" android:background="@drawable/presentationplay" android:id="@+id/presentationplay" android:padding="10dp" android:layout_height="wrap_content" android:layout_marginLeft="430dip" android:layout_marginTop="230dip"></Button>
+        android:src="@drawable/presentation" 
+        android:layout_width="match_parent"/>
+        
+   <Button android:layout_height="wrap_content" 
+   		android:layout_gravity="center_horizontal|center_vertical" 
+   		android:layout_marginLeft="300dip" 
+   		android:layout_marginTop="280dip" 
+   		android:id="@+id/presentationplay" 
+   		android:layout_width="wrap_content" 
+   		android:padding="10dp" 
+   		android:background="@drawable/presentationplay"></Button>
 </FrameLayout>
 
