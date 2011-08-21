@@ -2,17 +2,24 @@ package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
+import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import net.thiagoalz.hermeto.player.Player;
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener {
 	
@@ -23,21 +30,32 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	private SoundManager soundManager;
 	
 	private ImageButton[][] padsMatrix;
+	private TextView[] playerNamesPosition; 
 	private TableLayout tableLayout;
+	
+	Player defaultPlayer;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		configureScreen();
 		gameManager = new GameManager(COLUMNS, ROWS);
+		gameManager.addSelectionListener(this);
+		defaultPlayer = gameManager.connectPlayer();
 		constructView();
-		
 	}
+	
+	private void configureScreen() {
+    	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    	requestWindowFeature(Window.FEATURE_NO_TITLE);
+    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
 	
 	private void constructView() {
 		setContentView(R.layout.padpanel);
 		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
 		initializeSquarePanel();
+		initializePlayersName();
 	}
 	
 	private void initializeSquarePanel() {
@@ -45,32 +63,49 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		for (int i = 0; i < padsMatrix.length; i++) {
 			TableRow tableRow = new TableRow(this);
 			for (int j = 0; j < padsMatrix[i].length; j++) {
-				padsMatrix[i][j] = new ImageButton(this);
-				padsMatrix[i][j].setBackgroundDrawable(this.getResources().getDrawable(R.drawable.discoamarelo));
-				
-				padsMatrix[i][j].setOnClickListener(new View.OnClickListener() {
+				ImageButton button = new ImageButton(this);
+				TableRow.LayoutParams params = new TableRow.LayoutParams(42, 42);
+				params.gravity = Gravity.CENTER;
+				button.setLayoutParams(params);
+				button.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonstopped));
+				button.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						v.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.discoazul));
+						ImageButton selectedButton = (ImageButton) v;
+						for (int i = 0; i < padsMatrix.length; i++) {
+							for (int j = 0; j < padsMatrix[i].length; j++) {
+								if (padsMatrix[i][j] == selectedButton) {
+									defaultPlayer.setPosition(new Position(i, j));
+									gameManager.mark(defaultPlayer);
+								}
+							}
+						}
+						
 					}
 				});
-				
+				padsMatrix[i][j] = button;
 				tableRow.addView(padsMatrix[i][j]);
 			}
 			tableLayout.addView(tableRow);
 		}
 	}
-
-	@Override
-	public void onSelected(SelectionEvent event) {
-		// TODO Auto-generated method stub
+	
+	private void initializePlayersName() {
 		
 	}
 
 	@Override
+	public void onSelected(SelectionEvent event) {
+		int x = event.getPosition().getX();
+		int y = event.getPosition().getY();
+		padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected));
+	}
+
+	@Override
 	public void onDeselected(SelectionEvent event) {
-		// TODO Auto-generated method stub
-		
+		int x = event.getPosition().getX();
+		int y = event.getPosition().getY();
+		padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonstopped));
 	}
 
 	@Override

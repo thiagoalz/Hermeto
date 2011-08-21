@@ -20,6 +20,7 @@ public class HermetoActivity extends DemoKitActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
+	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 		configureScreen();
 		setContentView(R.layout.presentation);
 		Button button = (Button) findViewById(R.id.presentationplay);
@@ -36,7 +37,7 @@ public class HermetoActivity extends DemoKitActivity {
 		if (mAccessory != null) {
 			//Mostra tela conectado conectado
 		} else {
-			//Mostra tela desconectado
+			//Mostra trela desconectado
 		}
     }
     
