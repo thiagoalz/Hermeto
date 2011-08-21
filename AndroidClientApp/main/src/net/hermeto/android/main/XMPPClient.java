@@ -3,9 +3,17 @@ package net.hermeto.android.main;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.PacketCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromContainsFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
+
+import android.util.Log;
 /**
  * Class responsible for managing XMPP connection and messaging
  * @author Paulo Augusto Dacach Bichara
@@ -129,13 +137,36 @@ public class XMPPClient implements MessageListener {
 	 * @param message
 	 * @throws XMPPException
 	 */
-	public void sendMessage(String message) throws XMPPException
+	public void sendMessage(String messageTx) throws XMPPException
 	{
-		if(chat!=null){
-			chat.sendMessage(message);
+		if(connection!=null && connection.isConnected()){
+			Message OMessage = new Message();
+			OMessage.setTo(messagesDestination);
+			OMessage.setSubject("Hermeto");
+			OMessage.setBody(messageTx);
+			OMessage.setType(Message.Type.normal);
+		    connection.sendPacket(OMessage);
 		}else{
-			throw new IllegalStateException("You need to start a chat first!");
+			throw new IllegalStateException("You need to connect first!");
 		}
+	}
+	
+	public Message checkMessage(){
+		// Accept only messages from server
+	    PacketFilter filter = new AndFilter(new PacketTypeFilter(Message.class), new FromContainsFilter(messagesDestination));
+	    // Collect these messages
+	    PacketCollector collector = connection.createPacketCollector(filter);
+	    
+	    //Timeout 1sec
+	    Packet pk= collector.nextResult(1000);
+	    
+	    Log.d("XMPP","Packet received?: "+pk);
+	    Message ret=null;
+	    if (pk instanceof Message) {
+	    	ret=(Message)pk;
+	    }
+	    
+		return ret;
 	}
 
 	/**
@@ -146,8 +177,10 @@ public class XMPPClient implements MessageListener {
 		connection.disconnect();
 	}
 
-	public void startChat(MessageListener listener){
+	public Chat startChat(MessageListener listener){
 		this.chat = connection.getChatManager().createChat(this.messagesDestination, listener);
+		
+		return chat;
 	}	
 	
 	/**

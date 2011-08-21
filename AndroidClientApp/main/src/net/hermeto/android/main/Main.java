@@ -33,7 +33,6 @@ public class Main extends Activity {
 		// Setup Controller
 		mConnectionController = new ConnectionController(Main.this);
 
-		ConnToast = Toast.makeText(Main.this, "Connected!", Toast.LENGTH_LONG);
 		Window janela = getWindow();
 		janela.requestFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.main);
@@ -110,7 +109,7 @@ public class Main extends Activity {
 
 		}
 	};
-	
+
 	OnClickListener mBtnCenterClick = new OnClickListener() {
 
 		public void onClick(View v) {
@@ -135,36 +134,27 @@ public class Main extends Activity {
 			dialogo.setPositiveButton(R.string.d_ok,
 					new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
 
-							String nickname = input.getText().toString();
-							Log.e("XMPP", "Button pressed");
-							mConnectionController.connect(nickname);
+					String nickname = input.getText().toString();
+					Log.e("XMPP", "Button pressed");
+					mConnectionController.connect(nickname);
 
-						}
-					});
+				}
+			});
 
 			dialogo.setNegativeButton(R.string.d_cancel,
 					new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog,
-								int which) {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
 
-						}
-					});
+				}
+			});
 
 			dialogo.show();
 
 		}
 	};
-	
-	// TODO: COuldnt find another way to controller start the toast.
-	// This way just works the 1 time :/
-	public void toastConnected() {
-		ConnToast.show();
-	}
-
 }
