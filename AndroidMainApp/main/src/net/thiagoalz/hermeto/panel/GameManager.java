@@ -23,6 +23,9 @@ import android.util.Log;
  */
 public class GameManager implements SquarePanelManager, PlayersManager {
 	
+	private static final int COLUMNS_CONF = 16;
+	private static final int ROWS_CONF = 16;
+	
 	private static final String tag = GameManager.class.getCanonicalName();
 	
 	private int columns;
@@ -35,13 +38,22 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	
+	private static GameManager instance = new GameManager(COLUMNS_CONF, ROWS_CONF); //Just to avoid syncronization problems
+	
+	public static GameManager getInstance(){
+		//if(GameManager.instance == null)
+			//GameManager.instance = new GameManager(COLUMNS_CONF, ROWS_CONF);
+			
+		return GameManager.instance;
+	}
+	
 	/**
 	 * Constructor that receives the dimension of the panel.
 	 * 
 	 * @param columns The number of columns of the panel.
 	 * @param rows The number of rows of the panel.
 	 */
-	public GameManager(int columns, int rows) {
+	private GameManager(int columns, int rows) {
 		this(columns, rows, null);
 	}
 	
@@ -52,7 +64,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	 * @param rows The number of rows of the panel.
 	 * @param players The list of players.
 	 */
-	public GameManager(int columns, int rows, Map<String, Player> players) {
+	private GameManager(int columns, int rows, Map<String, Player> players) {
 		if (players != null) {
 			this.players = players;
 		}

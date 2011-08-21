@@ -23,9 +23,6 @@ import android.widget.TextView;
 
 public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener {
 	
-	private static final int COLUMNS = 16;
-	private static final int ROWS = 16;
-		
 	private GameManager gameManager;
 	private SoundManager soundManager;
 	
@@ -39,7 +36,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		configureScreen();
-		gameManager = new GameManager(COLUMNS, ROWS);
+		gameManager = GameManager.getInstance();
 		gameManager.addSelectionListener(this);
 		defaultPlayer = gameManager.connectPlayer();
 		constructView();
@@ -59,7 +56,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	}
 	
 	private void initializeSquarePanel() {
-		padsMatrix = new ImageButton[COLUMNS][ROWS];
+		padsMatrix = new ImageButton[gameManager.getColumns()][gameManager.getRows()];
 		for (int i = 0; i < padsMatrix.length; i++) {
 			TableRow tableRow = new TableRow(this);
 			for (int j = 0; j < padsMatrix[i].length; j++) {
