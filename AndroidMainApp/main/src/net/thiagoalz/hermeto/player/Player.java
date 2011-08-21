@@ -51,6 +51,13 @@ public interface Player {
 	public Position getPosition();
 	
 	/**
+	 * Set the position of the player.
+	 * 
+	 * @param position Position of the player;
+	 */
+	public void setPosition(Position position);
+	
+	/**
 	 * Retrieve the ID of the player.
 	 * 
 	 * @return The unique identifier of the player. 
