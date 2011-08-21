@@ -36,7 +36,7 @@ public class HermetoActivity extends DemoKitActivity {
 		if (mAccessory != null) {
 			//Mostra tela conectado conectado
 		} else {
-			//Mostra trela desconectado
+			//Mostra tela desconectado
 		}
     }
     
