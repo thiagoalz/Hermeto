@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<TableLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/padpanelgrid"
-  android:layout_width="fill_parent"  
-  android:layout_height="fill_parent" 
-  android:shrinkColumns="*"
-  android:stretchColumns="*"
-  android:background="@drawable/presentation_bg"
-  >
+<LinearLayout android:orientation="horizontal" android:id="@+id/linearLayout1" android:layout_height="fill_parent" android:background="@drawable/presentation_bg" xmlns:android="http://schemas.android.com/apk/res/android" android:weightSum="1" android:layout_width="fill_parent">    	
+	
+	<TableLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:id="@+id/padpanelgrid"
+	  android:shrinkColumns="*"
+	  android:stretchColumns="*"
+	  android:weightSum="1" android:layout_height="wrap_content" android:layout_width="900dp">
+	</TableLayout>
+	
+</LinearLayout>
     
   
-</TableLayout>
+
 

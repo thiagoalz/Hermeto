@@ -16,8 +16,8 @@ import android.widget.TableRow;
 
 public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener {
 	
-	private static final int COLUMNS = 15;
-	private static final int ROWS = 15;
+	private static final int COLUMNS = 16;
+	private static final int ROWS = 16;
 		
 	private GameManager gameManager;
 	private SoundManager soundManager;
@@ -46,13 +46,15 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 			TableRow tableRow = new TableRow(this);
 			for (int j = 0; j < padsMatrix[i].length; j++) {
 				padsMatrix[i][j] = new ImageButton(this);
-				padsMatrix[i][j].setBackgroundDrawable(this.getResources().getDrawable(R.drawable.disco));
+				padsMatrix[i][j].setBackgroundDrawable(this.getResources().getDrawable(R.drawable.discoamarelo));
+				
 				padsMatrix[i][j].setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						v.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.discoazul));
 					}
 				});
+				
 				tableRow.addView(padsMatrix[i][j]);
 			}
 			tableLayout.addView(tableRow);
