@@ -9,7 +9,7 @@ public class XMPPLilabTestCaseImpl extends AbstractXMPPTestCase {
 	@Override
 	protected XMPPClient constructXMPPClient() {
 		try {
-			return new XMPPClient(5222, "b", "lilab.info", "a", "123456", "vovozinha");
+			return new XMPPClient(5222, "b@lilab.info", "lilab.info", "a", "123456", "vovozinha");
 		} catch (XMPPException e) {
 			e.printStackTrace();
 		}
