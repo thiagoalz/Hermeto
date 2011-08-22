@@ -132,12 +132,16 @@ public class ConnectionController {
 			
 			Log.d("XMPP", "Good Message");
 			
-			String[] sMessage = message.getBody().split(" ");
-			if (sMessage[0].equals("HELLO")
-					&& sMessage[1].equals(this.nickname)) {
-				this.clientID=sMessage[2];
-				this.connectionStatus = Status.CONNECTED;
-				Log.d("XMPP", "Connected");
+			if(message.getBody()!=null){
+				String[] sMessage = message.getBody().split(" ");
+				if (sMessage[0].equals("HELLO")
+						&& sMessage[1].equals(this.nickname)) {
+					this.clientID=sMessage[2];
+					this.connectionStatus = Status.CONNECTED;
+					Log.d("XMPP", "Connected");
+				}
+			}else{
+				Log.d("XMPP", "Null Body");
 			}
 		} else {
 			Log.d("XMPP", "Unknown Message("+message.getType()+"): " + message.getBody());

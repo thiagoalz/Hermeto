@@ -1,24 +1,26 @@
-package net.thiagoalz.hermeto.panel;
+package net.thiagoalz.hermeto.control;
 
-import android.util.Log;
+import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
+import android.util.Log;
 
-public class GameplayFacadeImpl implements GameplayFacade {
+public class XMPPGameplayControl implements GameplayControl {
 
-	private static final String tag = GameplayFacadeImpl.class.getCanonicalName();
+	private static final String tag = XMPPGameplayControl.class.getCanonicalName();
 	private GameManager gameManager;
 	
-	public GameplayFacadeImpl(GameManager gameManager) {
+	public XMPPGameplayControl(GameManager gameManager) {
 		this.gameManager = gameManager;
 	}
 	
 	@Override
-	public boolean move(String playerID, String dir) {
-		if (gameManager == null) {
-			throw new IllegalArgumentException("Game Manager not set.");
-		}
-		
+	public boolean processMessage(String playerReference, String message) {
+		// TODO Implement ProcessMessage
+		return false;
+	}
+	
+	protected boolean movePlayer(String playerID, String dir) {
 		Player.Direction direction = parseDirection(dir);
 		return gameManager.getPlayer(playerID).move(direction);
 	}
@@ -38,24 +40,12 @@ public class GameplayFacadeImpl implements GameplayFacade {
 		return dir;
 	}
 
-	@Override
-	public boolean mark(String playerID) {
-		if (gameManager == null) {
-			throw new IllegalArgumentException("Game Manager not set.");
-		}
+	protected boolean markSquare(String playerID) {
 		return gameManager.getPlayer(playerID).mark();
 	}
 
-	@Override
-	public String connectPlayer() {
+	protected String connectPlayer() {
 		return gameManager.connectPlayer().getId();
 	}
 
-	public GameManager getGameManager() {
-		return gameManager;
-	}
-
-	public void setGameManager(GameManager gameManager) {
-		this.gameManager = gameManager;
-	}
 }

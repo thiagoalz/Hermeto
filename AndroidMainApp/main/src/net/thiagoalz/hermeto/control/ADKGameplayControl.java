@@ -3,22 +3,19 @@ package net.thiagoalz.hermeto.control;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.util.Log;
-
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.panel.GameplayFacade;
-import net.thiagoalz.hermeto.panel.GameplayFacadeImpl;
 import net.thiagoalz.hermeto.player.Player;
+import android.util.Log;
 
 public class ADKGameplayControl implements GameplayControl {
 
 	protected static final String tag = ADKGameplayControl.class.getCanonicalName();
 	
-	protected GameplayFacade gameplayFacade;
+	protected GameManager gameManager;
 	protected Map<Integer, String> playerIDMap = new HashMap<Integer, String>();
 	
 	public ADKGameplayControl(GameManager gameManager, int controlNumber){
-		this.gameplayFacade = new GameplayFacadeImpl(gameManager);
+		this.gameManager = gameManager;
 		
 		//Connecting ADK players
 		for(int i=0; i<controlNumber; i++){
@@ -32,21 +29,22 @@ public class ADKGameplayControl implements GameplayControl {
 	 * 
 	 * Command - 	Value - 	Description
 	 * 
+	 * NOTHING		0			The player is still. //Not in use.
 	 * TOP			1			Move to the top one square from where the player is.
 	 * DOWN			2			Move to the down one square from where the player is.
 	 * LEFT			3			Move to the left one square from where the player is.
 	 * RIGHT		4			Move to the right one square from where the player is.
 	 * BUTTON		5			Mark the square where the player is located.
-	 * CONNECT		6			Connect the player to the game.
+	 * CONNECT		6			Connect the player to the game. //Not in use.
 	 * 
-	 * @param playerID The number that identify the user.
+	 * @param playerReference The number that identify the user (on the ADK 1-4).
 	 * @param command The command that will be executed.
 	 * @return True if the command executes successfully. Otherwise return false. 
 	 */
 	@Override
-	public boolean processMessage(String player, String message){
+	public boolean processMessage(String playerReference, String message){
 		try{
-			int playerID=Integer.parseInt(player);
+			int playerID=Integer.parseInt(playerReference);
 			int command=Integer.parseInt(message);
 			
 			if (command > 0 && command <= 4) {
@@ -60,12 +58,12 @@ public class ADKGameplayControl implements GameplayControl {
 				return connectPlayer(playerID);
 			}
 		}catch(NumberFormatException e){
-			Log.d(tag, "Error trying to parseint: Player("+player+"), Message("+message+")");
+			Log.d(tag, "Error trying to parseint: Player("+playerReference+"), Message("+message+")");
 		}
 		return false;
 	}
 	
-	private boolean movePlayer(int playerID, int command) {
+	protected boolean movePlayer(int playerID, int command) {
 		Player.Direction direction = null;
 		switch(command) {
 			case 1:
@@ -82,22 +80,23 @@ public class ADKGameplayControl implements GameplayControl {
 				break;
 		}
 		if (direction != null && playerIDMap.get(playerID)!=null) {
-			return gameplayFacade.move(playerIDMap.get(playerID), direction.getValue());
+			return gameManager.getPlayer(playerIDMap.get(playerID)).move(direction);
 		}
 		return false;
 	}
 	
-	private boolean markSquare(int id) {
+	protected boolean markSquare(int id) {
 		String playerID = playerIDMap.get(id);
 
 		if(playerID!=null){
-			return gameplayFacade.mark(playerID);
+			return gameManager.getPlayer(playerID).mark();
 		}
+		
 		return false;
 	}
 	
-	private boolean connectPlayer(int id) {
-		String playerID = gameplayFacade.connectPlayer();
+	protected boolean connectPlayer(int id) {
+		String playerID = gameManager.connectPlayer().getId();
 		Log.d(tag, "Mapping the player with ID # " + id + " to " + playerID);
 		playerIDMap.put(id, playerID);
 		return playerID != null;
