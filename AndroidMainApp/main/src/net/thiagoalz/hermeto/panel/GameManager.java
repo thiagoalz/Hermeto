@@ -151,7 +151,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 
 	@Override
 	public Player connectPlayer() {
-		String playerID = "playerID-" + System.currentTimeMillis();
+		String playerID = "playerID-" + System.nanoTime();
 		String playerName = "Player " + (++playerCounter);
 		
 		Position position = null;
