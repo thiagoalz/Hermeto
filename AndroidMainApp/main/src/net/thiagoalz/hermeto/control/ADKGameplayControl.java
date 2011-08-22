@@ -26,25 +26,41 @@ public class ADKGameplayControl implements GameplayControl {
 		}
 	}
 	
-	public void processMessage(String player, String message){
+	/**
+	 * Execute a command in the application. The command is associated 
+	 * with the player. The command options can be see here:
+	 * 
+	 * Command - 	Value - 	Description
+	 * 
+	 * TOP			1			Move to the top one square from where the player is.
+	 * DOWN			2			Move to the down one square from where the player is.
+	 * LEFT			3			Move to the left one square from where the player is.
+	 * RIGHT		4			Move to the right one square from where the player is.
+	 * BUTTON		5			Mark the square where the player is located.
+	 * CONNECT		6			Connect the player to the game.
+	 * 
+	 * @param playerID The number that identify the user.
+	 * @param command The command that will be executed.
+	 * @return True if the command executes successfully. Otherwise return false. 
+	 */
+	@Override
+	public boolean processMessage(String player, String message){
 		try{
-			execute(Integer.parseInt(player), Integer.parseInt(message));
+			int playerID=Integer.parseInt(player);
+			int command=Integer.parseInt(message);
+			
+			if (command > 0 && command <= 4) {
+				Log.d(tag, "Executing moving command");
+				return movePlayer(playerID, command);			
+			} else if (command == 5){
+				Log.d(tag, "Executing mark command");
+				return markSquare(playerID);
+			} else if (command == 6) {
+				Log.d(tag, "Executing connecting command");
+				return connectPlayer(playerID);
+			}
 		}catch(NumberFormatException e){
 			Log.d(tag, "Error trying to parseint: Player("+player+"), Message("+message+")");
-		}
-	}
-	
-	@Override
-	public boolean execute(int playerID, int command) {
-		if (command > 0 && command <= 4) {
-			Log.d(tag, "Executing moving command");
-			return movePlayer(playerID, command);			
-		} else if (command == 5){
-			Log.d(tag, "Executing mark command");
-			return markSquare(playerID);
-		} else if (command == 6) {
-			Log.d(tag, "Executing connecting command");
-			return connectPlayer(playerID);
 		}
 		return false;
 	}

@@ -2,20 +2,14 @@ package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.panel.GameManager;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-/**
- * Welcome screen
- * This class is reponsible to receive ADK actions.
- */
 import com.google.android.DemoKit.DemoKitActivity;
 
 public class HermetoActivity extends DemoKitActivity {
