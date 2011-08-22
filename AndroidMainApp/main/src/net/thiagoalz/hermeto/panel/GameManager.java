@@ -6,6 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
@@ -38,7 +40,11 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	private Set<Position> markedSquares = new LinkedHashSet<Position>();
 	
+	private Timer sequencer;
+	private int currentPlayingLine = 0;
+	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
+	private List<ExecutionListener> executionListeners = new ArrayList<ExecutionListener>();
 	
 	private static GameManager instance = new GameManager(COLUMNS_CONF, ROWS_CONF); //Just to avoid syncronization problems
 	
@@ -191,8 +197,16 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		this.selectionListeners.add(selectionListener);
 	}
 	
+	public void addExecutionControlListener(ExecutionListener executionListener) {
+		this.executionListeners.add(executionListener);
+	}
+	
 	public void removeSelectionListener(SelectionListener selectionListener) {
 		this.selectionListeners.remove(selectionListener);
+	}
+	
+	public void removeExecutionControlListener(ExecutionListener executionListener) {
+		this.executionListeners.remove(executionListener);
 	}
 	
 	private void notifySelection(Player player, Position position) {
@@ -218,17 +232,52 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	public void start() {
 		playing = true;
 		
+		sequencer = new Timer();
+		sequencer.scheduleAtFixedRate(new TimerTask() {
+			public void run() {
+				if (currentPlayingLine > 0) {
+					stopPlayingGroup(currentPlayingLine - 1);
+				}
+				if (currentPlayingLine >= COLUMNS_CONF) {
+					currentPlayingLine = 0;
+				}else {
+					currentPlayingLine++;
+				}
+				Log.d(tag, "Running " + currentPlayingLine + " line");
+				startPlayingGroup(currentPlayingLine);
+			}
+		}, 10, 200);
+		
+		ExecutionEvent event = new ExecutionEvent();
+		for (ExecutionListener listener : executionListeners) {
+			listener.onStart(event);
+		}
 	}
 
 	@Override
 	public void stop() {
 		playing = false;
+		if(sequencer != null){
+			sequencer.cancel();
+			sequencer = null;
+		}
+		ExecutionEvent event = new ExecutionEvent();
+		for (ExecutionListener listener : executionListeners) {
+			listener.onStop(event);
+		}
 	}
 
 	@Override
 	public void pause() {
 		playing = false;
-		
+		ExecutionEvent event = new ExecutionEvent();
+		if(sequencer != null){
+			sequencer.cancel();
+			sequencer = null;
+		}
+		for (ExecutionListener listener : executionListeners) {
+			listener.onPause(event);
+		}
 	}
 
 	@Override
@@ -238,5 +287,45 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		}
 		markedSquares = new LinkedHashSet<Position>();
 		playing = false;
+		
+		ExecutionEvent event = new ExecutionEvent();
+		for (ExecutionListener listener : executionListeners) {
+			listener.onReset(event);
+		}
+	}
+	
+	private void startPlayingGroup(int group) {
+		Log.d(tag, "Starting playing group " + group);
+		List<Position> playingPositions = new ArrayList<Position>();
+		for (Position position : markedSquares) {
+			if (position.getY() == group) {
+				playingPositions.add(position);
+			}
+		}
+		if (playingPositions.size() > 0) {
+			ExecutionEvent event = new ExecutionEvent();
+			event.setPositions(playingPositions);
+			for (ExecutionListener listener : executionListeners) {
+				listener.onStartPlayingGroup(event);
+			}
+		}
+	}
+	
+	private void stopPlayingGroup(int group) {
+		Log.d(tag, "Stoping playing group " + currentPlayingLine);
+		List<Position> playingPositions = new ArrayList<Position>();
+		for (Position position : markedSquares) {
+			if (position.getY() == group) {
+				playingPositions.add(position);
+			}
+		}
+		if (playingPositions.size() > 0) {
+			ExecutionEvent event = new ExecutionEvent();
+			event.setPositions(playingPositions);
+			for (ExecutionListener listener : executionListeners) {
+				listener.onStopPlayingGroup(event);
+			}
+		}
+		
 	}
 }

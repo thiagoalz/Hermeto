@@ -5,4 +5,6 @@ public interface ExecutionListener {
 	public void onStop(ExecutionEvent event);
 	public void onReset(ExecutionEvent event);
 	public void onPause(ExecutionEvent event);
+	public void onStartPlayingGroup(ExecutionEvent event);
+	public void onStopPlayingGroup(ExecutionEvent event);
 }

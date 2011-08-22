@@ -1,5 +1,7 @@
 package net.thiagoalz.hermeto;
 
+import java.util.List;
+
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.ExecutionListener;
@@ -26,6 +28,8 @@ import android.widget.TextView;
 
 public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener, ExecutionListener {
 	
+	private static final String tag = PadPanelActivity.class.getCanonicalName();
+	
 	private GameManager gameManager;
 	private SoundManager soundManager;
 	
@@ -41,6 +45,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		configureScreen();
 		gameManager = GameManager.getInstance();
 		gameManager.addSelectionListener(this);
+		gameManager.addExecutionControlListener(this);
 		defaultPlayer = gameManager.connectPlayer();
 		constructView();
 	}
@@ -105,7 +110,6 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 				} else {
 					gameManager.start();
 				}
-				
 			}
 		});
 		
@@ -152,6 +156,8 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	public void onPlayerConnect(ConnectEvent event) {
 		// TODO Auto-generated method stub
 		
+		
+		
 	}
 
 	@Override
@@ -163,20 +169,47 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 
 	@Override
 	public void onStop(ExecutionEvent event) {
-		// TODO Auto-generated method stub
-		
+		ImageButton play = (ImageButton) findViewById(R.id.play);
+		play.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.panel_play_button));
 	}
 
 	@Override
 	public void onReset(ExecutionEvent event) {
-		// TODO Auto-generated method stub
-		
+		ImageButton play = (ImageButton) findViewById(R.id.play);
+		play.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.panel_play_button));
 	}
 
 	@Override
 	public void onPause(ExecutionEvent event) {
 		ImageButton play = (ImageButton) findViewById(R.id.play);
 		play.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.panel_play_button));
+	}
+	
+	public void onStartPlayingGroup(final ExecutionEvent event) {
+		Log.d(tag, "Printing selected buttons with playing color ");
+		runOnUiThread(new Runnable() {
+			public void run() {
+				List<Position> positions = event.getPositions();
+				for (Position position : positions) {
+					ImageButton button = padsMatrix[position.getX()][position.getY()];
+					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonplaying));
+				}
+			}
+		});
+		
+	}
+	
+	public void onStopPlayingGroup(final ExecutionEvent event) {
+		Log.d(tag, "Printing selected buttons with selected color ");
+		runOnUiThread(new Runnable() {
+			public void run() {
+				List<Position> positions = event.getPositions();
+				for (Position position : positions) {
+					ImageButton button = padsMatrix[position.getX()][position.getY()];
+					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonselected));
+				}
+			}
+		});
 		
 	}
 }
