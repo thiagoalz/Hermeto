@@ -28,6 +28,8 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	private static final int COLUMNS_CONF = 16;
 	private static final int ROWS_CONF = 16;
 	
+	private static GameManager instance;
+	
 	private static final String tag = GameManager.class.getCanonicalName();
 	
 	private int columns;
@@ -42,17 +44,19 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	private Timer sequencer;
 	private int currentPlayingLine = 0;
+	private int timeSequence = 120;
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	private List<ExecutionListener> executionListeners = new ArrayList<ExecutionListener>();
 	
-	private static GameManager instance = new GameManager(COLUMNS_CONF, ROWS_CONF); //Just to avoid syncronization problems
+	public synchronized static GameManager getInstance(){
+		return getInstance(COLUMNS_CONF, ROWS_CONF);
+	}
 	
-	public static GameManager getInstance(){
-		//if(GameManager.instance == null)
-			//GameManager.instance = new GameManager(COLUMNS_CONF, ROWS_CONF);
-			
-		return GameManager.instance;
+	public synchronized static GameManager getInstance(int columns, int rows) {
+		if (instance == null)
+			instance = new GameManager(columns, rows);
+		return instance;
 	}
 	
 	/**
@@ -62,20 +66,6 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	 * @param rows The number of rows of the panel.
 	 */
 	private GameManager(int columns, int rows) {
-		this(columns, rows, null);
-	}
-	
-	/**
-	 * Constructor that received the dimension of the panel and the players.
-	 * 
-	 * @param columns The number of columns of the panel.
-	 * @param rows The number of rows of the panel.
-	 * @param players The list of players.
-	 */
-	private GameManager(int columns, int rows, Map<String, Player> players) {
-		if (players != null) {
-			this.players = players;
-		}
 		Log.d(tag, "Creating game with [" + columns + ", " + rows + "]");
 		this.columns = columns > 1 ? columns : 2;
 		this.rows = rows > 1 ? columns : 2;
@@ -197,7 +187,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		this.selectionListeners.add(selectionListener);
 	}
 	
-	public void addExecutionControlListener(ExecutionListener executionListener) {
+	public void addExecutionListener(ExecutionListener executionListener) {
 		this.executionListeners.add(executionListener);
 	}
 	
@@ -205,7 +195,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		this.selectionListeners.remove(selectionListener);
 	}
 	
-	public void removeExecutionControlListener(ExecutionListener executionListener) {
+	public void removeExecutionListener(ExecutionListener executionListener) {
 		this.executionListeners.remove(executionListener);
 	}
 	
@@ -232,6 +222,10 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	public void start() {
 		playing = true;
 		
+		if (sequencer != null) {
+			sequencer.cancel();
+		}
+		
 		sequencer = new Timer();
 		sequencer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -243,7 +237,6 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				}else {
 					currentPlayingLine++;
 				}
-				Log.d(tag, "Running " + currentPlayingLine + " line");
 				startPlayingGroup(currentPlayingLine);
 			}
 		}, 10, 200);

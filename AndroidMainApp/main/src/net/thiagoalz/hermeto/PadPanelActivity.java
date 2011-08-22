@@ -1,6 +1,7 @@
 package net.thiagoalz.hermeto;
 
 import java.util.List;
+import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.ExecutionEvent;
@@ -15,13 +16,16 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -45,7 +49,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		configureScreen();
 		gameManager = GameManager.getInstance();
 		gameManager.addSelectionListener(this);
-		gameManager.addExecutionControlListener(this);
+		gameManager.addExecutionListener(this);
 		defaultPlayer = gameManager.connectPlayer();
 		constructView();
 	}
@@ -97,6 +101,18 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	}
 	
 	private void initializePlayersName() {
+		Map<String, Player> players = gameManager.getPlayers();
+		FrameLayout namesLayout = (FrameLayout) findViewById(R.id.namesLayout);
+		
+		for (String playerID : players.keySet()) {
+			Player player = players.get(playerID);
+			TextView nameBox = new TextView(this);
+			nameBox.setText(player.getName());
+			nameBox.setPadding(12, 12, 12, 12);
+			nameBox.setTextColor(Color.WHITE);
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
+		}
+		
 		
 	}
 	
