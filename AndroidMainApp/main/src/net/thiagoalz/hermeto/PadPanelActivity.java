@@ -12,6 +12,7 @@ import net.thiagoalz.hermeto.player.Player;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -88,6 +89,19 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	}
 	
 	private void initializePlayersName() {
+		
+	}
+	
+	private void initializeControls() {
+		final ImageButton play = (ImageButton) findViewById(R.id.play);
+		play.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.stop));
+			}
+		});
+		ImageButton stop = (ImageButton) findViewById(R.id.stop);
+		ImageButton reset = (ImageButton) findViewById(R.id.reset);
 		
 	}
 
