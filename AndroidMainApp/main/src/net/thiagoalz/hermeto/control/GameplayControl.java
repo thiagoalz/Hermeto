@@ -8,10 +8,10 @@ public interface GameplayControl {
 	/**
 	 * Process a message coming from a player
 	 * 
-	 * @param playerID The number that identify the user.
+	 * @param playerReference Remote user reference.
 	 * @param message The command that will be executed.
 	 * @return True if the command executes successfully. Otherwise return false. 
 	 */
-	public boolean processMessage(String playerID, String message);
+	public boolean processMessage(String playerReference, String message);
 
 }
