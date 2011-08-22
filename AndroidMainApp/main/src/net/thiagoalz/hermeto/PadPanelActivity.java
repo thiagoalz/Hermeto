@@ -54,6 +54,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
 		initializeSquarePanel();
 		initializePlayersName();
+		initializeControls();
 	}
 	
 	private void initializeSquarePanel() {
@@ -97,6 +98,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.d(PadPanelActivity.class.getCanonicalName(), "Start playing...");
 				v.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.stop));
 			}
 		});

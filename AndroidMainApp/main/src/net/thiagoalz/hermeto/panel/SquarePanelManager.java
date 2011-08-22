@@ -36,4 +36,25 @@ public interface SquarePanelManager {
 	 * @return The array of position of the marked squares.
 	 */
 	public Position[] getMarkedSquares();	
+	
+	
+	/**
+	 * Retrieve if the game is playing.
+	 * 
+	 * @return True indicates if the game is playing, otherwise return false.
+	 */
+	public boolean isPlaying();
+	
+	
+	/**
+	 * Start the game.
+	 */
+	public void start();
+	
+	public void stop();
+	
+	public void pause();
+	
+	public void reset();
+	
 }
