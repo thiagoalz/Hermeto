@@ -34,6 +34,8 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 	private Map<String, Player> players = new LinkedHashMap<String, Player>();
 	private int playerCounter = 0;
 	
+	private boolean playing;
+	
 	private Set<Position> markedSquares = new LinkedHashSet<Position>();
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
@@ -205,5 +207,36 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 		for (SelectionListener listener : selectionListeners) {
 			listener.onDeselected(event);
 		}
+	}
+
+	@Override
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	@Override
+	public void start() {
+		
+		
+	}
+
+	@Override
+	public void stop() {
+		playing = false;
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset() {
+		for (Position position : markedSquares) {
+			notifyDeselection(null, position);
+		}
+		markedSquares = new LinkedHashSet<Position>();
+		playing = false;
 	}
 }

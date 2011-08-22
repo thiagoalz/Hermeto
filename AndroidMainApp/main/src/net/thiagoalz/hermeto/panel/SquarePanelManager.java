@@ -45,10 +45,6 @@ public interface SquarePanelManager {
 	 */
 	public boolean isPlaying();
 	
-	
-	/**
-	 * Start the game.
-	 */
 	public void start();
 	
 	public void stop();
