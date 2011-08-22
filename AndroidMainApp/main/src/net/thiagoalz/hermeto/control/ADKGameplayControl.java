@@ -5,15 +5,34 @@ import java.util.Map;
 
 import android.util.Log;
 
+import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.GameplayFacade;
+import net.thiagoalz.hermeto.panel.GameplayFacadeImpl;
 import net.thiagoalz.hermeto.player.Player;
 
-public class DefaultGameplayControl implements GameplayControl {
+public class ADKGameplayControl implements GameplayControl {
 
-	private static final String tag = DefaultGameplayControl.class.getCanonicalName();
+	protected static final String tag = ADKGameplayControl.class.getCanonicalName();
 	
-	private GameplayFacade gameplayFacade;
-	private Map<Integer, String> playerIDMap = new HashMap<Integer, String>();
+	protected GameplayFacade gameplayFacade;
+	protected Map<Integer, String> playerIDMap = new HashMap<Integer, String>();
+	
+	public ADKGameplayControl(GameManager gameManager, int controlNumber){
+		this.gameplayFacade = new GameplayFacadeImpl(gameManager);
+		
+		//Connecting ADK players
+		for(int i=0; i<controlNumber; i++){
+			connectPlayer(i);
+		}
+	}
+	
+	public void processMessage(String player, String message){
+		try{
+			execute(Integer.parseInt(player), Integer.parseInt(message));
+		}catch(NumberFormatException e){
+			Log.d(tag, "Error trying to parseint: Player("+player+"), Message("+message+")");
+		}
+	}
 	
 	@Override
 	public boolean execute(int playerID, int command) {
@@ -46,7 +65,7 @@ public class DefaultGameplayControl implements GameplayControl {
 				direction = Player.Direction.RIGHT;
 				break;
 		}
-		if (direction != null) {
+		if (direction != null && playerIDMap.get(playerID)!=null) {
 			return gameplayFacade.move(playerIDMap.get(playerID), direction.getValue());
 		}
 		return false;
@@ -54,7 +73,11 @@ public class DefaultGameplayControl implements GameplayControl {
 	
 	private boolean markSquare(int id) {
 		String playerID = playerIDMap.get(id);
-		return gameplayFacade.mark(playerID);
+
+		if(playerID!=null){
+			return gameplayFacade.mark(playerID);
+		}
+		return false;
 	}
 	
 	private boolean connectPlayer(int id) {

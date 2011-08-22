@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.panel.GameManager;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -18,8 +19,12 @@ import android.widget.Button;
 import com.google.android.DemoKit.DemoKitActivity;
 
 public class HermetoActivity extends DemoKitActivity {
+	
+	private static final int ADK_PLAYERS = 4;
+
 
 	private GameManager gameManager;
+	private ADKGameplayControl ADKControl;
 	
 	public HermetoActivity(){
 		super();
@@ -27,8 +32,8 @@ public class HermetoActivity extends DemoKitActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    
 	    gameManager = GameManager.getInstance();
+	    ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
 	    
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 		configureScreen();
@@ -86,33 +91,17 @@ public class HermetoActivity extends DemoKitActivity {
 //			}
 //		}
 		
-		Log.d("Lechuga","Botao changed");
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Botao");
-		AlertDialog alert = builder.create();
-		
-		alert.show();
+		//Test LECHUGA
+//		Log.d("Lechuga","Botao changed");
+//        
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setMessage("Botao");
+//		AlertDialog alert = builder.create();
+//		
+//		alert.show();
 	}
 	
 	protected void handleSimpleJoyMessage(SwitchMsg k) {
-		String action = "";
-        switch (k.getState()) {
-          //case 0: action = "None";    break;
-          case 1: action = "Up";      break;
-          case 2: action = "Down";    break;
-          case 3: action = "Left";    break;
-          case 4: action = "Right";   break;
-          case 5: action = "Button";  break;
-          default: break;
-        }
-        
-        Log.d("Lechuga","Joystick: " + k.getSw()+" ["+action+"]");
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Joystick: " + k.getSw()+" ["+action+"]");
-		AlertDialog alert = builder.create();
-		
-		alert.show();
+		ADKControl.processMessage(k.getSw()+"",k.getState()+"");
 	}
 }
