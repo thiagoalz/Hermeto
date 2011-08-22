@@ -1,6 +1,8 @@
 package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
+import net.thiagoalz.hermeto.panel.ExecutionEvent;
+import net.thiagoalz.hermeto.panel.ExecutionListener;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
@@ -22,7 +24,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener {
+public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener, ExecutionListener {
 	
 	private GameManager gameManager;
 	private SoundManager soundManager;
@@ -98,12 +100,31 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(PadPanelActivity.class.getCanonicalName(), "Start playing...");
-				v.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.stop));
+				if (gameManager.isPlaying()) {
+					gameManager.pause();
+				} else {
+					gameManager.start();
+				}
+				
 			}
 		});
+		
 		ImageButton stop = (ImageButton) findViewById(R.id.stop);
+		stop.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				gameManager.stop();
+			}
+		});
+		
+		
 		ImageButton reset = (ImageButton) findViewById(R.id.reset);
+		reset.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				gameManager.reset();
+			}
+		});
 		
 	}
 
@@ -130,6 +151,32 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStart(ExecutionEvent event) {
+		ImageButton play = (ImageButton) findViewById(R.id.play);
+		play.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.stop));
+		
+	}
+
+	@Override
+	public void onStop(ExecutionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onReset(ExecutionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPause(ExecutionEvent event) {
+		ImageButton play = (ImageButton) findViewById(R.id.play);
+		play.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.panel_play_button));
 		
 	}
 }

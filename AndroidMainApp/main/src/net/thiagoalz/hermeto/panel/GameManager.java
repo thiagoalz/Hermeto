@@ -21,7 +21,7 @@ import android.util.Log;
  * @author Gabriel Ozeas de Oliveira
  * @version 0.1
  */
-public class GameManager implements SquarePanelManager, PlayersManager {
+public class GameManager implements SquarePanelManager, PlayersManager, ExecutionControl {
 	
 	private static final int COLUMNS_CONF = 16;
 	private static final int ROWS_CONF = 16;
@@ -216,7 +216,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 
 	@Override
 	public void start() {
-		
+		playing = true;
 		
 	}
 
@@ -227,7 +227,7 @@ public class GameManager implements SquarePanelManager, PlayersManager {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
+		playing = false;
 		
 	}
 
