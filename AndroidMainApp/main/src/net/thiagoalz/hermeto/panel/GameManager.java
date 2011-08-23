@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -153,11 +154,8 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		String playerName = "Player " + (++playerCounter);
 		
 		Position position = null;
-		if (playerCounter % 2 != 0) {
-			position = new Position(1,1);
-		} else {
-			position = new Position(columns-1, rows-1);
-		}
+		Random myRandom = new Random(System.currentTimeMillis());
+		position = new Position(myRandom.nextInt(columns), myRandom.nextInt(rows));
 		
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
 		player.setPosition(position);
