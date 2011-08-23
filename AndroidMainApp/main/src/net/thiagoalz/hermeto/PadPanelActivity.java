@@ -102,7 +102,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	
 	private void initializePlayersName() {
 		Map<String, Player> players = gameManager.getPlayers();
-		FrameLayout namesLayout = (FrameLayout) findViewById(R.id.namesLayout);
+		//FrameLayout namesLayout = (FrameLayout) findViewById(R.id.namesLayout);
 		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
