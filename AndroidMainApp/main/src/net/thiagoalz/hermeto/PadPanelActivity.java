@@ -110,7 +110,7 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 			nameBox.setText(player.getName());
 			nameBox.setPadding(12, 12, 12, 12);
 			nameBox.setTextColor(Color.WHITE);
-			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
+			//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
 		}
 		
 		
