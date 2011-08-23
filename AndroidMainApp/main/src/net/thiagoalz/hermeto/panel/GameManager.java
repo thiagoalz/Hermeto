@@ -80,7 +80,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		
 		switch (direction) {
 			case LEFT:
-				if (x - 1 < 1) {
+				if (x - 1 < 0) {
 					return false;
 				} else {
 					Log.d(tag, "Changing position of the player: [" + (x - 1) + ", " + y + "]");
@@ -89,7 +89,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				}
 				
 			case RIGHT:
-				if (x + 1 > columns) {
+				if (x + 1 >= columns) {
 					return false;
 				} else {
 					Log.d(tag, "Changing position of the player: [" + (x + 1) + ", " + y + "]");
@@ -98,7 +98,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				}
 				
 			case TOP:
-				if (y - 1 < 1) {
+				if (y - 1 < 0) {
 					return false;
 				} else {
 					Log.d(tag, "Changing position of the player: [" + x + ", " + (y - 1) + "]");
@@ -107,7 +107,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				}
 				
 			case DOWN:
-				if (y + 1 > rows) {
+				if (y + 1 >= rows) {
 					return false;
 				} else {
 					Log.d(tag, "Changing position of the player: [" + x + ", " + (y + 1) + "]");
