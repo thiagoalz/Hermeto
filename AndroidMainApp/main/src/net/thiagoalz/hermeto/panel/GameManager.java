@@ -156,7 +156,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		if (playerCounter % 2 != 0) {
 			position = new Position(1,1);
 		} else {
-			position = new Position(columns, rows);
+			position = new Position(columns-1, rows-1);
 		}
 		
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
