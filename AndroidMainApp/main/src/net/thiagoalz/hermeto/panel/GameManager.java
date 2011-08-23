@@ -159,7 +159,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 			position = new Position(columns, rows);
 		}
 		
-		DefaultPlayer player = new DefaultPlayer(playerName, playerID);
+		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
 		player.setPosition(position);
 		
 		Log.d(tag, "Connection " + playerName + "("+ playerID +") at the position [" 
