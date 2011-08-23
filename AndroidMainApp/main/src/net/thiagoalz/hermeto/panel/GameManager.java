@@ -120,7 +120,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public boolean mark(Player player) {
-		Position selectedPosition = new Position(player.getPosition().getY(), player.getPosition().getX());
+		Position selectedPosition = new Position(player.getPosition().getX(), player.getPosition().getY());
 		if (markedSquares.contains(selectedPosition)) {
 			markedSquares.remove(selectedPosition);
 			notifyDeselection(player, selectedPosition);
