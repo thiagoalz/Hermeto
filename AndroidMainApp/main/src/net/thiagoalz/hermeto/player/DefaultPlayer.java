@@ -11,9 +11,9 @@ public class DefaultPlayer implements Player {
 	
 	private SquarePanelManager squarePanelManager; 
 	
-	public DefaultPlayer(String name, String id) {
-		this(name, id, null);
-	}
+	//public DefaultPlayer(String name, String id) {
+		//this(name, id, null);
+	//}
 	
 	public DefaultPlayer(String name, String id, SquarePanelManager squarePanelManager) {
 		this.name = name;
