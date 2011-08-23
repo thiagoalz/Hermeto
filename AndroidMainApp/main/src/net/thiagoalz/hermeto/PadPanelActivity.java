@@ -102,8 +102,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						ImageButton selectedButton = (ImageButton) v;
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
-								if (padsMatrix[i][j] == selectedButton) {
-									defaultPlayer.setPosition(new Position(i, j));
+								if (padsMatrix[j][i] == selectedButton) {
+									defaultPlayer.setPosition(new Position(j, i));
 									gameManager.mark(defaultPlayer);
 								}
 							}
@@ -111,8 +111,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						
 					}
 				});
-				padsMatrix[i][j] = button;
-				tableRow.addView(padsMatrix[i][j]);
+				padsMatrix[j][i] = button;
+				tableRow.addView(padsMatrix[j][i]);
 			}
 			tableLayout.addView(tableRow);
 		}
