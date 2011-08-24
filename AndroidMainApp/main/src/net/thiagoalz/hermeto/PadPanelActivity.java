@@ -278,14 +278,16 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 //			}
 //		}
 		
-		//Test LECHUGA
-		Log.d("Lechuga","Button!");
-        
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Button");
-		AlertDialog alert = builder.create();
-		
-		alert.show();
+		if(o.getState() != 0){//Not release actions
+			//Test LECHUGA
+			Log.d("Lechuga","Button!");
+	        
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Check!");
+			AlertDialog alert = builder.create();
+			
+			alert.show();
+		}
 	}
 	
 	protected void handleSimpleJoyMessage(SwitchMsg k) {
