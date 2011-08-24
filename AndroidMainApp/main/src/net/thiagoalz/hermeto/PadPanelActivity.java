@@ -1,6 +1,6 @@
 package net.thiagoalz.hermeto;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +19,17 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -46,6 +50,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private TableLayout tableLayout;
 	
 	Player defaultPlayer;
+
+	Map<Player, TextView> playersName = new HashMap<Player, TextView>();
 	
 	private static final int ADK_PLAYERS = 4;
 	
@@ -112,7 +118,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
 								if (padsMatrix[j][i] == selectedButton) {
+									MoveEvent event = new MoveEvent(defaultPlayer, defaultPlayer.getPosition(), new Position(j, i));
 									defaultPlayer.setPosition(new Position(j, i));
+									onPlayerMove(event);
 									gameManager.mark(defaultPlayer);
 								}
 							}
@@ -128,34 +136,33 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializePlayersName() {
-		FrameLayout frameLayout = (FrameLayout) findViewById(R.id.panelBoxLayout);
-		
+		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		Map<String, Player> players = gameManager.getPlayers();
-		List<Position> playersPosition = new ArrayList<Position>();
-		List<Position> playersLocation = new ArrayList<Position>();		
+		RelativeLayout.LayoutParams params = null;
 		
-		for (String playerID:players.keySet()) {
-			playersPosition.add(players.get(playerID).getPosition());
-		}
-		
-		for(Position position : playersPosition) {
-			ImageButton button = padsMatrix[position.getX()][position.getY()];
-			int screenLocation[] = new int[2];
-			button.getLocationOnScreen(screenLocation);
-			playersLocation.add(new Position(screenLocation[0], screenLocation[1]));
-		}
-		frameLayout.addView(new NamesSurfaceView(playersPosition, this));
-		
-		/*
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			TextView nameBox = new TextView(this);
-			nameBox.setText(player.getName());
-			nameBox.setPadding(12, 12, 12, 12);
-			nameBox.setTextColor(Color.WHITE);
-			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
-			nameBox.setLayoutParams(layoutParams);
-		}*/
+			TextView nameView = new TextView(this);
+			nameView.setBackgroundColor(Color.BLACK);
+			nameView.setTextColor(Color.RED);
+			nameView.setPadding(6, 2, 2, 6);
+			playersName.put(player, nameView);
+			
+			nameView.setText(defaultPlayer.getName());
+			params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			Position position = getLocation(defaultPlayer.getPosition());
+			params.leftMargin = position.getX();
+			params.topMargin = position.getY();
+			nameView.setLayoutParams(params);
+			namesLayout.addView(nameView);
+		}
+	}
+	
+	private Position getLocation(Position position) {
+		ImageButton button = padsMatrix[position.getX()][position.getY()];
+		int screenLocation[] = new int[2];
+		button.getLocationOnScreen(screenLocation);
+		return new Position(screenLocation[0], screenLocation[1]);
 	}
 	
 	private void initializeControls() {
@@ -206,8 +213,24 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerMove(MoveEvent event) {
-		// TODO Auto-generated method stub
+		Position oldLocation = getLocation(event.getNewPosition());
+		Position newLocation = getLocation(event.getOldPosition());
 		
+		int x = oldLocation.getX() - newLocation.getX();
+		int y = oldLocation.getY() - newLocation.getY();
+		x = (newLocation.getX() < oldLocation.getX()) ? -x : x;  
+		y = (newLocation.getY() < oldLocation.getY()) ? -y : x;
+		
+		final TextView nameView = playersName.get(event.getPlayer());
+		final Animation animation = new TranslateAnimation(0, x, 0, y);
+		animation.setDuration(1500);
+
+		
+		runOnUiThread(new Runnable(){
+			public void run() {
+				nameView.startAnimation(animation);
+			}
+		});
 	}
 
 	@Override
