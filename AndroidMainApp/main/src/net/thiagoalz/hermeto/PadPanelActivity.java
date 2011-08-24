@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,6 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,7 +25,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -54,6 +53,13 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		constructView();
 	}
 	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		initializePlayersName();
+	}
+	
+	
 	private void configureScreen() {
     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -64,7 +70,6 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 		setContentView(R.layout.padpanel);
 		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
 		initializeSquarePanel();
-		initializePlayersName();
 		initializeControls();
 	}
 	
@@ -101,19 +106,34 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	}
 	
 	private void initializePlayersName() {
-		Map<String, Player> players = gameManager.getPlayers();
-		//FrameLayout namesLayout = (FrameLayout) findViewById(R.id.namesLayout);
+		FrameLayout frameLayout = (FrameLayout) findViewById(R.id.panelBoxLayout);
 		
+		Map<String, Player> players = gameManager.getPlayers();
+		List<Position> playersPosition = new ArrayList<Position>();
+		List<Position> playersLocation = new ArrayList<Position>();		
+		
+		for (String playerID:players.keySet()) {
+			playersPosition.add(players.get(playerID).getPosition());
+		}
+		
+		for(Position position : playersPosition) {
+			ImageButton button = padsMatrix[position.getX()][position.getY()];
+			int screenLocation[] = new int[2];
+			button.getLocationOnScreen(screenLocation);
+			playersLocation.add(new Position(screenLocation[0], screenLocation[1]));
+		}
+		frameLayout.addView(new NamesSurfaceView(playersPosition, this));
+		
+		/*
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
 			TextView nameBox = new TextView(this);
 			nameBox.setText(player.getName());
 			nameBox.setPadding(12, 12, 12, 12);
 			nameBox.setTextColor(Color.WHITE);
-			//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
-		}
-		
-		
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
+			nameBox.setLayoutParams(layoutParams);
+		}*/
 	}
 	
 	private void initializeControls() {
