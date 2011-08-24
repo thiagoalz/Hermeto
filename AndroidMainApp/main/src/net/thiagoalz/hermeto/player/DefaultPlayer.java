@@ -48,6 +48,11 @@ public class DefaultPlayer implements Player {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public void setName(String name) {
+		this.name=name;
+	}
 
 	@Override
 	public String getId() {

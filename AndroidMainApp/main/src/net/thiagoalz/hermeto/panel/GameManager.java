@@ -98,7 +98,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 					return true;
 				}
 				
-			case TOP:
+			case UP:
 				if (y - 1 < 0) {
 					return false;
 				} else {
