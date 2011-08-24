@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.control.ADKGameplayControl;
+import net.thiagoalz.hermeto.control.XMPPGameplayControl;
 import net.thiagoalz.hermeto.panel.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.ExecutionListener;
 import net.thiagoalz.hermeto.panel.GameManager;
@@ -38,6 +39,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private GameManager gameManager;
 	private SoundManager soundManager;
 	private ADKGameplayControl ADKControl;
+	private XMPPGameplayControl XMPPControl;
 	
 	private ImageButton[][] padsMatrix;
 	private TextView[] playerNamesPosition; 
@@ -59,6 +61,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		gameManager = GameManager.getInstance();
 		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
+		XMPPControl = new XMPPGameplayControl(gameManager);
 		gameManager.addSelectionListener(this);
 		gameManager.addExecutionListener(this);
 		defaultPlayer = gameManager.connectPlayer();
