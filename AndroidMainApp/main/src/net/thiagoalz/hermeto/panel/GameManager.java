@@ -289,7 +289,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		Log.d(tag, "Starting playing group " + group);
 		List<Position> playingPositions = new ArrayList<Position>();
 		for (Position position : markedSquares) {
-			if (position.getY() == group) {
+			if (position.getX() == group) {
 				playingPositions.add(position);
 			}
 		}
@@ -306,7 +306,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		Log.d(tag, "Stoping playing group " + currentPlayingLine);
 		List<Position> playingPositions = new ArrayList<Position>();
 		for (Position position : markedSquares) {
-			if (position.getY() == group) {
+			if (position.getX() == group) {
 				playingPositions.add(position);
 			}
 		}
