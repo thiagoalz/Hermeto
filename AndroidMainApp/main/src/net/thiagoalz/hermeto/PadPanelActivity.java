@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
+import net.thiagoalz.hermeto.control.ADKGameplayControl;
+import net.thiagoalz.hermeto.control.XMPPGameplayControl;
 import net.thiagoalz.hermeto.panel.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.ExecutionListener;
 import net.thiagoalz.hermeto.panel.GameManager;
@@ -15,7 +17,7 @@ import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,18 +25,21 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class PadPanelActivity extends Activity implements SelectionListener, PlayerListener, ExecutionListener {
+import com.google.android.DemoKit.DemoKitActivity;
+
+public class PadPanelActivity extends DemoKitActivity implements SelectionListener, PlayerListener, ExecutionListener {
 	
 	private static final String tag = PadPanelActivity.class.getCanonicalName();
 	
 	private GameManager gameManager;
 	private SoundManager soundManager;
+	private ADKGameplayControl ADKControl;
+	private XMPPGameplayControl XMPPControl;
 	
 	private ImageButton[][] padsMatrix;
 	private TextView[] playerNamesPosition; 
@@ -42,15 +47,32 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 	
 	Player defaultPlayer;
 	
+	private static final int ADK_PLAYERS = 4;
+	
+	
+	public PadPanelActivity(){
+		super();
+	}
+	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
 		configureScreen();
+		
 		gameManager = GameManager.getInstance();
+		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
+		XMPPControl = new XMPPGameplayControl(gameManager);
 		gameManager.addSelectionListener(this);
 		gameManager.addExecutionListener(this);
 		defaultPlayer = gameManager.connectPlayer();
+		
 		constructView();
+		
+		if (mAccessory != null) {
+			//Mostra tela conectado conectado
+		} else {
+			//Mostra trela desconectado
+		}
 	}
 	
 	@Override
@@ -89,8 +111,8 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 						ImageButton selectedButton = (ImageButton) v;
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
-								if (padsMatrix[i][j] == selectedButton) {
-									defaultPlayer.setPosition(new Position(i, j));
+								if (padsMatrix[j][i] == selectedButton) {
+									defaultPlayer.setPosition(new Position(j, i));
 									gameManager.mark(defaultPlayer);
 								}
 							}
@@ -98,8 +120,8 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 						
 					}
 				});
-				padsMatrix[i][j] = button;
-				tableRow.addView(padsMatrix[i][j]);
+				padsMatrix[j][i] = button;
+				tableRow.addView(padsMatrix[j][i]);
 			}
 			tableLayout.addView(tableRow);
 		}
@@ -247,5 +269,52 @@ public class PadPanelActivity extends Activity implements SelectionListener, Pla
 			}
 		});
 		
+	}
+	
+	
+	////////////////////////ADK CODE/////////////////////
+	protected void handleJoyMessage(JoyMsg j) {
+//		if (mInputController != null) {
+//			mInputController.joystickMoved(j.getX(), j.getY());
+//		}
+	}
+
+	protected void handleLightMessage(LightMsg l) {
+//		if (mInputController != null) {
+//			mInputController.setLightValue(l.getLight());
+//		}
+	}
+
+	protected void handleTemperatureMessage(TemperatureMsg t) {
+//		if (mInputController != null) {
+//			mInputController.setTemperature(t.getTemperature());
+//		}
+	}
+
+	protected void handleSwitchMessage(SwitchMsg o) {
+//		if (mInputController != null) {
+//			byte sw = o.getSw();
+//			if (sw >= 0 && sw < 4) {
+//				mInputController.switchStateChanged(sw, o.getState() != 0);
+//			} else if (sw == 4) {
+//				mInputController
+//						.joystickButtonSwitchStateChanged(o.getState() != 0);
+//			}
+//		}
+		
+		if(o.getState() != 0){//Not release actions
+			//Test LECHUGA
+			Log.d("Lechuga","Button!");
+	        
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Check!");
+			AlertDialog alert = builder.create();
+			
+			alert.show();
+		}
+	}
+	
+	protected void handleSimpleJoyMessage(SwitchMsg k) {
+		ADKControl.processMessage(k.getSw()+"",k.getState()+"");
 	}
 }

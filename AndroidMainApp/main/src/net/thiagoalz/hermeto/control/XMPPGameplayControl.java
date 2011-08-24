@@ -1,39 +1,76 @@
 package net.thiagoalz.hermeto.control;
 
+import net.hermeto.android.main.XMPPClient;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
+
+import org.jivesoftware.smack.XMPPException;
+
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
-public class XMPPGameplayControl implements GameplayControl {
+public class XMPPGameplayControl implements GameplayControl, Runnable {
 
-	private static final String tag = XMPPGameplayControl.class.getCanonicalName();
+	private static final int MESSAGE_PLAYER = 1;
+
+	private final String SERVER_LOGIN = "a";
+	private final String SERVER_PASSWORD = "123456";
+	private final String SERVER_ADDRESS = "lilab.info";
+	private final String CLIENT_LOGIN = "b@lilab.info";
+
+	XMPPClient chatClient;
+
+	private static final String tag = XMPPGameplayControl.class
+			.getCanonicalName();
 	private GameManager gameManager;
-	
+
 	public XMPPGameplayControl(GameManager gameManager) {
 		this.gameManager = gameManager;
+
+		Thread thread = new Thread(null, this, "XMPP");
+		thread.start();
 	}
-	
+
 	@Override
 	public boolean processMessage(String playerReference, String message) {
-		// TODO Implement ProcessMessage
-		return false;
+		Log.d("processMessage", "Msg Recebida: (" + playerReference + ") "
+				+ message);
+
+		String[] msgSplit = message.split(" ");
+
+		if (msgSplit[0].toUpperCase().equals("HELLO")) {
+			connectPlayer(msgSplit[1]);
+		} else if (msgSplit[1].equals("button")) {
+			markSquare(msgSplit[0]);
+		} else {
+			movePlayer(msgSplit[0], msgSplit[1]);
+		}
+
+		return true;
 	}
-	
+
 	protected boolean movePlayer(String playerID, String dir) {
-		Player.Direction direction = parseDirection(dir);
-		return gameManager.getPlayer(playerID).move(direction);
+		Player player=gameManager.getPlayer(playerID);
+		
+		if(player!=null){//Player exists
+			Player.Direction direction = parseDirection(dir);		
+			return player.move(direction);
+		}
+		return false;
 	}
 
 	private Direction parseDirection(String direction) {
 		Log.d(tag, "Parsing direction '" + direction + "'");
+		direction=direction.toLowerCase();
 		Player.Direction dir;
 		if (direction.equals(Player.Direction.LEFT.getValue())) {
 			dir = Player.Direction.LEFT;
-		} else if(direction.equals(Player.Direction.RIGHT.getValue())) {
+		} else if (direction.equals(Player.Direction.RIGHT.getValue())) {
 			dir = Player.Direction.RIGHT;
-		} else if(direction.equals(Player.Direction.TOP.getValue())) {
-			dir = Player.Direction.TOP;
+		} else if (direction.equals(Player.Direction.UP.getValue())) {
+			dir = Player.Direction.UP;
 		} else {
 			dir = Player.Direction.DOWN;
 		}
@@ -41,11 +78,90 @@ public class XMPPGameplayControl implements GameplayControl {
 	}
 
 	protected boolean markSquare(String playerID) {
-		return gameManager.getPlayer(playerID).mark();
+		Player player=gameManager.getPlayer(playerID);
+		
+		if(player!=null){//Player exists
+			return player.mark();
+		}
+		
+		return false;
 	}
 
-	protected String connectPlayer() {
-		return gameManager.connectPlayer().getId();
+	protected String connectPlayer(String name) {
+		Player player = gameManager.connectPlayer();
+		player.setName(name);
+		String id = player.getId();
+
+		try {
+			String resposta = "HELLO " + name + " " + id;
+			Log.d("XMPP", "Reply: " + resposta);
+			chatClient.sendMessage(resposta);
+		} catch (XMPPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		return id;
 	}
 
+	@Override
+	public void run() {
+		try {
+			chatClient = new XMPPClient(5222, CLIENT_LOGIN, SERVER_ADDRESS,
+					SERVER_LOGIN, SERVER_PASSWORD);
+			Log.d("XMPP", "Conected");
+
+			while (true) {//TODO: Check if while true it ok
+				 org.jivesoftware.smack.packet.Message xmppMsg = chatClient.checkMessage();
+
+				if (xmppMsg != null
+						&& ((xmppMsg.getType() == org.jivesoftware.smack.packet.Message.Type.chat) || (xmppMsg
+								.getType() == org.jivesoftware.smack.packet.Message.Type.normal))
+						&& xmppMsg.getBody()!=null	) { // Got a message
+																									
+					Log.d("XMPP", "Got message: (" + xmppMsg.getFrom() + ") "
+							+ xmppMsg.getBody());
+					Message m = Message.obtain(mHandler, MESSAGE_PLAYER);
+					m.obj = new PlayerMsg(xmppMsg.getFrom(), xmppMsg.getBody());
+					mHandler.sendMessage(m);
+				}
+			}
+		} catch (XMPPException e) {
+			e.printStackTrace();
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+
+	}
+
+	protected class PlayerMsg {
+		private String userName;
+		private String msg;
+
+		public PlayerMsg(String userName, String msg) {
+			this.userName = userName;
+			this.msg = msg;
+		}
+
+		public String getUserName() {
+			return userName;
+		}
+
+		public String getMsg() {
+			return msg;
+		}
+	}
+
+	Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == MESSAGE_PLAYER) {
+				PlayerMsg k = (PlayerMsg) msg.obj;
+				processMessage(k.getUserName(), k.getMsg());
+			}
+
+		}
+
+	};
 }

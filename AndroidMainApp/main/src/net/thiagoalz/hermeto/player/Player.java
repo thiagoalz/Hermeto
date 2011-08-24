@@ -13,7 +13,7 @@ public interface Player {
 	 * Directions that the player can go.
 	 */
 	public enum Direction {
-		LEFT("left"), RIGHT("right"), TOP("top"), DOWN("down");
+		LEFT("left"), RIGHT("right"), UP("up"), DOWN("down");
 		
 		private String value;
 		
@@ -63,6 +63,8 @@ public interface Player {
 	 * @return The unique identifier of the player. 
 	 */
 	public String getName();
+	
+	public void setName(String name);
 	
 	/**
 	 * Retrieve the ID of the player.

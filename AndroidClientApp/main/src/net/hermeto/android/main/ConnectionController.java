@@ -43,7 +43,7 @@ public class ConnectionController {
 	public void upClick() {
 		if (this.connectionStatus == Status.CONNECTED) {
 			try {
-				chatClient.sendMessage(clientID + " Up");
+				chatClient.sendMessage(clientID + " up");
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -56,7 +56,7 @@ public class ConnectionController {
 	public void downClick() {
 		if (this.connectionStatus == Status.CONNECTED) {
 			try {
-				chatClient.sendMessage(clientID + " Down");
+				chatClient.sendMessage(clientID + " down");
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -69,7 +69,7 @@ public class ConnectionController {
 	public void leftClick() {
 		if (this.connectionStatus == Status.CONNECTED) {
 			try {
-				chatClient.sendMessage(clientID + " Left");
+				chatClient.sendMessage(clientID + " left");
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -82,7 +82,7 @@ public class ConnectionController {
 	public void rightClick() {
 		if (this.connectionStatus == Status.CONNECTED) {
 			try {
-				chatClient.sendMessage(clientID + " Right");
+				chatClient.sendMessage(clientID + " right");
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -95,7 +95,7 @@ public class ConnectionController {
 	public void buttonClick() {
 		if (this.connectionStatus == Status.CONNECTED) {
 			try {
-				chatClient.sendMessage(clientID + " Button");
+				chatClient.sendMessage(clientID + " button");
 			} catch (XMPPException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -128,7 +128,7 @@ public class ConnectionController {
 	public void processMessage(Message message) {
 		Log.d("XMPP", "Message Received");
 		if ((this.connectionStatus == Status.WAITING_RESPONSE)
-				&& (message.getType() == Message.Type.chat)) {
+				&& ((message.getType() == Message.Type.chat) || (message.getType() == Message.Type.normal)) ) {
 			
 			Log.d("XMPP", "Good Message");
 			

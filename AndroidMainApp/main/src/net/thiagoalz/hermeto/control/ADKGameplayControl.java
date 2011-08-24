@@ -67,7 +67,7 @@ public class ADKGameplayControl implements GameplayControl {
 		Player.Direction direction = null;
 		switch(command) {
 			case 1:
-				direction = Player.Direction.TOP;
+				direction = Player.Direction.UP;
 				break;
 			case 2:
 				direction = Player.Direction.DOWN;
