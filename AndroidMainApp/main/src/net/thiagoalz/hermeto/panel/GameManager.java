@@ -160,7 +160,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
 		player.setPosition(position);
 		
-		Log.d(tag, "Connection " + playerName + "("+ playerID +") at the position [" 
+		Log.d(tag, "Connection " + playerName + "(" + playerID + ") at the position [" 
 				+ position.getX() + ", " + position.getY() + "]");
 		players.put(player.getId(), player);
 		return player;
@@ -218,7 +218,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public void start() {
-		final long period=200;
+		final long period = 200;
 		playing = true;
 		
 		if (sequencer != null) {
@@ -229,12 +229,12 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		sequencer = new Timer();
 		sequencer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {			
-				long startTime=System.currentTimeMillis();
+				long startTime = System.currentTimeMillis();
 				startPlayingGroup(currentPlayingLine);
 				
-				long waitTime=(period/2) - (System.currentTimeMillis()-startTime); //keep it turned on until the half of the total period time
+				long waitTime = (period/2) - (System.currentTimeMillis() - startTime); //keep it turned on until the half of the total period time
 				
-				if(waitTime>0){//If we really need to wait more
+				if (waitTime > 0) {//If we really need to wait more
 					try {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
@@ -256,11 +256,14 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public void stop() {
-		playing = false;
 		if(sequencer != null){
 			sequencer.cancel();
 			sequencer = null;
 		}
+		
+		playing = false;
+		currentPlayingLine = 0;
+		
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onStop(event);
@@ -282,6 +285,10 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public void reset() {
+		// Stop first the sequence
+		stop();
+		
+		// Deselect all the markedSquares and stop playing.
 		for (Position position : markedSquares) {
 			notifyDeselection(null, position);
 		}
