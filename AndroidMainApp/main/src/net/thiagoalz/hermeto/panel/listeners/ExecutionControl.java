@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto.panel;
+package net.thiagoalz.hermeto.panel.listeners;
 
 /**
  * Control the execution of the game like play, pause and reset.

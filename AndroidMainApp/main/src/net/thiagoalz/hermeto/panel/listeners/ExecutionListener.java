@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto.panel;
+package net.thiagoalz.hermeto.panel.listeners;
 
 public interface ExecutionListener {
 	public void onStart(ExecutionEvent event);

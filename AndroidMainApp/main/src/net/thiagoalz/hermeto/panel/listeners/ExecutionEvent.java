@@ -1,6 +1,8 @@
-package net.thiagoalz.hermeto.panel;
+package net.thiagoalz.hermeto.panel.listeners;
 
 import java.util.List;
+
+import net.thiagoalz.hermeto.panel.Position;
 
 public class ExecutionEvent {
 

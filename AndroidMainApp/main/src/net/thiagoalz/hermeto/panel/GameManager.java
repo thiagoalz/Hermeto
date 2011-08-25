@@ -11,6 +11,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
+import net.thiagoalz.hermeto.panel.listeners.ExecutionControl;
+import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
+import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
