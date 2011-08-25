@@ -19,15 +19,12 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -51,7 +48,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	Player defaultPlayer;
 
-	Map<Player, TextView> playersName = new HashMap<Player, TextView>();
+	Map<Player, PlayerNameView> playersName = new HashMap<Player, PlayerNameView>();
 	
 	private static final int ADK_PLAYERS = 4;
 	
@@ -84,6 +81,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
+		Log.d(tag, "Changing windows focus: " + hasFocus);
 		initializePlayersName();
 	}
 	
@@ -142,19 +140,11 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			TextView nameView = new TextView(this);
-			nameView.setBackgroundColor(Color.BLACK);
-			nameView.setTextColor(Color.RED);
-			nameView.setPadding(6, 2, 2, 6);
-			playersName.put(player, nameView);
-			
-			nameView.setText(defaultPlayer.getName());
-			params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-			Position position = getLocation(defaultPlayer.getPosition());
-			params.leftMargin = position.getX();
-			params.topMargin = position.getY();
-			nameView.setLayoutParams(params);
-			namesLayout.addView(nameView);
+			PlayerNameView playerNameView = new PlayerNameView(this);
+			playerNameView.setText(player.getName());
+			playerNameView.setLocation(getLocation(player.getPosition()));
+			playersName.put(player, playerNameView);
+			namesLayout.addView(playerNameView);
 		}
 	}
 	
@@ -213,24 +203,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerMove(MoveEvent event) {
-		Position oldLocation = getLocation(event.getNewPosition());
-		Position newLocation = getLocation(event.getOldPosition());
-		
-		int x = oldLocation.getX() - newLocation.getX();
-		int y = oldLocation.getY() - newLocation.getY();
-		x = (newLocation.getX() < oldLocation.getX()) ? -x : x;  
-		y = (newLocation.getY() < oldLocation.getY()) ? -y : x;
-		
-		final TextView nameView = playersName.get(event.getPlayer());
-		final Animation animation = new TranslateAnimation(0, x, 0, y);
-		animation.setDuration(1500);
-
-		
-		runOnUiThread(new Runnable(){
-			public void run() {
-				nameView.startAnimation(animation);
-			}
-		});
+		final Position newLocation = getLocation(event.getNewPosition());
+		final Position oldLocation = getLocation(event.getOldPosition());
+	
+		MoveEvent newEvent = new MoveEvent(event.getPlayer(), oldLocation, newLocation);
+		PlayerNameView nameView = playersName.get(event.getPlayer());
+		nameView.onPlayerMove(newEvent);
 	}
 
 	@Override
