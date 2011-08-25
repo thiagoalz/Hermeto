@@ -245,7 +245,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				
 				currentPlayingLine=(currentPlayingLine+1)%COLUMNS_CONF;//Circular list
 			}
-		}, 0, 200);
+		}, 0, period);
 		
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
