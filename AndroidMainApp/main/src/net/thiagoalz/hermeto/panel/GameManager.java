@@ -218,6 +218,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public void start() {
+		final long period=200;
 		playing = true;
 		
 		if (sequencer != null) {
@@ -226,18 +227,25 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		
 		sequencer = new Timer();
 		sequencer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				if (currentPlayingLine > 0) {
-					stopPlayingGroup(currentPlayingLine - 1);
-				}
-				if (currentPlayingLine >= COLUMNS_CONF) {
-					currentPlayingLine = 0;
-				}else {
-					currentPlayingLine++;
-				}
+			public void run() {			
+				long startTime=System.currentTimeMillis();
 				startPlayingGroup(currentPlayingLine);
+				
+				long waitTime=(period/2) - (System.currentTimeMillis()-startTime); //keep it turned on until the half of the total period time
+				
+				if(waitTime>0){//If we really need to wait more
+					try {
+						Thread.sleep(waitTime);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				stopPlayingGroup(currentPlayingLine);
+				
+				currentPlayingLine=(currentPlayingLine+1)%COLUMNS_CONF;//Circular list
 			}
-		}, 10, 200);
+		}, 0, 200);
 		
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
