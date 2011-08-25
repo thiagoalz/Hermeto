@@ -251,19 +251,17 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				long startTime = System.currentTimeMillis();
 				startPlayingGroup(currentPlayingLine);
 				
-				long waitTime = (period/2) - (System.currentTimeMillis() - startTime); //keep it turned on until the half of the total period time
+				long waitTime = (period/2) - (System.currentTimeMillis() - startTime); // keep it turned on until the half of the total period time
 				
-				if (waitTime > 0) {//If we really need to wait more
+				if (waitTime > 0) { //If we really need to wait more
 					try {
 						Thread.sleep(waitTime);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 				stopPlayingGroup(currentPlayingLine);
-				
-				currentPlayingLine=(currentPlayingLine+1)%COLUMNS_CONF;//Circular list
+				currentPlayingLine = (currentPlayingLine + 1) % COLUMNS_CONF; // Circular list
 			}
 		}, 0, period);
 		
