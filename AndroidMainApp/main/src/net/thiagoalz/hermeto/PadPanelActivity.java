@@ -73,6 +73,31 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	@Override
+	public void onPause() {
+		super.onPause();
+		gameManager.pause();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onPause();
+		gameManager.start();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		gameManager.pause();
+		soundManager.cleanUp();
+	}
+	
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		soundManager = new SoundManager(this);
+	}
+	
+	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		Log.d(tag, "Changing windows focus: " + hasFocus);
