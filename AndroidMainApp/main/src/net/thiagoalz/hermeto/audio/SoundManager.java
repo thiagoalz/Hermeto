@@ -35,23 +35,23 @@ public class SoundManager {
 //	}
 	
 	public void loadSounds(){
-		this.addSound(0, R.raw.opm_ch_set1);
-		this.addSound(1, R.raw.opm_ch_set2);
-		this.addSound(2, R.raw.opm_rs_set1);
-		this.addSound(3, R.raw.opm_rs_set2);
-		this.addSound(4, R.raw.opm_rs_set3);
-		this.addSound(5, R.raw.opm_rs_set4);
-		this.addSound(6, R.raw.opm_rs_set5);
-		this.addSound(7, R.raw.opm_sn_set1);
-		this.addSound(8, R.raw.opm_sn_set2);
-		this.addSound(9, R.raw.opm_sn_set3);
-		this.addSound(10, R.raw.opm_sn_set4);
-		this.addSound(11, R.raw.opm_sn_set5);
-		this.addSound(12, R.raw.opm_tm_set1);
-		this.addSound(13, R.raw.opm_tm_set2);
-		this.addSound(14, R.raw.opm_tm_set3);
-		this.addSound(15, R.raw.opm_tm_set4);
-		this.addSound(16, R.raw.opm_tm_set5);
+		this.addSound(0, R.raw.m1);
+		this.addSound(1, R.raw.m2);
+		this.addSound(2, R.raw.m3);
+		this.addSound(3, R.raw.m4);
+		this.addSound(4, R.raw.m5);
+		this.addSound(5, R.raw.m6);
+		this.addSound(6, R.raw.m7);
+		this.addSound(7, R.raw.m8);
+		this.addSound(8, R.raw.m9);
+		this.addSound(9, R.raw.m10);
+		this.addSound(10, R.raw.m11);
+		this.addSound(11, R.raw.m12);
+		this.addSound(12, R.raw.m13);
+		this.addSound(13, R.raw.m14);
+		this.addSound(14, R.raw.m15);
+		this.addSound(15, R.raw.m16a);
+		this.addSound(16, R.raw.m16b);
 	}
 	
 	public void initSounds(Context context) {
