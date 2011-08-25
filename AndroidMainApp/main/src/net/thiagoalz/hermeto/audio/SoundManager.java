@@ -2,6 +2,8 @@ package net.thiagoalz.hermeto.audio;
 
 import java.util.HashMap;
 
+import net.thiagoalz.hermeto.R;
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -12,20 +14,44 @@ import android.media.SoundPool;
  */
 public class SoundManager {
 	
-	private static SoundManager instance;
+	//private static SoundManager instance;
 	
 	private SoundPool soundPool;
 	private HashMap<Integer, Integer> soundPoolMap;
 	private AudioManager audioManager;
 	private Context context;
 	
-	private SoundManager() {}
+	public SoundManager(Context context) {
+		this.initSounds(context);
+		this.loadSounds();
+		
+	}
 	
-	public static synchronized SoundManager getInstance() {
-		if (instance == null) {
-			instance = new SoundManager();
-		}
-		return instance;
+//	public static synchronized SoundManager getInstance() {
+//		if (instance == null) {
+//			instance = new SoundManager();
+//		}
+//		return instance;
+//	}
+	
+	public void loadSounds(){
+		this.addSound(0, R.raw.opm_ch_set1);
+		this.addSound(1, R.raw.opm_ch_set2);
+		this.addSound(2, R.raw.opm_rs_set1);
+		this.addSound(3, R.raw.opm_rs_set2);
+		this.addSound(4, R.raw.opm_rs_set3);
+		this.addSound(5, R.raw.opm_rs_set4);
+		this.addSound(6, R.raw.opm_rs_set5);
+		this.addSound(7, R.raw.opm_sn_set1);
+		this.addSound(8, R.raw.opm_sn_set2);
+		this.addSound(9, R.raw.opm_sn_set3);
+		this.addSound(10, R.raw.opm_sn_set4);
+		this.addSound(11, R.raw.opm_sn_set5);
+		this.addSound(12, R.raw.opm_tm_set1);
+		this.addSound(13, R.raw.opm_tm_set2);
+		this.addSound(14, R.raw.opm_tm_set3);
+		this.addSound(15, R.raw.opm_tm_set4);
+		this.addSound(16, R.raw.opm_tm_set5);
 	}
 	
 	public void initSounds(Context context) {
@@ -60,6 +86,6 @@ public class SoundManager {
 		soundPool = null;
 		soundPoolMap.clear();
 		audioManager.unloadSoundEffects();
-		instance = null;
+		//instance = null;
 	}
 }

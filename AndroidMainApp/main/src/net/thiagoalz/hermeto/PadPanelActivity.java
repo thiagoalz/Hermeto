@@ -39,6 +39,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private GameManager gameManager;
 	private SoundManager soundManager;
 	private ADKGameplayControl ADKControl;
+	@SuppressWarnings("unused")
 	private XMPPGameplayControl XMPPControl;
 	
 	private ImageButton[][] padsMatrix;
@@ -59,6 +60,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		super.onCreate(savedInstanceState);
 		configureScreen();
 		
+		soundManager = new SoundManager(this);
 		gameManager = GameManager.getInstance();
 		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
 		XMPPControl = new XMPPGameplayControl(gameManager);
@@ -230,6 +232,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				for (Position position : positions) {
 					ImageButton button = padsMatrix[position.getX()][position.getY()];
 					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonplaying));
+					soundManager.playSound(position.getY());
 				}
 			}
 		});
