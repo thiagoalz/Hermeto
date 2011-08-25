@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,6 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -47,6 +48,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private TableLayout tableLayout;
 	
 	Player defaultPlayer;
+
+	Map<Player, PlayerNameView> playersName = new HashMap<Player, PlayerNameView>();
 	
 	private static final int ADK_PLAYERS = 4;
 	
@@ -77,6 +80,14 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		}
 	}
 	
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		Log.d(tag, "Changing windows focus: " + hasFocus);
+		initializePlayersName();
+	}
+	
+	
 	private void configureScreen() {
     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -87,7 +98,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		setContentView(R.layout.padpanel);
 		tableLayout = (TableLayout) findViewById(R.id.padpanelgrid);
 		initializeSquarePanel();
-		initializePlayersName();
 		initializeControls();
 	}
 	
@@ -108,7 +118,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
 								if (padsMatrix[j][i] == selectedButton) {
+									MoveEvent event = new MoveEvent(defaultPlayer, defaultPlayer.getPosition(), new Position(j, i));
 									defaultPlayer.setPosition(new Position(j, i));
+									onPlayerMove(event);
 									gameManager.mark(defaultPlayer);
 								}
 							}
@@ -124,19 +136,25 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializePlayersName() {
+		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		Map<String, Player> players = gameManager.getPlayers();
-		//FrameLayout namesLayout = (FrameLayout) findViewById(R.id.namesLayout);
+		RelativeLayout.LayoutParams params = null;
 		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			TextView nameBox = new TextView(this);
-			nameBox.setText(player.getName());
-			nameBox.setPadding(12, 12, 12, 12);
-			nameBox.setTextColor(Color.WHITE);
-			//RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(60, 20);
+			PlayerNameView playerNameView = new PlayerNameView(this);
+			playerNameView.setText(player.getName());
+			playerNameView.setLocation(getLocation(player.getPosition()));
+			playersName.put(player, playerNameView);
+			namesLayout.addView(playerNameView);
 		}
-		
-		
+	}
+	
+	private Position getLocation(Position position) {
+		ImageButton button = padsMatrix[position.getX()][position.getY()];
+		int screenLocation[] = new int[2];
+		button.getLocationOnScreen(screenLocation);
+		return new Position(screenLocation[0], screenLocation[1]);
 	}
 	
 	private void initializeControls() {
@@ -187,8 +205,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerMove(MoveEvent event) {
-		// TODO Auto-generated method stub
-		
+		final Position newLocation = getLocation(event.getNewPosition());
+		final Position oldLocation = getLocation(event.getOldPosition());
+	
+		MoveEvent newEvent = new MoveEvent(event.getPlayer(), oldLocation, newLocation);
+		PlayerNameView nameView = playersName.get(event.getPlayer());
+		nameView.onPlayerMove(newEvent);
 	}
 
 	@Override
