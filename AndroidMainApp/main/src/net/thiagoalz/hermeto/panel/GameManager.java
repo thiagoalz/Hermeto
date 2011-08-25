@@ -50,7 +50,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	private Timer sequencer;
 	private int currentPlayingLine = 0;
-	private int timeSequence = 120;
+	private int timeSequence = 200;
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	private List<ExecutionListener> executionListeners = new ArrayList<ExecutionListener>();
@@ -240,13 +240,28 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public void start() {
-		final long period = 200;
 		playing = true;
-		
+		registerSoundTimer();
+		ExecutionEvent event = new ExecutionEvent();
+		for (ExecutionListener listener : executionListeners) {
+			listener.onStart(event);
+		}
+	}
+	
+	@Override
+	public void updateBPM(int bpm) {
+		if (bpm < 1) {
+			pause();
+			return;
+		}
+		timeSequence = 60000 / bpm;
+		registerSoundTimer();
+	}
+	
+	private void registerSoundTimer() {
 		if (sequencer != null) {
 			sequencer.cancel();
 		}
-		
 		//Think this timer is not that trustable. It may be the cause of the lags.
 		sequencer = new Timer();
 		sequencer.scheduleAtFixedRate(new TimerTask() {
@@ -254,7 +269,8 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				long startTime = System.currentTimeMillis();
 				startPlayingGroup(currentPlayingLine);
 				
-				long waitTime = (period/2) - (System.currentTimeMillis() - startTime); // keep it turned on until the half of the total period time
+				
+				long waitTime = (timeSequence / 2) - (System.currentTimeMillis() - startTime); // keep it turned on until the half of the total period time
 				
 				if (waitTime > 0) { //If we really need to wait more
 					try {
@@ -266,12 +282,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				stopPlayingGroup(currentPlayingLine);
 				currentPlayingLine = (currentPlayingLine + 1) % COLUMNS_CONF; // Circular list
 			}
-		}, 0, period);
-		
-		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
-			listener.onStart(event);
-		}
+		}, 0, timeSequence);
 	}
 
 	@Override
@@ -354,5 +365,17 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 			}
 		}
 		
+	}
+
+	public int getTimeSequence() {
+		return timeSequence;
+	}
+
+	public void setTimeSequence(int timeSequence) {
+		this.timeSequence = timeSequence;
+	}
+
+	public void setBPM(int bpm) {
+		setTimeSequence(60000 / bpm);
 	}
 }

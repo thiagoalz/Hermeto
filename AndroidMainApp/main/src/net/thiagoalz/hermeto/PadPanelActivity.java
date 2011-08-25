@@ -9,6 +9,7 @@ import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.control.XMPPGameplayControl;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
+import net.thiagoalz.hermeto.panel.controls.listeners.BPMBarListener;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -27,8 +28,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.google.android.DemoKit.DemoKitActivity;
 
@@ -174,6 +177,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializeControls() {
+		SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
+		bpmBar.setProgress(gameManager.getTimeSequence() / 4);
+		
+		TextView bpmView = (TextView) findViewById(R.id.bpmLabel);
+		bpmView.setText("BPM: " + gameManager.getTimeSequence());
+		bpmBar.setOnSeekBarChangeListener(new BPMBarListener(gameManager, bpmView, this));
+				
 		final ImageButton play = (ImageButton) findViewById(R.id.play);
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override

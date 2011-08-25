@@ -9,4 +9,5 @@ public interface ExecutionControl {
 	public void stop();
 	public void pause(); 
 	public void reset();
+	public void updateBPM(int bpm);
 }
