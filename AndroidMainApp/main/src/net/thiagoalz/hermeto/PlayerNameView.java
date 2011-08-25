@@ -6,6 +6,7 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -13,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class PlayerNameView extends TextView implements PlayerListener {
-	
+	private static final String tag = PlayerNameView.class.getCanonicalName();
 	private Position newPosition;
 	
 	public PlayerNameView(Context context) {
@@ -32,6 +33,7 @@ public class PlayerNameView extends TextView implements PlayerListener {
 
 	@Override
 	public void onPlayerMove(MoveEvent event) {
+		Log.d(tag, "Moving to [" + event.getNewPosition().getX() + ", " + event.getNewPosition().getY() + "]");
 		newPosition = event.getNewPosition();
 		
 		int xDelta = -(event.getOldPosition().getX() - event.getNewPosition().getX());
@@ -52,8 +54,9 @@ public class PlayerNameView extends TextView implements PlayerListener {
 	            Animation.ABSOLUTE, xDelta,   
 	            Animation.ABSOLUTE, 0,   
 	            Animation.ABSOLUTE, yDelta);
-		animation.setDuration(1500);
-		animation.setFillEnabled(true);
+		
+		animation.setDuration(500);
+		animation.setFillAfter(true);
 		animation.setInterpolator(new AccelerateDecelerateInterpolator());
 		return animation;
 	}
@@ -66,10 +69,18 @@ public class PlayerNameView extends TextView implements PlayerListener {
 	@Override
 	public void onAnimationEnd() {
 		super.onAnimationEnd();
+		setVisibility(INVISIBLE);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.leftMargin = newPosition.getX();
 		params.topMargin = newPosition.getY();
 		setLayoutParams(params);
+		
 	}
+	
+	@Override
+	public void onAnimationStart() {
+		super.onAnimationStart();
+	}
+	
 	
 }
