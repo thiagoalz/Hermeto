@@ -225,6 +225,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 			sequencer.cancel();
 		}
 		
+		//Think this timer is not that trustable. It may be the cause of the lags.
 		sequencer = new Timer();
 		sequencer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {			
