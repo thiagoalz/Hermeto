@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
+import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.player.DefaultPlayer;
@@ -49,6 +51,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	private List<ExecutionListener> executionListeners = new ArrayList<ExecutionListener>();
+	private List<PlayerListener> playerListeners = new ArrayList<PlayerListener>();
 	
 	public synchronized static GameManager getInstance(){
 		return getInstance(COLUMNS_CONF, ROWS_CONF);
@@ -163,12 +166,28 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		Log.d(tag, "Connection " + playerName + "(" + playerID + ") at the position [" 
 				+ position.getX() + ", " + position.getY() + "]");
 		players.put(player.getId(), player);
+		notifyConnectPlayerListeners(player);
 		return player;
+	}
+
+	private void notifyConnectPlayerListeners(Player player) {
+		ConnectEvent event = new ConnectEvent(player, player.getPosition());
+		for (PlayerListener listener : playerListeners) {
+			listener.onPlayerConnect(event);
+		}
 	}
 
 	@Override
 	public void disconnectPlayer(Player player) {
 		players.remove(player.getId());
+		notifyDisconnectPlayerListeners(player);
+	}
+	
+	private void notifyDisconnectPlayerListeners(Player player) {
+		ConnectEvent event = new ConnectEvent(player, player.getPosition());
+		for (PlayerListener listener : playerListeners) {
+			listener.onPlayerDisconnect(event);
+		}
 	}
 
 	@Override

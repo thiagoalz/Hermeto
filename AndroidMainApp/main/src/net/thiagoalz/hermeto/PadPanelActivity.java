@@ -29,7 +29,6 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.google.android.DemoKit.DemoKitActivity;
 
@@ -44,7 +43,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private XMPPGameplayControl XMPPControl;
 	
 	private ImageButton[][] padsMatrix;
-	private TextView[] playerNamesPosition; 
 	private TableLayout tableLayout;
 	
 	Player defaultPlayer;
@@ -138,7 +136,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private void initializePlayersName() {
 		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		Map<String, Player> players = gameManager.getPlayers();
-		RelativeLayout.LayoutParams params = null;
 		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
@@ -178,7 +175,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			}
 		});
 		
-		
 		ImageButton reset = (ImageButton) findViewById(R.id.reset);
 		reset.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -186,7 +182,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				gameManager.reset();
 			}
 		});
-		
 	}
 
 	@Override
@@ -215,10 +210,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
-		// TODO Auto-generated method stub
-		
-		
-		
+		Player player = event.getPlayer();
+		PlayerNameView playerNameView = new PlayerNameView(this);
+		playerNameView.setText(player.getName());
+		playerNameView.setLocation(getLocation(player.getPosition()));
+		playersName.put(player, playerNameView);
+		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
+		namesLayout.addView(playerNameView);
+	}
+	
+	@Override
+	public void onPlayerDisconnect(ConnectEvent event) {
+		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
+		PlayerNameView playerNameView = playersName.remove(event.getPlayer());
+		namesLayout.removeView(playerNameView);
 	}
 
 	@Override
@@ -258,7 +263,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				}
 			}
 		});
-		
 	}
 	
 	public void onStopPlayingGroup(final ExecutionEvent event) {
@@ -272,7 +276,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				}
 			}
 		});
-		
 	}
 	
 	

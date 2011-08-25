@@ -44,4 +44,9 @@ public class PlayerNameView extends TextView implements PlayerListener {
 		
 		
 	}	
+	
+	@Override
+	public void onPlayerDisconnect(ConnectEvent event) {
+		
+	}
 }
