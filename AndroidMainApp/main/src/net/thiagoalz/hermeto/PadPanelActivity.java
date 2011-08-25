@@ -70,12 +70,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		defaultPlayer = gameManager.connectPlayer();
 		
 		constructView();
-		
-		if (mAccessory != null) {
-			//Mostra tela conectado conectado
-		} else {
-			//Mostra trela desconectado
-		}
 	}
 	
 	@Override
