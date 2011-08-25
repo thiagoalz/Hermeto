@@ -1,9 +1,9 @@
 package net.thiagoalz.hermeto.audio;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import net.thiagoalz.hermeto.R;
-
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -66,6 +66,10 @@ public class SoundManager {
 	}
 	
 	public void playSound(int index) {
+		if(index==15){//Random 15/16
+			Random r=new Random(System.currentTimeMillis());
+			index=15+r.nextInt(2);
+		}
 		float streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		soundPool.play(soundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
