@@ -44,7 +44,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	private Map<String, Player> players = new LinkedHashMap<String, Player>();
 	private int playerCounter = 0;
 	
-	private boolean playing;
+	private boolean playing=false;
 	
 	private Set<Position> markedSquares = new LinkedHashSet<Position>();
 	
@@ -250,11 +250,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	@Override
 	public void updateBPM(int bpm) {
-		if (bpm < 1) {
-			pause();
-			return;
-		}
-		timeSequence = 60000 / bpm;
+		this.setBPM(bpm);
 		registerSoundTimer();
 	}
 	
@@ -376,6 +372,10 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	}
 
 	public void setBPM(int bpm) {
+		if (bpm < 1) {
+			pause();
+			return;
+		}
 		setTimeSequence(60000 / bpm);
 	}
 }

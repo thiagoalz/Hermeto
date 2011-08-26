@@ -1,6 +1,5 @@
 package net.thiagoalz.hermeto.panel.controls.listeners;
 
-import net.thiagoalz.hermeto.R;
 import net.thiagoalz.hermeto.panel.GameManager;
 import android.content.Context;
 import android.widget.SeekBar;
