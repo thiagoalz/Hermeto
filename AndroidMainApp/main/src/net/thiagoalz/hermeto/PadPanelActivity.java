@@ -83,8 +83,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	@Override
 	public void onResume() {
-		super.onPause();
-		gameManager.start();
+		super.onResume();
+		//gameManager.start();
 	}
 	
 	@Override
