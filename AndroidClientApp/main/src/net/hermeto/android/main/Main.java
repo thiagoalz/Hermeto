@@ -7,8 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -42,6 +42,27 @@ public class Main extends Activity {
 		bindViews();
 		bindEvents();
 
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		mConnectionController.disconnect();
+	}
+	
+	@Override
+	public void onRestart() {
+		super.onRestart();
 	}
 
 	/********

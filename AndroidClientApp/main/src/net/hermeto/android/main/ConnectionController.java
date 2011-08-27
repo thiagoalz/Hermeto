@@ -115,14 +115,32 @@ public class ConnectionController {
 	public void connect(String nickname) {
 		this.nickname = nickname;
 		if (chatClient != null) {
-			chatClient.disconnect();
-			chatClient = null;
-			this.connectionStatus = Status.DISCONNECTED;
+			disconnect();
 		}
 
 		//Connect to server
 		new ConnectionTask().execute();
 
+	}
+	
+	public void disconnect() {
+		if(this.connectionStatus == Status.CONNECTED){
+			try {
+				chatClient.sendMessage(clientID + " disconnect");
+			} catch (XMPPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		this.nickname = "";
+		this.clientID = "";
+		this.connectionStatus = Status.DISCONNECTED;
+		
+		if (chatClient != null) {
+			chatClient.disconnect();
+			chatClient = null;
+		}
 	}
 
 	public void processMessage(Message message) {
