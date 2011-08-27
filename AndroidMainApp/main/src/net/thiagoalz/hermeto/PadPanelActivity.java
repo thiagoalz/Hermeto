@@ -73,7 +73,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		gameManager.addExecutionListener(this);		
 		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
 		XMPPControl = new XMPPGameplayControl(gameManager);
-		defaultPlayer = gameManager.connectPlayer();
+		defaultPlayer = gameManager.connectPlayer("");
 		
 		//TODO: BadCode
 		//Just adding listener after because they are not working at first time. So we had to keep  initializePlayersName() method.
@@ -167,11 +167,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			PlayerNameView playerNameView = new PlayerNameView(this);
-			playerNameView.setText(player.getName());
-			playerNameView.setLocation(getLocation(player.getPosition()));
-			playersName.put(player, playerNameView);
-			namesLayout.addView(playerNameView);
+			if(!player.getName().equals("")){
+				PlayerNameView playerNameView = new PlayerNameView(this);
+				playerNameView.setText(player.getName());
+				playerNameView.setLocation(getLocation(player.getPosition()));
+				playersName.put(player, playerNameView);
+				namesLayout.addView(playerNameView);
+			}
 		}
 	}
 	
@@ -240,18 +242,22 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 		MoveEvent newEvent = new MoveEvent(event.getPlayer(), oldLocation, newLocation);
 		PlayerNameView nameView = playersName.get(event.getPlayer());
-		nameView.onPlayerMove(newEvent);
+		if(nameView!=null){
+			nameView.onPlayerMove(newEvent);
+		}
 	}
 
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
 		Player player = event.getPlayer();
-		PlayerNameView playerNameView = new PlayerNameView(this);
-		playerNameView.setText(player.getName());
-		playerNameView.setLocation(getLocation(player.getPosition()));
-		playersName.put(player, playerNameView);
-		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
-		namesLayout.addView(playerNameView);
+		if(!player.getName().equals("")){
+			PlayerNameView playerNameView = new PlayerNameView(this);
+			playerNameView.setText(player.getName());
+			playerNameView.setLocation(getLocation(player.getPosition()));
+			playersName.put(player, playerNameView);
+			RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
+			namesLayout.addView(playerNameView);
+		}
 	}
 	
 	@Override
