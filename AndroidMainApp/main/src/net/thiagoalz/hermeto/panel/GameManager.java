@@ -14,6 +14,7 @@ import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionControl;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
@@ -78,10 +79,20 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		this.rows = rows > 1 ? columns : 2;
 	}
 	
+	
+	public boolean move(Player player, Position newPosition) {		
+		Position oldPos=player.getPosition();
+		player.setPosition(newPosition);
+		Log.d(tag, "Changing position of the player: [" + newPosition.getX() + ", " + newPosition.getY() + "]");
+		notifyMovePlayerListeners(player, oldPos, player.getPosition());
+		
+		return true;
+	}
 	@Override
 	public boolean move(Player player, Direction direction) {
 		int x = player.getPosition().getX();
 		int y = player.getPosition().getY();
+		Position oldPos=new Position(x, y);
 		
 		Log.d(tag, "Actual position of the player: [" + x + ", " + y + "]");
 		
@@ -92,6 +103,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				} else {
 					Log.d(tag, "Changing position of the player: [" + (x - 1) + ", " + y + "]");
 					player.getPosition().setX(x - 1);
+					notifyMovePlayerListeners(player, oldPos, player.getPosition());
 					return true;
 				}
 				
@@ -101,6 +113,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				} else {
 					Log.d(tag, "Changing position of the player: [" + (x + 1) + ", " + y + "]");
 					player.getPosition().setX(x + 1);
+					notifyMovePlayerListeners(player, oldPos, player.getPosition());
 					return true;
 				}
 				
@@ -110,6 +123,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				} else {
 					Log.d(tag, "Changing position of the player: [" + x + ", " + (y - 1) + "]");
 					player.getPosition().setY(y - 1);
+					notifyMovePlayerListeners(player, oldPos, player.getPosition());
 					return true;
 				}
 				
@@ -119,6 +133,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 				} else {
 					Log.d(tag, "Changing position of the player: [" + x + ", " + (y + 1) + "]");
 					player.getPosition().setY(y + 1);
+					notifyMovePlayerListeners(player, oldPos, player.getPosition());
 					return true;
 				}
 		}
@@ -156,9 +171,13 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public Player connectPlayer() {
+		String playerName = "Player " + (++playerCounter);
+		return this.connectPlayer(playerName);
+	}
+	
+	public Player connectPlayer(String playerName) {
 		long nanotime = System.nanoTime();
 		String playerID = "playerID-" + nanotime;
-		String playerName = "Player " + (++playerCounter);
 		
 		Position position = null;
 		Random myRandom = new Random(nanotime);
@@ -174,26 +193,12 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		return player;
 	}
 
-	private void notifyConnectPlayerListeners(Player player) {
-		ConnectEvent event = new ConnectEvent(player, player.getPosition());
-		for (PlayerListener listener : playerListeners) {
-			listener.onPlayerConnect(event);
-		}
-	}
-
 	@Override
 	public void disconnectPlayer(Player player) {
 		players.remove(player.getId());
 		notifyDisconnectPlayerListeners(player);
 	}
 	
-	private void notifyDisconnectPlayerListeners(Player player) {
-		ConnectEvent event = new ConnectEvent(player, player.getPosition());
-		for (PlayerListener listener : playerListeners) {
-			listener.onPlayerDisconnect(event);
-		}
-	}
-
 	@Override
 	public Map<String, Player> getPlayers() {
 		return players;
@@ -204,6 +209,8 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		return players.get(playerID);
 	}
 	
+	
+	//==========Listeners==========
 	public void addSelectionListener(SelectionListener selectionListener) {
 		this.selectionListeners.add(selectionListener);
 	}
@@ -220,6 +227,17 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		this.executionListeners.remove(executionListener);
 	}
 	
+	public void addPlayerListener(PlayerListener playerListener) {
+		this.playerListeners.add(playerListener);
+		
+	}
+	
+	public void removePlayerListener(PlayerListener playerListener) {
+		this.playerListeners.remove(playerListener);
+	}
+	
+	
+	//==========Notify==========
 	private void notifySelection(Player player, Position position) {
 		SelectionEvent event = new SelectionEvent(player, position);
 		for (SelectionListener listener : selectionListeners) {
@@ -231,6 +249,27 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 		SelectionEvent event = new SelectionEvent(player, position);
 		for (SelectionListener listener : selectionListeners) {
 			listener.onDeselected(event);
+		}
+	}
+	
+	private void notifyConnectPlayerListeners(Player player) {
+		ConnectEvent event = new ConnectEvent(player, player.getPosition());
+		for (PlayerListener listener : playerListeners) {
+			listener.onPlayerConnect(event);
+		}
+	}
+	
+	private void notifyDisconnectPlayerListeners(Player player) {
+		ConnectEvent event = new ConnectEvent(player, player.getPosition());
+		for (PlayerListener listener : playerListeners) {
+			listener.onPlayerDisconnect(event);
+		}
+	}
+	
+	private void notifyMovePlayerListeners(Player player, Position oldPos, Position newPos) {
+		MoveEvent event = new MoveEvent(player, oldPos, newPos);
+		for (PlayerListener listener : playerListeners) {
+			listener.onPlayerMove(event);
 		}
 	}
 
@@ -380,4 +419,5 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	public void setBPM(int bpm) {
 		setTimeSequence(60000 / bpm);
 	}
+
 }

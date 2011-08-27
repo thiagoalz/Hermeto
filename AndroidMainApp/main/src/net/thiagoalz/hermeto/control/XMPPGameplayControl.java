@@ -56,7 +56,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		
 		if(player!=null){//Player exists
 			Player.Direction direction = parseDirection(dir);		
-			return player.move(direction);
+			return 	gameManager.move(player, direction);
 		}
 		return false;
 	}
@@ -81,17 +81,15 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		Player player=gameManager.getPlayer(playerID);
 		
 		if(player!=null){//Player exists
-			return player.mark();
+			return gameManager.mark(player);
 		}
 		
 		return false;
 	}
 
 	protected String connectPlayer(String name) {
-		Player player = gameManager.connectPlayer();
-		player.setName(name);
+		Player player = gameManager.connectPlayer(name);
 		String id = player.getId();
-
 		try {
 			String resposta = "HELLO " + name + " " + id;
 			Log.d("XMPP", "Reply: " + resposta);

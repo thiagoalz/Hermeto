@@ -66,13 +66,18 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		soundManager = new SoundManager(this);
 		gameManager = GameManager.getInstance();
-		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
-		XMPPControl = new XMPPGameplayControl(gameManager);
-		gameManager.addSelectionListener(this);
-		gameManager.addExecutionListener(this);
-		defaultPlayer = gameManager.connectPlayer();
 		
 		constructView();
+				
+		gameManager.addSelectionListener(this);
+		gameManager.addExecutionListener(this);		
+		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
+		XMPPControl = new XMPPGameplayControl(gameManager);
+		defaultPlayer = gameManager.connectPlayer();
+		
+		//TODO: BadCode
+		//Just adding listener after because they are not working at first time. So we had to keep  initializePlayersName() method.
+		gameManager.addPlayerListener(this);
 	}
 	
 	@Override
@@ -138,9 +143,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
 								if (padsMatrix[j][i] == selectedButton) {
-									MoveEvent event = new MoveEvent(defaultPlayer, defaultPlayer.getPosition(), new Position(j, i));
-									defaultPlayer.setPosition(new Position(j, i));
-									onPlayerMove(event);
+									gameManager.move(defaultPlayer, new Position(j, i));
 									gameManager.mark(defaultPlayer);
 								}
 							}
@@ -155,6 +158,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		}
 	}
 	
+	//TODO: BadCode
+	//Do Not understand why this methos is necessary, since it does exactly the same as onPlayerConnect 
+	//I is here only because listener are not working well at first time. So we had to keep it. O_o
 	private void initializePlayersName() {
 		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		Map<String, Player> players = gameManager.getPlayers();
@@ -243,6 +249,11 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		PlayerNameView playerNameView = new PlayerNameView(this);
 		playerNameView.setText(player.getName());
 		playerNameView.setLocation(getLocation(player.getPosition()));
+		
+		PlayerNameView old=playersName.get(player);
+		if(old != null){
+			old.setVisibility(PlayerNameView.INVISIBLE);
+		}
 		playersName.put(player, playerNameView);
 		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		namesLayout.addView(playerNameView);
