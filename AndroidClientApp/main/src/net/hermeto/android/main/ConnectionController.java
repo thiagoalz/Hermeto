@@ -127,7 +127,12 @@ public class ConnectionController {
 		if(this.connectionStatus == Status.CONNECTED){
 			try {
 				chatClient.sendMessage(clientID + " disconnect");
+				Log.d("XMPP", "Disconnect Message");
+				Thread.sleep(3000);
 			} catch (XMPPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -167,7 +172,7 @@ public class ConnectionController {
 	}
 	
 	/**
-	 * Class to run conection tasks in background.
+	 * Class to run connection tasks in background.
 	 * Connects to XMPP server, sends Hello message, waits for HELLO response.
 	 * @author Thiago A. Lechuga
 	 *

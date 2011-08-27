@@ -45,7 +45,9 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 			connectPlayer(msgSplit[1]);
 		} else if (msgSplit[1].equals("button")) {
 			markSquare(msgSplit[0]);
-		} else {
+		} else if (msgSplit[1].equals("disconnect")){
+			disconnectPlayer(msgSplit[0]);
+		}else{
 			movePlayer(msgSplit[0], msgSplit[1]);
 		}
 
@@ -83,6 +85,18 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		
 		if(player!=null){//Player exists
 			return gameManager.mark(player);
+		}
+		
+		return false;
+	}
+	
+	protected boolean disconnectPlayer(String playerID) {
+		Player player=gameManager.getPlayer(playerID);
+		
+		if(player!=null){//Player exists
+			gameManager.disconnectPlayer(player);
+			
+			return true;
 		}
 		
 		return false;
