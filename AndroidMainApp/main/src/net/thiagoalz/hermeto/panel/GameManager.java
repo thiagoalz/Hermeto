@@ -421,6 +421,10 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public int getTimeSequence() {
 		return timeSequence;
 	}
+	
+	public int getBPM() {
+		return 60000 / timeSequence;
+	}
 
 	public void setTimeSequence(int timeSequence) {
 		this.timeSequence = timeSequence;

@@ -186,10 +186,10 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private void initializeControls() {
 		SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
-		bpmBar.setProgress(gameManager.getTimeSequence() / 4);
+		bpmBar.setProgress(gameManager.getBPM() / 4);
 		
 		TextView bpmView = (TextView) findViewById(R.id.bpmLabel);
-		bpmView.setText("BPM: " + gameManager.getTimeSequence());
+		bpmView.setText("BPM: " + gameManager.getBPM());
 		bpmBar.setOnSeekBarChangeListener(new BPMBarListener(gameManager, bpmView, this));
 				
 		final ImageButton play = (ImageButton) findViewById(R.id.play);
