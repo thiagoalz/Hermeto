@@ -249,11 +249,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		PlayerNameView playerNameView = new PlayerNameView(this);
 		playerNameView.setText(player.getName());
 		playerNameView.setLocation(getLocation(player.getPosition()));
-		
-		PlayerNameView old=playersName.get(player);
-		if(old != null){
-			old.setVisibility(PlayerNameView.INVISIBLE);
-		}
 		playersName.put(player, playerNameView);
 		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		namesLayout.addView(playerNameView);
