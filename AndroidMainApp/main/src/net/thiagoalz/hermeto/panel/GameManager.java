@@ -251,6 +251,7 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	@Override
 	public void updateBPM(int bpm) {
 		if (bpm < 1) {
+			this.setBPM(1);//To avoid problems when resuming without change the BPM 
 			pause();
 			return;
 		}
