@@ -156,11 +156,12 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 
 	@Override
 	public Player connectPlayer() {
-		String playerID = "playerID-" + System.nanoTime();
+		long nanotime = System.nanoTime();
+		String playerID = "playerID-" + nanotime;
 		String playerName = "Player " + (++playerCounter);
 		
 		Position position = null;
-		Random myRandom = new Random(System.currentTimeMillis());
+		Random myRandom = new Random(nanotime);
 		position = new Position(myRandom.nextInt(columns), myRandom.nextInt(rows));
 		
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
