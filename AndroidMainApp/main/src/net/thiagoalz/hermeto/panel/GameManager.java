@@ -250,8 +250,12 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	
 	@Override
 	public void updateBPM(int bpm) {
+		if (bpm < 1) {
+			pause();
+			return;
+		}
 		this.setBPM(bpm);
-		registerSoundTimer();
+		start();//Renew sequencer
 	}
 	
 	private void registerSoundTimer() {
@@ -372,10 +376,6 @@ public class GameManager implements SquarePanelManager, PlayersManager, Executio
 	}
 
 	public void setBPM(int bpm) {
-		if (bpm < 1) {
-			pause();
-			return;
-		}
 		setTimeSequence(60000 / bpm);
 	}
 }

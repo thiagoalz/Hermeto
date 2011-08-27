@@ -32,9 +32,9 @@ public class BPMBarListener implements SeekBar.OnSeekBarChangeListener  {
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 		if (gameManager.isPlaying()) {
-			gameManager.setBPM(progress * BPM_SCALE);
-		} else {
 			gameManager.updateBPM(progress * BPM_SCALE);
+		} else {
+			gameManager.setBPM(progress * BPM_SCALE);
 		}
 		
 	}
