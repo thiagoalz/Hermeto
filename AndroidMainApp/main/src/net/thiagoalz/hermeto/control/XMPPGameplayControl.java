@@ -21,6 +21,10 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	private final String CLIENT_LOGIN = "b@lilab.info";
 
 	XMPPClient chatClient;
+	
+	Thread myThread;
+	
+	boolean running=false;
 
 	private static final String tag = XMPPGameplayControl.class
 			.getCanonicalName();
@@ -28,9 +32,6 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 
 	public XMPPGameplayControl(GameManager gameManager) {
 		this.gameManager = gameManager;
-
-		Thread thread = new Thread(null, this, "XMPP");
-		thread.start();
 	}
 
 	@Override
@@ -110,7 +111,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 					SERVER_LOGIN, SERVER_PASSWORD);
 			Log.d("XMPP", "Conected");
 
-			while (true) {//TODO: Check if while true it ok
+			while (running) {
 				 org.jivesoftware.smack.packet.Message xmppMsg = chatClient.checkMessage();
 
 				if (xmppMsg != null
@@ -162,4 +163,20 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		}
 
 	};
+
+	public void stop() {
+		running = false;
+		if(myThread != null){
+			myThread.interrupt();
+		}
+	}
+
+	public void start() {
+		while (myThread!=null && myThread.isAlive()){
+			stop();
+		}
+		running = true;
+		myThread = new Thread(null, this, "XMPP");
+		myThread.start();
+	}
 }

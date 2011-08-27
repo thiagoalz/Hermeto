@@ -42,7 +42,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private GameManager gameManager;
 	private SoundManager soundManager;
 	private ADKGameplayControl ADKControl;
-	@SuppressWarnings("unused")
 	private XMPPGameplayControl XMPPControl;
 	
 	private ImageButton[][] padsMatrix;
@@ -84,11 +83,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onPause() {
 		super.onPause();
 		gameManager.pause();
+		XMPPControl.stop();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		XMPPControl.start();
 		//gameManager.start();
 	}
 	
