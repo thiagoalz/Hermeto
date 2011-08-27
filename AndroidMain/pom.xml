@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.thiagoalz.hermeto</groupId>
+	<artifactId>AndroidMain</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>AndroidMain</name>
+
+	<parent>
+		<groupId>net.thiagoalz.hermeto</groupId>
+		<artifactId>Hermeto</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<modules>
+		<module>AndroidMainApp</module>
+		<!-- <module>AndroidMainTest</module> -->
+	</modules>
+
+	<properties>
+		<google.android.version>2.3.3</google.android.version>
+		<android.devices>emulator</android.devices>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>net.thiago.hermeto</groupId>
+				<artifactId>AndroidClientApp</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<type>jar</type>
+			</dependency>
+			<!-- <dependency> -->
+			<!-- <groupId>net.thiago.hermeto</groupId> -->
+			<!-- <artifactId>AndroidClientApp</artifactId> -->
+			<!-- <version>1.0.0-SNAPSHOT</version> -->
+			<!-- <type>apk</type> -->
+			<!-- </dependency> -->
+			<dependency>
+				<groupId>org.igniterealtime.smack</groupId>
+				<artifactId>smack</artifactId>
+				<version>3.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android</artifactId>
+				<version>${google.android.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android-test</artifactId>
+				<version>${google.android.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>android.future</groupId>
+				<artifactId>usb</artifactId>
+				<version>10_r2</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.4</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>maven-android-plugin</artifactId>
+					<configuration>
+						<sdk>
+							<path>${env.ANDROID_HOME}</path>
+							<platform>10</platform>
+						</sdk>
+						<emulator>
+							<avd>16</avd>
+						</emulator>
+						<deleteConflictingFiles>true</deleteConflictingFiles>
+						<undeployBeforeDeploy>true</undeployBeforeDeploy>
+					</configuration>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
