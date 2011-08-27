@@ -434,4 +434,23 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		setTimeSequence(60000 / bpm);
 	}
 
+	public void cleanUp() {
+		this.stop();
+
+		columns=0;
+		rows=0;
+		players = new LinkedHashMap<String, Player>();
+		playerCounter = 0;
+		playing = false;
+		markedSquares = new LinkedHashSet<Position>();
+		sequencer=null;
+		currentPlayingLine = 0;
+		timeSequence = 200;
+		selectionListeners = new ArrayList<SelectionListener>();
+		executionListeners = new ArrayList<ExecutionListener>();
+		playerListeners = new ArrayList<PlayerListener>();
+		
+		GameManager.instance=null;
+	}
+
 }

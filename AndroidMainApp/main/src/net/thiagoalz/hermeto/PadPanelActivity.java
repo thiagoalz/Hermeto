@@ -98,6 +98,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		super.onStop();
 		gameManager.pause();
 		soundManager.cleanUp();
+		
+		this.finish();
+		gameManager.cleanUp();
 	}
 	
 	@Override
