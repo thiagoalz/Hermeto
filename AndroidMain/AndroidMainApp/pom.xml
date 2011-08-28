@@ -20,7 +20,6 @@
 			<groupId>net.thiagoalz.hermeto</groupId>
 			<artifactId>AndroidClientApp</artifactId>
 			<type>jar</type>
-<!-- 			<systemPath>../../AndroidClient/AndroidClientApp</systemPath> -->
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>
