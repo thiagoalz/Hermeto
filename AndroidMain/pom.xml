@@ -28,7 +28,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>net.thiago.hermeto</groupId>
+				<groupId>net.thiagoalz.hermeto</groupId>
 				<artifactId>AndroidClientApp</artifactId>
 				<version>1.0.0-SNAPSHOT</version>
 				<type>jar</type>

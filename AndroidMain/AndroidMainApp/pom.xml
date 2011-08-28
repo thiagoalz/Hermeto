@@ -17,7 +17,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>net.thiago.hermeto</groupId>
+			<groupId>net.thiagoalz.hermeto</groupId>
 			<artifactId>AndroidClientApp</artifactId>
 			<type>jar</type>
 <!-- 			<systemPath>../../AndroidClient/AndroidClientApp</systemPath> -->
@@ -36,7 +36,6 @@
 			<groupId>org.igniterealtime.smack</groupId>
 			<artifactId>smack</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>
