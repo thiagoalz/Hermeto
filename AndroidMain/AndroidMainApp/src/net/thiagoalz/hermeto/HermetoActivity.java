@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +29,13 @@ public class HermetoActivity extends Activity{
 			}
 		});
     }
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		MediaPlayer mp = MediaPlayer.create(this, R.raw.m16b);
+		mp.start();
+	}
     
     private void configureScreen() {
     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
