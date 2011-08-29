@@ -82,7 +82,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onPause() {
 		super.onPause();
-		gameManager.pause();
 		XMPPControl.stop();
 	}
 	
@@ -90,24 +89,31 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onResume() {
 		super.onResume();
 		XMPPControl.start();
-		//gameManager.start();
 	}
 	
 	@Override
 	public void onStop() {
 		super.onStop();
-		gameManager.pause();
-		soundManager.cleanUp();
-		
-		this.finish();
-		gameManager.cleanUp();
 	}
 	
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		soundManager = new SoundManager(this);
 	}
+	
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		
+		gameManager.pause();
+		gameManager.cleanUp();
+		soundManager.cleanUp();
+		this.finish();
+	}
+	
+	
+	
 	
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
