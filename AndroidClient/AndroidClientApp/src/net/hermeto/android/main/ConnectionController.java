@@ -113,11 +113,10 @@ public class ConnectionController {
 	}
 
 	public void connect(String nickname) {
-		this.nickname = nickname;
 		if (chatClient != null) {
 			disconnect();
 		}
-
+		this.nickname = nickname;
 		//Connect to server
 		new ConnectionTask().execute();
 

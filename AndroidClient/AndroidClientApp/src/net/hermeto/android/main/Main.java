@@ -159,7 +159,7 @@ public class Main extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 
 					String nickname = input.getText().toString();
-					Log.e("XMPP", "Button pressed");
+					Log.e("XMPP", "Button pressed - "+nickname);
 					mConnectionController.connect(nickname);
 
 				}
