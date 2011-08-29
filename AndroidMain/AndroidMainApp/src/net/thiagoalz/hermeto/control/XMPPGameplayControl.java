@@ -1,5 +1,8 @@
 package net.thiagoalz.hermeto.control;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.hermeto.android.main.XMPPClient;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.player.Player;
@@ -19,6 +22,8 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	private final String SERVER_PASSWORD = "123456";
 	private final String SERVER_ADDRESS = "lilab.info";
 	private final String CLIENT_LOGIN = "b@lilab.info";
+	
+	protected List<String> players;
 
 	XMPPClient chatClient;
 	
@@ -41,16 +46,17 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 
 		String[] msgSplit = message.split(" ");
 
-		if (msgSplit[0].toUpperCase().equals("HELLO")) {
-			connectPlayer(msgSplit[1]);
-		} else if (msgSplit[1].equals("button")) {
-			markSquare(msgSplit[0]);
-		} else if (msgSplit[1].equals("disconnect")){
-			disconnectPlayer(msgSplit[0]);
-		}else{
-			movePlayer(msgSplit[0], msgSplit[1]);
+		if (msgSplit.length > 1){// all messages have 2 parameters
+			if (msgSplit[0].toUpperCase().equals("HELLO")) {			
+				connectPlayer(msgSplit[1]);
+			} else if (msgSplit[1].equals("button")) {
+				markSquare(msgSplit[0]);
+			} else if (msgSplit[1].equals("disconnect")){
+				disconnectPlayer(msgSplit[0]);
+			}else{
+				movePlayer(msgSplit[0], msgSplit[1]);
+			}
 		}
-
 		return true;
 	}
 
@@ -92,7 +98,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	
 	protected boolean disconnectPlayer(String playerID) {
 		Player player=gameManager.getPlayer(playerID);
-		
+		players.remove(playerID);
 		if(player!=null){//Player exists
 			gameManager.disconnectPlayer(player);
 			
@@ -105,6 +111,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	protected String connectPlayer(String name) {
 		Player player = gameManager.connectPlayer(name);
 		String id = player.getId();
+		players.add(id);
 		try {
 			String resposta = "HELLO " + name + " " + id;
 			Log.d("XMPP", "Reply: " + resposta);
@@ -183,12 +190,18 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		if(myThread != null){
 			myThread.interrupt();
 		}
+		int size=players.size();
+		for (int i=0; i<size;i++) {
+			disconnectPlayer(players.get(i));
+		}
+		players = null;
 	}
 
 	public void start() {
 		while (myThread!=null && myThread.isAlive()){
 			stop();
 		}
+		players = new ArrayList<String>();
 		running = true;
 		myThread = new Thread(null, this, "XMPP");
 		myThread.start();
