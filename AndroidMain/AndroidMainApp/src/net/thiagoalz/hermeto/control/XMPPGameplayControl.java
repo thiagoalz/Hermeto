@@ -190,6 +190,8 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		if(myThread != null){
 			myThread.interrupt();
 		}
+		
+		//Disconnect all players
 		int size=players.size();
 		for (int i=0; i<size;i++) {
 			disconnectPlayer(players.get(i));
