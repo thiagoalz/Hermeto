@@ -117,6 +117,7 @@ public class ConnectionController {
 			disconnect();
 		}
 		
+		nickname = nickname.split(" ")[0];
 		if(nickname.length() > 10){
 			nickname = nickname.substring(0, 10);
 		}
