@@ -36,6 +36,8 @@ public class XMPPClient implements MessageListener {
 	/* password from local user */	
 	protected String password;
 	
+	protected String resource;
+	
 	/* XMPP connection */
 	protected XMPPConnection connection;
 
@@ -52,14 +54,15 @@ public class XMPPClient implements MessageListener {
 	 * @param password
 	 * @throws XMPPException
 	 */
-	public XMPPClient(int port, String messagesDestination,	String serverAddress, String username, String password, String serviceName) throws XMPPException {
+	public XMPPClient(int port, String messagesDestination,	String serverAddress, String username, String password, String serviceName, String resource) throws XMPPException {
 		super();
 		this.port = port;
 		this.messagesDestination = messagesDestination;
 		this.serverAddress = serverAddress;
 		this.username = username;
 		this.password = password;
-		this.login(this.username, this.password, this.serverAddress, this.port, serviceName);
+		this.resource = resource;
+		this.login(this.username, this.password, this.serverAddress, this.port, serviceName, resource);
 	}
 	
 	/**
@@ -74,14 +77,15 @@ public class XMPPClient implements MessageListener {
 	 * @throws XMPPException
 	 */
 	public XMPPClient(int port, String messagesDestination,
-			String serverAddress, String username, String password) throws XMPPException {
+			String serverAddress, String username, String password, String resource) throws XMPPException {
 		super();
 		this.port = port;
 		this.messagesDestination = messagesDestination;
 		this.serverAddress = serverAddress;
 		this.username = username;
 		this.password = password;
-		this.login(this.username, this.password, this.serverAddress, this.port);
+		this.resource = resource;
+		this.login(this.username, this.password, this.serverAddress, this.port, this.resource);
 	}	
 	
 	/**
@@ -93,10 +97,10 @@ public class XMPPClient implements MessageListener {
 	 * @param port
 	 * @throws XMPPException
 	 */
-	protected synchronized void login(String userName, String password, String serverAddress, int port) throws XMPPException
+	protected synchronized void login(String userName, String password, String serverAddress, int port, String resource) throws XMPPException
 	{
 		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port);
-		this.connect(config, userName, password);		
+		this.connect(config, userName, password, resource);		
 	}
 	
 	/**
@@ -109,10 +113,10 @@ public class XMPPClient implements MessageListener {
 	 * @param serviceName
 	 * @throws XMPPException
 	 */
-	protected synchronized void login(String userName, String password, String serverAddress, int port, String serviceName) throws XMPPException
+	protected synchronized void login(String userName, String password, String serverAddress, int port, String serviceName, String resource) throws XMPPException
 	{
 		ConnectionConfiguration config = new ConnectionConfiguration(serverAddress, port, serviceName);
-		this.connect(config, userName, password);
+		this.connect(config, userName, password,resource);
 	}	
 
 	/**
@@ -123,10 +127,10 @@ public class XMPPClient implements MessageListener {
 	 * @param password
 	 * @throws XMPPException
 	 */
-	protected void connect(ConnectionConfiguration config, String userName, String password) throws XMPPException {
+	protected void connect(ConnectionConfiguration config, String userName, String password, String resource) throws XMPPException {
 		connection = new XMPPConnection(config);
 		connection.connect();
-		connection.login(userName, password);		
+		connection.login(userName, password,resource);		
 	}
 	
 	/**

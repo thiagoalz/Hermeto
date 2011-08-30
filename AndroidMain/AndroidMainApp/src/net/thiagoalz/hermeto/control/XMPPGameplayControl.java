@@ -129,7 +129,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	public void run() {
 		try {
 			chatClient = new XMPPClient(5222, CLIENT_LOGIN, SERVER_ADDRESS,
-					SERVER_LOGIN, SERVER_PASSWORD);
+					SERVER_LOGIN, SERVER_PASSWORD, "server");
 			Log.d("XMPP", "Conected");
 
 			while (running) {

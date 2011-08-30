@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class ConnectionController {
 	private final String SERVER_ADDRESS="lilab.info";
 	private final String CLIENT_LOGIN="b";
 	private final String CLIENT_PASSWORD="123456";
+	private String CLIENT_RESOURCE;
 
 	protected enum Status {
 		DISCONNECTED, WAITING_RESPONSE, CONNECTED
@@ -30,6 +32,8 @@ public class ConnectionController {
 	public ConnectionController(Main activity) {
 		mHostActivity = activity;
 		this.connectionStatus = Status.DISCONNECTED;
+		
+		CLIENT_RESOURCE = Secure.getString(mHostActivity.getContentResolver(), Secure.ANDROID_ID);
 	}
 
 	protected View findViewById(int id) {
@@ -200,7 +204,7 @@ public class ConnectionController {
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				chatClient = new XMPPClient(5222, SERVER_LOGIN, SERVER_ADDRESS, CLIENT_LOGIN, CLIENT_PASSWORD);
+				chatClient = new XMPPClient(5222, SERVER_LOGIN, SERVER_ADDRESS, CLIENT_LOGIN, CLIENT_PASSWORD, CLIENT_RESOURCE);
 				Log.d("XMPP", "Conected");
 
 				connectionStatus = ConnectionController.Status.WAITING_RESPONSE;
