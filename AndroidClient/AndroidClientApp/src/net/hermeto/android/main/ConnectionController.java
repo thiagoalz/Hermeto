@@ -116,7 +116,12 @@ public class ConnectionController {
 		if (chatClient != null) {
 			disconnect();
 		}
+		
+		if(nickname.length() > 10){
+			nickname = nickname.substring(0, 10);
+		}
 		this.nickname = nickname;
+		
 		//Connect to server
 		new ConnectionTask().execute();
 
