@@ -110,18 +110,14 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		soundManager.cleanUp();
 		this.finish();
 	}
-	
-	
-	
-	
+
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		Log.d(tag, "Changing windows focus: " + hasFocus);
 		initializePlayersName();
 	}
-	
-	
+
 	private void configureScreen() {
     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     	requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -239,12 +235,23 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerMove(MoveEvent event) {
-		final Position newLocation = getLocation(event.getNewPosition());
-		final Position oldLocation = getLocation(event.getOldPosition());
+		final int padding = 5;
+		int alreadyThere = 0;
+		Map<String, Player> players = gameManager.getPlayers();
+		for (String playerID : players.keySet()) {
+			if (event.getNewPosition().equals(players.get(playerID)))
+				alreadyThere++;
+		}
+		
+		Position newLocation = getLocation(event.getNewPosition());
+		Position oldLocation = getLocation(event.getOldPosition());
+		
+		// Moving the player a little to the left based in how many users are there.
+		newLocation = new Position(newLocation.getX() + (alreadyThere * padding), newLocation.getY());
 	
 		MoveEvent newEvent = new MoveEvent(event.getPlayer(), oldLocation, newLocation);
 		PlayerNameView nameView = playersName.get(event.getPlayer());
-		if(nameView!=null){
+		if(nameView != null){
 			nameView.onPlayerMove(newEvent);
 		}
 	}
@@ -252,7 +259,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
 		Player player = event.getPlayer();
-		if(!player.getName().equals("")){
+		if(!player.equals(defaultPlayer)){
 			PlayerNameView playerNameView = new PlayerNameView(this);
 			playerNameView.setText(player.getName());
 			playerNameView.setLocation(getLocation(player.getPosition()));

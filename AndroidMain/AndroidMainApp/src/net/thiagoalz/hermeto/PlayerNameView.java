@@ -6,6 +6,7 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,14 +15,15 @@ public class PlayerNameView extends TextView implements PlayerListener {
 	
 	public PlayerNameView(Context context) {
 		super(context);
-		setBackgroundColor(Color.BLACK);
-		setTextColor(Color.RED);
+		setBackgroundDrawable(getResources().getDrawable(R.drawable.playerlabel));
+		this.setTextSize(TypedValue.COMPLEX_UNIT_PX, 9);
+		setTextColor(Color.BLACK);
 		setPadding(6, 2, 2, 6);
 	}
 	
 	public void setLocation(Position position) {
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.leftMargin = position.getX() - 10;
+		params.leftMargin = position.getX();
 		params.topMargin = position.getY();
 		setLayoutParams(params);
 	}
@@ -32,7 +34,7 @@ public class PlayerNameView extends TextView implements PlayerListener {
 		post(new Runnable() {
 			public void run() {
 				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-				params.leftMargin = newPosition.getX() - 10;
+				params.leftMargin = newPosition.getX();
 				params.topMargin = newPosition.getY();
 				setLayoutParams(params);
 			}
@@ -41,8 +43,7 @@ public class PlayerNameView extends TextView implements PlayerListener {
 
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
-		
-		
+				
 	}	
 	
 	@Override
