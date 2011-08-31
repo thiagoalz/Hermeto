@@ -53,7 +53,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private static final int ADK_PLAYERS = 4;
 	
-	
 	public PadPanelActivity(){
 		super();
 	}
@@ -172,18 +171,11 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	//Do Not understand why this methos is necessary, since it does exactly the same as onPlayerConnect 
 	//I is here only because listener are not working well at first time. So we had to keep it. O_o
 	private void initializePlayersName() {
-		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		Map<String, Player> players = gameManager.getPlayers();
-		
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			if(!player.getName().equals("")){
-				PlayerNameView playerNameView = new PlayerNameView(this);
-				playerNameView.setText(player.getName());
-				playerNameView.setLocation(getLocation(player.getPosition()));
-				playersName.put(player, playerNameView);
-				namesLayout.addView(playerNameView);
-			}
+			ConnectEvent event = new ConnectEvent(player, player.getPosition());
+			onPlayerConnect(event);
 		}
 	}
 	

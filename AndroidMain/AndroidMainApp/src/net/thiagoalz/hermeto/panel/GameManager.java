@@ -34,7 +34,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		ExecutionControl {
 
 	private static final int COLUMNS_CONF = 16;
-	private static final int ROWS_CONF = 16;
+	private static final int ROWS_CONF = 15;
 
 	private static GameManager instance;
 
