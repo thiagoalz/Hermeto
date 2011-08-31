@@ -21,11 +21,15 @@ public class PlayerNameView extends TextView implements PlayerListener {
 		setPadding(6, 2, 2, 6);
 	}
 	
-	public void setLocation(Position position) {
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.leftMargin = position.getX();
-		params.topMargin = position.getY();
-		setLayoutParams(params);
+	public void setLocation(final Position position) {
+		post(new Runnable() {
+			public void run() {
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.leftMargin = position.getX();
+				params.topMargin = position.getY();
+				setLayoutParams(params);
+			}
+		});
 	}
 
 	@Override

@@ -41,14 +41,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private GameManager gameManager;
 	private SoundManager soundManager;
-	private ADKGameplayControl ADKControl;
-	private XMPPGameplayControl XMPPControl;
+	private ADKGameplayControl adkControl;
+	private XMPPGameplayControl xmppControl;
 	
 	private ImageButton[][] padsMatrix;
 	private TableLayout tableLayout;
 	
-	Player defaultPlayer;
-
 	Map<Player, PlayerNameView> playersName = new HashMap<Player, PlayerNameView>();
 	
 	private static final int ADK_PLAYERS = 4;
@@ -68,26 +66,23 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		constructView();
 				
 		gameManager.addSelectionListener(this);
-		gameManager.addExecutionListener(this);		
-		ADKControl = new ADKGameplayControl(gameManager, ADK_PLAYERS);
-		XMPPControl = new XMPPGameplayControl(gameManager);
-		defaultPlayer = gameManager.connectPlayer("");
-		
-		//TODO: BadCode
-		//Just adding listener after because they are not working at first time. So we had to keep  initializePlayersName() method.
+		gameManager.addExecutionListener(this);
 		gameManager.addPlayerListener(this);
+		
+		adkControl = new ADKGameplayControl(gameManager);
+		xmppControl = new XMPPGameplayControl(gameManager);
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		XMPPControl.stop();
+		xmppControl.stop();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		XMPPControl.start();
+		xmppControl.start();
 	}
 	
 	@Override
@@ -114,8 +109,10 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		Log.d(tag, "Changing windows focus: " + hasFocus);
-		initializePlayersName();
+		if (hasFocus) {
+			updatePlayersName();
+		}
+		
 	}
 
 	private void configureScreen() {
@@ -148,8 +145,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 						for (int i = 0; i < padsMatrix.length; i++) {
 							for (int j = 0; j < padsMatrix[i].length; j++) {
 								if (padsMatrix[j][i] == selectedButton) {
-									gameManager.move(defaultPlayer, new Position(j, i));
-									gameManager.mark(defaultPlayer);
+									gameManager.move(gameManager.getMasterDj(), new Position(j, i));
+									gameManager.mark(gameManager.getMasterDj());
 								}
 							}
 						}
@@ -163,15 +160,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		}
 	}
 	
-	//TODO: BadCode
-	//Do Not understand why this methos is necessary, since it does exactly the same as onPlayerConnect 
-	//I is here only because listener are not working well at first time. So we had to keep it. O_o
-	private void initializePlayersName() {
+	private void updatePlayersName() {
 		Map<String, Player> players = gameManager.getPlayers();
 		for (String playerID : players.keySet()) {
 			Player player = players.get(playerID);
-			ConnectEvent event = new ConnectEvent(player, player.getPosition());
-			onPlayerConnect(event);
+			if (!(playersName.containsKey(player))) {
+				drawPlayerLabel(player);
+			}
 		}
 	}
 	
@@ -237,6 +232,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onPlayerMove(MoveEvent event) {
 		final int padding = 5;
 		int alreadyThere = 0;
+		
 		Map<String, Player> players = gameManager.getPlayers();
 		for (String playerID : players.keySet()) {
 			if (event.getNewPosition().equals(players.get(playerID)))
@@ -259,14 +255,18 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
 		Player player = event.getPlayer();
-		if(!player.equals(defaultPlayer)){
-			PlayerNameView playerNameView = new PlayerNameView(this);
-			playerNameView.setText(player.getName());
-			playerNameView.setLocation(getLocation(player.getPosition()));
-			playersName.put(player, playerNameView);
-			RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
-			namesLayout.addView(playerNameView);
+		if(!(player.equals(gameManager.getMasterDj()))){
+			drawPlayerLabel(player);
 		}
+	}
+	
+	private void drawPlayerLabel(Player player) {
+		PlayerNameView playerNameView = new PlayerNameView(this);
+		playerNameView.setText(player.getName());
+		playerNameView.setLocation(getLocation(player.getPosition()));
+		playersName.put(player, playerNameView);
+		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
+		namesLayout.addView(playerNameView);
 	}
 	
 	@Override
@@ -372,6 +372,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	protected void handleSimpleJoyMessage(SwitchMsg k) {
-		ADKControl.processMessage(k.getSw()+"",k.getState()+"");
+		adkControl.processMessage(k.getSw()+"",k.getState()+"");
 	}
 }

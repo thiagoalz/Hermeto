@@ -34,7 +34,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		ExecutionControl {
 
 	private static final int COLUMNS_CONF = 16;
-	private static final int ROWS_CONF = 15;
+	private static final int ROWS_CONF = 16;
 
 	private static GameManager instance;
 
@@ -44,6 +44,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	private int rows;
 
 	private Map<String, Player> players = new LinkedHashMap<String, Player>();
+	private Player masterDj;
 	private int playerCounter = 0;
 
 	private boolean playing = false;
@@ -80,6 +81,9 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		Log.d(tag, "Creating game with [" + columns + ", " + rows + "]");
 		this.columns = columns > 1 ? columns : 2;
 		this.rows = rows > 1 ? columns : 2;
+		
+		masterDj = createPlayer("Master DJ");
+		notifyConnectPlayerListeners(masterDj);
 	}
 
 	public boolean move(Player player, Position newPosition) {
@@ -175,6 +179,17 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	public Player connectPlayer(String playerName) {
+		Player player = createPlayer(playerName);
+
+		Log.d(tag,
+				"Connection " + playerName + "(" + player.getId()
+						+ ") at the position [" + player.getPosition().getX() + ", "
+						+ player.getPosition().getY() + "]");
+		notifyConnectPlayerListeners(player);
+		return player;
+	}
+	
+	private Player createPlayer(String playerName) {
 		long nanotime = System.nanoTime();
 		String playerID = "playerID-" + nanotime;
 
@@ -185,13 +200,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
 		player.setPosition(position);
-
-		Log.d(tag,
-				"Connection " + playerName + "(" + playerID
-						+ ") at the position [" + position.getX() + ", "
-						+ position.getY() + "]");
 		players.put(player.getId(), player);
-		notifyConnectPlayerListeners(player);
 		return player;
 	}
 
@@ -432,6 +441,10 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	public void setBPM(int bpm) {
 		setTimeSequence(60000 / bpm);
+	}
+	
+	public Player getMasterDj() {
+		return masterDj;
 	}
 
 	public void cleanUp() {

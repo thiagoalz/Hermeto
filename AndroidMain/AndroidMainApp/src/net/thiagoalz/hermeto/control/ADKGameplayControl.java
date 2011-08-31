@@ -14,13 +14,22 @@ public class ADKGameplayControl implements GameplayControl {
 	protected GameManager gameManager;
 	protected Map<Integer, String> playerIDMap = new HashMap<Integer, String>();
 	
-	public ADKGameplayControl(GameManager gameManager, int controlNumber){
+	private boolean defaultPlayersConnected = false;
+	
+	public ADKGameplayControl(GameManager gameManager){
 		this.gameManager = gameManager;
-		
-		//Connecting ADK players
-		for(int i=0; i<controlNumber; i++){
+	}
+	
+	/**
+	 * Connect a number of players taken as parameters.
+	 * @param number The number of players to connect.
+	 */
+	public void connectDefaultPlayers(int number) {
+		// Connecting ADK players
+		for(int i = 0; i < number; i++){
 			connectPlayer(i);
 		}
+		defaultPlayersConnected = true;
 	}
 	
 	/**
@@ -100,6 +109,10 @@ public class ADKGameplayControl implements GameplayControl {
 		Log.d(tag, "Mapping the player with ID # " + id + " to " + playerID);
 		playerIDMap.put(id, playerID);
 		return playerID != null;
+	}
+	
+	public isDefaultPlayersConnected() {
+		
 	}
 
 }

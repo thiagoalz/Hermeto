@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * Control the access of the players using the XMPP protocol.
+ */
 public class XMPPGameplayControl implements GameplayControl, Runnable {
 
 	private static final int MESSAGE_PLAYER = 1;
@@ -22,14 +25,14 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	private final String SERVER_PASSWORD = "123456";
 	private final String SERVER_ADDRESS = "lilab.info";
 	private final String CLIENT_LOGIN = "b@lilab.info";
-	
+
 	protected List<String> players;
 
 	XMPPClient chatClient;
-	
+
 	Thread myThread;
-	
-	boolean running=false;
+
+	boolean running = false;
 
 	private static final String tag = XMPPGameplayControl.class
 			.getCanonicalName();
@@ -46,14 +49,14 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 
 		String[] msgSplit = message.split(" ");
 
-		if (msgSplit.length > 1){// all messages have 2 parameters
-			if (msgSplit[0].toUpperCase().equals("HELLO")) {			
+		if (msgSplit.length > 1) {// all messages have 2 parameters
+			if (msgSplit[0].toUpperCase().equals("HELLO")) {
 				connectPlayer(msgSplit[1]);
 			} else if (msgSplit[1].equals("button")) {
 				markSquare(msgSplit[0]);
-			} else if (msgSplit[1].equals("disconnect")){
+			} else if (msgSplit[1].equals("disconnect")) {
 				disconnectPlayer(msgSplit[0]);
-			}else{
+			} else {
 				movePlayer(msgSplit[0], msgSplit[1]);
 			}
 		}
@@ -61,18 +64,18 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	}
 
 	protected boolean movePlayer(String playerID, String dir) {
-		Player player=gameManager.getPlayer(playerID);
-		
-		if(player!=null){//Player exists
-			Player.Direction direction = parseDirection(dir);		
-			return 	gameManager.move(player, direction);
+		Player player = gameManager.getPlayer(playerID);
+
+		if (player != null) {// Player exists
+			Player.Direction direction = parseDirection(dir);
+			return gameManager.move(player, direction);
 		}
 		return false;
 	}
 
 	private Direction parseDirection(String direction) {
 		Log.d(tag, "Parsing direction '" + direction + "'");
-		direction=direction.toLowerCase();
+		direction = direction.toLowerCase();
 		Player.Direction dir;
 		if (direction.equals(Player.Direction.LEFT.getValue())) {
 			dir = Player.Direction.LEFT;
@@ -87,24 +90,23 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	}
 
 	protected boolean markSquare(String playerID) {
-		Player player=gameManager.getPlayer(playerID);
-		
-		if(player!=null){//Player exists
+		Player player = gameManager.getPlayer(playerID);
+
+		if (player != null) {// Player exists
 			return gameManager.mark(player);
 		}
-		
+
 		return false;
 	}
-	
+
 	protected boolean disconnectPlayer(String playerID) {
-		Player player=gameManager.getPlayer(playerID);
+		Player player = gameManager.getPlayer(playerID);
 		players.remove(playerID);
-		if(player!=null){//Player exists
+		if (player != null) {// Player exists
 			gameManager.disconnectPlayer(player);
-			
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -121,7 +123,6 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 			e.printStackTrace();
 		}
 
-
 		return id;
 	}
 
@@ -133,13 +134,14 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 			Log.d("XMPP", "Conected");
 
 			while (running) {
-				 org.jivesoftware.smack.packet.Message xmppMsg = chatClient.checkMessage();
+				org.jivesoftware.smack.packet.Message xmppMsg = chatClient
+						.checkMessage();
 
 				if (xmppMsg != null
 						&& ((xmppMsg.getType() == org.jivesoftware.smack.packet.Message.Type.chat) || (xmppMsg
 								.getType() == org.jivesoftware.smack.packet.Message.Type.normal))
-						&& xmppMsg.getBody()!=null	) { // Got a message
-																									
+						&& xmppMsg.getBody() != null) { // Got a message
+
 					Log.d("XMPP", "Got message: (" + xmppMsg.getFrom() + ") "
 							+ xmppMsg.getBody());
 					Message m = Message.obtain(mHandler, MESSAGE_PLAYER);
@@ -187,25 +189,29 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 
 	public void stop() {
 		running = false;
-		if(myThread != null){
+		if (myThread != null) {
 			myThread.interrupt();
 		}
-		
-		//Disconnect all players
-		int size=players.size();
-		for (int i=0; i<size;i++) {
+
+		// Disconnect all players
+		int size = players.size();
+		for (int i = 0; i < size; i++) {
 			disconnectPlayer(players.get(i));
 		}
 		players = null;
 	}
 
 	public void start() {
-		while (myThread!=null && myThread.isAlive()){
+		while (myThread != null && myThread.isAlive()) {
 			stop();
 		}
 		players = new ArrayList<String>();
 		running = true;
 		myThread = new Thread(null, this, "XMPP");
 		myThread.start();
+	}
+	
+	public boolean isRunning() {
+		return running;
 	}
 }
