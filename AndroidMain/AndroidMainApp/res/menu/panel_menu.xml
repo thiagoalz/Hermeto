@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/connect_adk"
+          android:title="Connect ADK Players"
+          android:icon="@drawable/menu_controlpad" />
+    <item android:id="@+id/connect_xmpp"
+          android:title="Allow Web Players"
+          android:icon="@drawable/menu_iphone" />
+    <item android:id="@+id/change_instruments"
+          android:title="Change Instruments"
+          android:icon="@drawable/menu_guitar">
+    	<menu xmlns:android="http://schemas.android.com/apk/res/android">
+		    <group android:checkableBehavior="single">
+		        <item android:id="@+id/red"
+		              android:title="Percusion" />
+		        <item android:id="@+id/blue"
+		              android:title="Voices" />
+		    </group>
+		</menu>      
+    </item>
+            
+</menu>

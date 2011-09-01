@@ -23,6 +23,8 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -71,6 +73,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		adkControl = new ADKGameplayControl(gameManager);
 		xmppControl = new XMPPGameplayControl(gameManager);
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.panel_menu, menu);
+		return true;
 	}
 	
 	@Override
