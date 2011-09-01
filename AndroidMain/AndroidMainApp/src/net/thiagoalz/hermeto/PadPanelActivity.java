@@ -113,9 +113,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			if (!adkControl.isDefaultPlayersConnected()) {
 				adkControl.connectDefaultPlayers(ADK_PLAYERS);
 			}
-			updatePlayersName();
 		}
-		
 	}
 
 	private void configureScreen() {
@@ -162,17 +160,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			tableLayout.addView(tableRow);
 		}
 	}
-	
-	private void updatePlayersName() {
-		Map<String, Player> players = gameManager.getPlayers();
-		for (String playerID : players.keySet()) {
-			Player player = players.get(playerID);
-			if (!(playersName.containsKey(player))) {
-				drawPlayerLabel(player);
-			}
-		}
-	}
-	
+		
 	private Position getLocation(Position position) {
 		ImageButton button = padsMatrix[position.getX()][position.getY()];
 		int screenLocation[] = new int[2];
