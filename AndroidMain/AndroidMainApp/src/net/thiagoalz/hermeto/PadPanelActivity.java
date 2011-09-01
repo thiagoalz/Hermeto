@@ -110,6 +110,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		if (hasFocus) {
+			if (!adkControl.isDefaultPlayersConnected()) {
+				adkControl.connectDefaultPlayers(ADK_PLAYERS);
+			}
 			updatePlayersName();
 		}
 		
