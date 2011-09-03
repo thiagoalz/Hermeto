@@ -29,28 +29,5 @@ public interface SquarePanelManager {
 	 * @param player The player that wants to mark the square under his position.
 	 * @return True if the square could be marked, otherwise return false.
 	 */
-	public boolean mark(Player player);
-	
-	/**
-	 * Retrieve all the position of the marked squares in the panel.
-	 * @return The array of position of the marked squares.
-	 */
-	public Position[] getMarkedSquares();	
-	
-	
-	/**
-	 * Retrieve if the game is playing.
-	 * 
-	 * @return True indicates if the game is playing, otherwise return false.
-	 */
-	public boolean isPlaying();
-	
-	public void start();
-	
-	public void stop();
-	
-	public void pause();
-	
-	public void reset();
-	
+	public boolean mark(Player player);	
 }

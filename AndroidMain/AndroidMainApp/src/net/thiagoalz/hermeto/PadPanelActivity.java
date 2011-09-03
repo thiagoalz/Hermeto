@@ -39,7 +39,7 @@ import com.google.android.DemoKit.DemoKitActivity;
 
 public class PadPanelActivity extends DemoKitActivity implements SelectionListener, PlayerListener, ExecutionListener {
 	
-	private static final String tag = PadPanelActivity.class.getCanonicalName();
+	private static final String TAG = PadPanelActivity.class.getCanonicalName();
 	
 	private GameManager gameManager;
 	private SoundManager soundManager;
@@ -66,9 +66,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		gameManager = GameManager.getInstance();
 		
 		constructView();
-				
+		
+		Log.d(TAG, "Making the panel activity listen to the square selection events.");
 		gameManager.addSelectionListener(this);
-		gameManager.addExecutionListener(this);
+		Log.d(TAG, "Making the panel activity listen to the sequence events.");
+		gameManager.getSequencer().addExecutionListener(this);
+		Log.d(TAG, "Making the panel activity listen to the players events.");
 		gameManager.addPlayerListener(this);
 		
 		adkControl = new ADKGameplayControl(gameManager);
@@ -109,7 +112,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onBackPressed() {
 		super.onBackPressed();
 		
-		gameManager.pause();
+		gameManager.getSequencer().pause();
 		gameManager.cleanUp();
 		soundManager.cleanUp();
 		this.finish();
@@ -139,7 +142,11 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializeSquarePanel() {
-		padsMatrix = new ImageButton[gameManager.getColumns()][gameManager.getRows()];
+		int[] dimensions = gameManager.getGameContext().getDimensions();
+		
+		Log.d(TAG, "Creating panel with [" + dimensions[0]+ ", " + dimensions[1] + "] dimensions");
+		padsMatrix = new ImageButton[dimensions[0]][dimensions[1]];
+		
 		for (int i = 0; i < padsMatrix.length; i++) {
 			TableRow tableRow = new TableRow(this);
 			for (int j = 0; j < padsMatrix[i].length; j++) {
@@ -148,21 +155,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				params.gravity = Gravity.CENTER;
 				button.setLayoutParams(params);
 				button.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.buttonstopped));
-				button.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						ImageButton selectedButton = (ImageButton) v;
-						for (int i = 0; i < padsMatrix.length; i++) {
-							for (int j = 0; j < padsMatrix[i].length; j++) {
-								if (padsMatrix[j][i] == selectedButton) {
-									gameManager.move(gameManager.getMasterDj(), new Position(j, i));
-									gameManager.mark(gameManager.getMasterDj());
-								}
-							}
-						}
-						
-					}
-				});
+				button.setOnClickListener(new MasterDjListener(this, gameManager));
 				padsMatrix[j][i] = button;
 				tableRow.addView(padsMatrix[j][i]);
 			}
@@ -189,10 +182,10 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		play.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (gameManager.isPlaying()) {
-					gameManager.pause();
+				if (gameManager.getSequencer().isPlaying()) {
+					gameManager.getSequencer().pause();
 				} else {
-					gameManager.start();
+					gameManager.getSequencer().start();
 				}
 			}
 		});
@@ -201,7 +194,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		stop.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				gameManager.stop();
+				gameManager.getSequencer().stop();
 			}
 		});
 		
@@ -209,7 +202,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		reset.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				gameManager.reset();
+				gameManager.getSequencer().reset();
 			}
 		});
 	}
@@ -255,7 +248,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
 		Player player = event.getPlayer();
-		if(!(player.equals(gameManager.getMasterDj()))){
+		Player masterDJ = gameManager.getGameContext().getMasterDJ();
+		if(!(player.equals(masterDJ))){
 			drawPlayerLabel(player);
 		}
 	}
@@ -302,7 +296,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStartPlayingGroup(final ExecutionEvent event) {
-		Log.d(tag, "Printing selected buttons with playing color ");
+		Log.d(TAG, "Printing selected buttons with playing color ");
 		runOnUiThread(new Runnable() {
 			public void run() {
 				List<Position> positions = event.getPositions();
@@ -316,7 +310,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStopPlayingGroup(final ExecutionEvent event) {
-		Log.d(tag, "Printing selected buttons with selected color ");
+		Log.d(TAG, "Printing selected buttons with selected color ");
 		runOnUiThread(new Runnable() {
 			public void run() {
 				List<Position> positions = event.getPositions();
@@ -328,13 +322,22 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		});
 	}
 	
-	
+	public ImageButton[][] getPadsMatrix() {
+		return padsMatrix;
+	}
+
+	public void setPadsMatrix(ImageButton[][] padsMatrix) {
+		this.padsMatrix = padsMatrix;
+	}
+
 	////////////////////////ADK CODE/////////////////////
 	protected void handleJoyMessage(JoyMsg j) {
 //		if (mInputController != null) {
 //			mInputController.joystickMoved(j.getX(), j.getY());
 //		}
 	}
+
+	
 
 	protected void handleLightMessage(LightMsg l) {
 //		if (mInputController != null) {

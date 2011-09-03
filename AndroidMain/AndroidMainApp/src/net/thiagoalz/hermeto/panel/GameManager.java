@@ -1,17 +1,13 @@
 package net.thiagoalz.hermeto.panel;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionControl;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
@@ -31,7 +27,7 @@ import android.util.Log;
  * @version 0.1
  */
 public class GameManager implements SquarePanelManager, PlayersManager,
-		ExecutionControl {
+		ExecutionListener {
 
 	private static final int COLUMNS_CONF = 16;
 	private static final int ROWS_CONF = 16;
@@ -39,25 +35,12 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	private static GameManager instance;
 
 	private static final String tag = GameManager.class.getCanonicalName();
-
-	private int columns;
-	private int rows;
-
-	private Map<String, Player> players = new LinkedHashMap<String, Player>();
-	private Player masterDj;
-	private int playerCounter = 0;
-
-	private boolean playing = false;
-
-	private Set<Position> markedSquares = new LinkedHashSet<Position>();
-
-	private Timer sequencer;
-	private int currentPlayingLine = 0;
-	private int timeSequence = 200;
-
+	private Sequencer sequencer;
+	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
-	private List<ExecutionListener> executionListeners = new ArrayList<ExecutionListener>();
 	private List<PlayerListener> playerListeners = new ArrayList<PlayerListener>();
+	
+	private GameContextImpl gameContext;
 
 	public synchronized static GameManager getInstance() {
 		return getInstance(COLUMNS_CONF, ROWS_CONF);
@@ -78,12 +61,11 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	 *            The number of rows of the panel.
 	 */
 	private GameManager(int columns, int rows) {
-		Log.d(tag, "Creating game with [" + columns + ", " + rows + "]");
-		this.columns = columns > 1 ? columns : 2;
-		this.rows = rows > 1 ? columns : 2;
-		
-		masterDj = createPlayer("Master DJ");
-		notifyConnectPlayerListeners(masterDj);
+		gameContext = new GameContextImpl(columns, rows);
+		sequencer = new Sequencer(this);
+		Player masterDJ = createPlayer("Master DJ");
+		gameContext.setMasterDJ(masterDJ);
+		notifyConnectPlayerListeners(masterDJ);
 	}
 
 	public boolean move(Player player, Position newPosition) {
@@ -92,14 +74,15 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		Log.d(tag, "Changing position of the player: [" + newPosition.getX()
 				+ ", " + newPosition.getY() + "]");
 		notifyMovePlayerListeners(player, oldPos, player.getPosition());
-
 		return true;
 	}
 
 	@Override
 	public boolean move(Player player, Direction direction) {
+		int columns = gameContext.getDimensions()[0];
+		int rows = gameContext.getDimensions()[1];
+		
 		Position oldPos = player.getPosition();
-
 		int x = oldPos.getX();
 		int y = oldPos.getY();
 
@@ -143,9 +126,13 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	@Override
 	public boolean mark(Player player) {
+		Set<Position> markedSquares = gameContext.getMarkedSquares();
+		
 		Position selectedPosition = new Position(player.getPosition().getX(),
 				player.getPosition().getY());
 		if (markedSquares.contains(selectedPosition)) {
+			Log.d(tag, "Dismarking square [" + player.getPosition().getX() + ", "
+					+ player.getPosition().getY() + "]");
 			markedSquares.remove(selectedPosition);
 			notifyDeselection(player, selectedPosition);
 			return false;
@@ -159,65 +146,52 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	@Override
-	public Position[] getMarkedSquares() {
-		Log.d(tag, markedSquares.size() + " squares marked");
-		return (Position[]) markedSquares.toArray();
-	}
-
-	public int getColumns() {
-		return columns;
-	}
-
-	public int getRows() {
-		return rows;
-	}
-
-	@Override
 	public Player connectPlayer() {
-		String playerName = "Player " + (++playerCounter);
+		String playerName = "Player " + (gameContext.getAllPlayers().size() + 1);
 		return this.connectPlayer(playerName);
 	}
 
 	public Player connectPlayer(String playerName) {
 		Player player = createPlayer(playerName);
 
-		Log.d(tag,
-				"Connection " + playerName + "(" + player.getId()
-						+ ") at the position [" + player.getPosition().getX() + ", "
-						+ player.getPosition().getY() + "]");
+		Log.d(tag, "Connection " + playerName + "(" + player.getId()
+				+ ") at the position [" + player.getPosition().getX() + ", "
+				+ player.getPosition().getY() + "]");
 		notifyConnectPlayerListeners(player);
 		return player;
 	}
 	
 	private Player createPlayer(String playerName) {
+		int[] dimensions = gameContext.getDimensions();
+		
 		long nanotime = System.nanoTime();
 		String playerID = "playerID-" + nanotime;
 
 		Position position = null;
 		Random myRandom = new Random(nanotime);
-		position = new Position(myRandom.nextInt(columns),
-				myRandom.nextInt(rows));
+		position = new Position(myRandom.nextInt(dimensions[0]),
+				myRandom.nextInt(dimensions[1]));
 
 		DefaultPlayer player = new DefaultPlayer(playerName, playerID, this);
 		player.setPosition(position);
-		players.put(player.getId(), player);
+		gameContext.getAllPlayers().put(player.getId(), player);
 		return player;
 	}
 
 	@Override
 	public void disconnectPlayer(Player player) {
-		players.remove(player.getId());
+		gameContext.getAllPlayers().remove(player.getId());
 		notifyDisconnectPlayerListeners(player);
 	}
 
 	@Override
 	public Map<String, Player> getPlayers() {
-		return players;
+		return gameContext.getAllPlayers();
 	}
 
 	@Override
 	public Player getPlayer(String playerID) {
-		return players.get(playerID);
+		return gameContext.getAllPlayers().get(playerID);
 	}
 
 	// ==========Listeners==========
@@ -225,16 +199,8 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		this.selectionListeners.add(selectionListener);
 	}
 
-	public void addExecutionListener(ExecutionListener executionListener) {
-		this.executionListeners.add(executionListener);
-	}
-
 	public void removeSelectionListener(SelectionListener selectionListener) {
 		this.selectionListeners.remove(selectionListener);
-	}
-
-	public void removeExecutionListener(ExecutionListener executionListener) {
-		this.executionListeners.remove(executionListener);
 	}
 
 	public void addPlayerListener(PlayerListener playerListener) {
@@ -283,189 +249,77 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		}
 	}
 
-	@Override
-	public boolean isPlaying() {
-		return playing;
-	}
-
-	@Override
-	public void start() {
-		playing = true;
-		registerSoundTimer();
-		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
-			listener.onStart(event);
-		}
-	}
-
-	@Override
 	public void updateBPM(int bpm) {
 		if (bpm < 1) {
 			this.setBPM(1);// To avoid problems when resuming without change the
 							// BPM
-			pause();
+			sequencer.pause();
 			return;
 		}
 		this.setBPM(bpm);
-		start();// Renew sequencer
+		sequencer.start();// Renew sequencer
 	}
 
-	private void registerSoundTimer() {
-		if (sequencer != null) {
-			sequencer.cancel();
-		}
-		// Think this timer is not that trustable. It may be the cause of the
-		// lags.
-		sequencer = new Timer();
-		sequencer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				long startTime = System.currentTimeMillis();
-				synchronized(sequencer) {
-					startPlayingGroup(currentPlayingLine);
-					
-					/* keep it turned on until the half of the total period time */
-					long waitTime = (timeSequence / 2)
-							- (System.currentTimeMillis() - startTime); 
-	
-					// If we really need to wait more
-					if (waitTime > 0) { 
-						try {
-							Thread.sleep(waitTime);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					stopPlayingGroup(currentPlayingLine);
-					// Circular
-					currentPlayingLine = (currentPlayingLine + 1) % COLUMNS_CONF; 
-				}
-			}
-		}, 0, timeSequence);
-	}
-
-	@Override
-	public void stop() {
-		if (sequencer != null) {
-			synchronized(sequencer) {
-				sequencer.cancel();
-				sequencer = null;
-			}
-		}
-
-		playing = false;
-		currentPlayingLine = 0;
-
-		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
-			listener.onStop(event);
-		}
-	}
-
-	@Override
-	public void pause() {
-		playing = false;
-		ExecutionEvent event = new ExecutionEvent();
-		if (sequencer != null) {
-			synchronized(sequencer) {
-				sequencer.cancel();
-				sequencer = null;
-			}
-		}
-		for (ExecutionListener listener : executionListeners) {
-			listener.onPause(event);
-		}
-	}
-
-	@Override
-	public void reset() {
-		// Stop first the sequence
-		stop();
-
-		// Deselect all the markedSquares and stop playing.
-		for (Position position : markedSquares) {
-			notifyDeselection(null, position);
-		}
-		markedSquares = new LinkedHashSet<Position>();
-		playing = false;
-
-		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
-			listener.onReset(event);
-		}
-	}
-
-	private void startPlayingGroup(int group) {
-		Log.d(tag, "Starting playing group " + group);
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : markedSquares) {
-			if (position.getX() == group) {
-				playingPositions.add(position);
-			}
-		}
-		if (playingPositions.size() > 0) {
-			ExecutionEvent event = new ExecutionEvent();
-			event.setPositions(playingPositions);
-			for (ExecutionListener listener : executionListeners) {
-				listener.onStartPlayingGroup(event);
-			}
-		}
-	}
-
-	private void stopPlayingGroup(int group) {
-		Log.d(tag, "Stoping playing group " + currentPlayingLine);
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : markedSquares) {
-			if (position.getX() == group) {
-				playingPositions.add(position);
-			}
-		}
-		if (playingPositions.size() > 0) {
-			ExecutionEvent event = new ExecutionEvent();
-			event.setPositions(playingPositions);
-			for (ExecutionListener listener : executionListeners) {
-				listener.onStopPlayingGroup(event);
-			}
-		}
-
-	}
-
-	public int getTimeSequence() {
-		return timeSequence;
-	}
-	
 	public int getBPM() {
-		return 60000 / timeSequence;
-	}
-
-	public void setTimeSequence(int timeSequence) {
-		this.timeSequence = timeSequence;
+		return 60000 / sequencer.getTimeSequence();
 	}
 
 	public void setBPM(int bpm) {
-		setTimeSequence(60000 / bpm);
+		sequencer.setTimeSequence(60000 / bpm);
 	}
 	
-	public Player getMasterDj() {
-		return masterDj;
+	public GameContext getGameContext() { 
+		return gameContext;
 	}
 
 	public void cleanUp() {
-		this.stop();
-
-		columns=0;
-		rows=0;
-		players = new LinkedHashMap<String, Player>();
-		playerCounter = 0;
-		playing = false;
-		markedSquares = new LinkedHashSet<Position>();
-		sequencer=null;
-		currentPlayingLine = 0;
-		timeSequence = 200;
+		sequencer.stop();
+		sequencer = new Sequencer(this);
+		gameContext = new GameContextImpl(COLUMNS_CONF, ROWS_CONF);
 		selectionListeners = new ArrayList<SelectionListener>();
-		executionListeners = new ArrayList<ExecutionListener>();
 		playerListeners = new ArrayList<PlayerListener>();
-		
 		GameManager.instance=null;
 	}
 
+	@Override
+	public void onStart(ExecutionEvent event) {
+		gameContext.setPlaying(true);
+	}
+
+	@Override
+	public void onStop(ExecutionEvent event) {
+		gameContext.setPlaying(false);
+	}
+
+	@Override
+	public void onReset(ExecutionEvent event) {
+		gameContext.setPlaying(false);
+		// Deselect all the markedSquares and stop playing.
+		for (Position position : gameContext.getMarkedSquares()) {
+			notifyDeselection(null, position);
+		}
+		gameContext.setMarkedSquares(new LinkedHashSet<Position>());
+	}
+
+	@Override
+	public void onPause(ExecutionEvent event) {
+		gameContext.setPlaying(false);
+		
+	}
+
+	@Override
+	public void onStartPlayingGroup(ExecutionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStopPlayingGroup(ExecutionEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public Sequencer getSequencer() {
+		return sequencer;
+	}
 }
