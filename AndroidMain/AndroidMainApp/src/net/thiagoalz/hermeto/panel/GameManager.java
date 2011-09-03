@@ -320,27 +320,25 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		sequencer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
 				long startTime = System.currentTimeMillis();
-				startPlayingGroup(currentPlayingLine);
-
-				long waitTime = (timeSequence / 2)
-						- (System.currentTimeMillis() - startTime); // keep it
-																	// turned on
-																	// until the
-																	// half of
-																	// the total
-																	// period
-																	// time
-
-				if (waitTime > 0) { // If we really need to wait more
-					try {
-						Thread.sleep(waitTime);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+				synchronized(sequencer) {
+					startPlayingGroup(currentPlayingLine);
+					
+					/* keep it turned on until the half of the total period time */
+					long waitTime = (timeSequence / 2)
+							- (System.currentTimeMillis() - startTime); 
+	
+					// If we really need to wait more
+					if (waitTime > 0) { 
+						try {
+							Thread.sleep(waitTime);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
+					stopPlayingGroup(currentPlayingLine);
+					// Circular
+					currentPlayingLine = (currentPlayingLine + 1) % COLUMNS_CONF; 
 				}
-				stopPlayingGroup(currentPlayingLine);
-				currentPlayingLine = (currentPlayingLine + 1) % COLUMNS_CONF; // Circular
-																				// list
 			}
 		}, 0, timeSequence);
 	}
@@ -348,8 +346,10 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	@Override
 	public void stop() {
 		if (sequencer != null) {
-			sequencer.cancel();
-			sequencer = null;
+			synchronized(sequencer) {
+				sequencer.cancel();
+				sequencer = null;
+			}
 		}
 
 		playing = false;
@@ -366,8 +366,10 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		playing = false;
 		ExecutionEvent event = new ExecutionEvent();
 		if (sequencer != null) {
-			sequencer.cancel();
-			sequencer = null;
+			synchronized(sequencer) {
+				sequencer.cancel();
+				sequencer = null;
+			}
 		}
 		for (ExecutionListener listener : executionListeners) {
 			listener.onPause(event);
