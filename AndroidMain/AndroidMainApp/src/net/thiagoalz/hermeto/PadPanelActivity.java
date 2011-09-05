@@ -121,11 +121,11 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			if (!adkControl.isDefaultPlayersConnected()) {
-				adkControl.connectDefaultPlayers(ADK_PLAYERS);
-			}
-		}
+//		if (hasFocus) {
+//			if (!adkControl.isDefaultPlayersConnected()) {
+//				adkControl.connectDefaultPlayers(ADK_PLAYERS);
+//			}
+//		}
 	}
 
 	private void configureScreen() {
@@ -331,6 +331,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 
 	////////////////////////ADK CODE/////////////////////
+	
+	@Override
+	protected void enableControls(boolean enable){
+		if(enable){
+			if (adkControl!=null && !adkControl.isDefaultPlayersConnected()) {
+				adkControl.connectDefaultPlayers(ADK_PLAYERS);
+			}
+		}else{
+			if(adkControl!=null){
+				adkControl.disconnectAllPlayers();
+			}
+		}
+	}
+	
 	protected void handleJoyMessage(JoyMsg j) {
 //		if (mInputController != null) {
 //			mInputController.joystickMoved(j.getX(), j.getY());
