@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -82,19 +83,58 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.panel_menu, menu);
+		
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu (Menu menu){
+		//Configure XMPP menu
+		MenuItem xmppItem = menu.findItem(R.id.connect_xmpp);
+		if(xmppControl.isRunning()){
+			xmppItem.setTitle("Deny Web Players");
+			xmppItem.setIcon(R.drawable.menu_phone_on);
+		}else{
+			xmppItem.setTitle("Allow Web Players");
+			xmppItem.setIcon(R.drawable.menu_phone_off);
+		}
+		
+		
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.connect_xmpp:
+	    	if(xmppControl.isRunning()){
+	    		xmppControl.stop();
+	    	}else{
+	    		xmppControl.start();
+	    	}
+	        return true;
+	    case R.id.red:
+	        //TODO: Change Instrument
+	    
+	        return true;
+	    case R.id.blue:
+	    	//TODO: Change Instrument
+	    	
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		xmppControl.stop();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		xmppControl.start();
 	}
 	
 	@Override
@@ -115,6 +155,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		gameManager.getSequencer().pause();
 		gameManager.cleanUp();
 		soundManager.cleanUp();
+		xmppControl.stop();
 		this.finish();
 	}
 
