@@ -63,4 +63,18 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 			}
 		}
 	}
+	
+	protected void cleanTimer() {
+		if (getTimer() != null) {
+			if (getSequencer().getGameManager().getBPM() >= 60) {
+				synchronized (getTimer()) {
+					Log.d(TAG, "Cancelling timer.");
+					getTimer().cancel();
+				}
+			} else {//If BPM is too slow, do not wait for completion.
+				Log.d(TAG, "Cancelling timer.");
+				getTimer().cancel();
+			}
+		}
+	}
 }

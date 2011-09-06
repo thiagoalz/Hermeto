@@ -20,10 +20,7 @@ public class LinearGroupSequenceStrategy extends GroupSequenceStrategy {
 
 	@Override
 	public void start() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Cancelling timer.");
-			getTimer().cancel();
-		}
+		cleanTimer();
 		Log.d(TAG, "Starting the sequencer at square #" + currentPlayingSquare + ".");
 		// Think this timer is not that trustable. It may be the cause of the
 		// lags.
@@ -44,11 +41,7 @@ public class LinearGroupSequenceStrategy extends GroupSequenceStrategy {
 
 	@Override
 	public synchronized void pause() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Pausing the sequencer at column #" + currentPlayingSquare + ".");
-			getTimer().cancel();
-			setTimer(null);
-		}
+		cleanTimer();
 	}
 
 	private class LinearGroupTimerTask extends TimerTask {
