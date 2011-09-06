@@ -105,8 +105,10 @@ public class Sequencer implements ExecutionControl {
 	
 	private void registerSoundTimer() {
 		if (timer != null) {
-			Log.d(TAG, "Cancelling timer.");
-			timer.cancel();
+			synchronized(timer) {
+				Log.d(TAG, "Cancelling timer.");
+				timer.cancel();
+			}
 		}
 		// Think this timer is not that trustable. It may be the cause of the lags.
 		timer = new Timer();
