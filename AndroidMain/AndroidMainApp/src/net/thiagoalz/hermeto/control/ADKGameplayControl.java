@@ -116,9 +116,11 @@ public class ADKGameplayControl implements GameplayControl {
 	}
 	
 	public void disconnectAllPlayers() {
-		for (Integer id : playerIDMap.keySet()) {
-			String playerID = playerIDMap.get(id);
-			gameManager.disconnectPlayer(gameManager.getPlayer(playerID));
+		if(playerIDMap!=null){
+			for (Integer id : playerIDMap.keySet()) {
+				String playerID = playerIDMap.get(id);
+				gameManager.disconnectPlayer(gameManager.getPlayer(playerID));
+			}
 		}
 		playerIDMap = null;
 		defaultPlayersConnected = false;
