@@ -50,14 +50,9 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public void stop() {
+		this.pause();
 		Log.d(TAG, "Stoping the sequencer, and reset the current line.");
-		if (timer != null) {
-			synchronized(timer) {
-				timer.cancel();
-				timer = null;
-				currentPlayingLine = 0;
-			}
-		}
+		currentPlayingLine = 0;
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onStop(event);
@@ -69,7 +64,12 @@ public class Sequencer implements ExecutionControl {
 		Log.d(TAG, "Pausing the sequencer at column #" + currentPlayingLine + ".");
 		
 		if (timer != null) {
-			synchronized(timer) {
+			if(gameManager.getBPM()>=60){
+				synchronized(timer) {
+					timer.cancel();
+					timer = null;
+				}
+			}else{//If BPM is too slow, do not wait for completion.
 				timer.cancel();
 				timer = null;
 			}
@@ -105,7 +105,12 @@ public class Sequencer implements ExecutionControl {
 	
 	private void registerSoundTimer() {
 		if (timer != null) {
-			synchronized(timer) {
+			if(gameManager.getBPM()>=60){
+				synchronized(timer) {
+					Log.d(TAG, "Cancelling timer.");
+					timer.cancel();
+				}
+			}else{//If BPM is too slow, do not wait for completion.
 				Log.d(TAG, "Cancelling timer.");
 				timer.cancel();
 			}
