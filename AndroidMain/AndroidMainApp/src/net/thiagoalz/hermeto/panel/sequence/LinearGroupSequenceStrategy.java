@@ -50,7 +50,7 @@ public class LinearGroupSequenceStrategy extends GroupSequenceStrategy {
 			setTimer(null);
 		}
 	}
-	
+
 	private class LinearGroupTimerTask extends TimerTask {
 		public void run() {
 			synchronized(getTimer()) {
