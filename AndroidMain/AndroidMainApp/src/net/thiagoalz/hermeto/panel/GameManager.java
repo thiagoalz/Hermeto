@@ -36,6 +36,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	private static final String tag = GameManager.class.getCanonicalName();
 	private Sequencer sequencer;
+	private int bpm = 300;
 	
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
 	private List<PlayerListener> playerListeners = new ArrayList<PlayerListener>();
@@ -249,23 +250,24 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		}
 	}
 
-	public void updateBPM(int bpm) {
-		if (bpm < 1) {
-			this.setBPM(1);// To avoid problems when resuming without change the
-							// BPM
-			sequencer.pause();
-			return;
-		}
-		this.setBPM(bpm);
-		sequencer.start();// Renew sequencer
-	}
-
 	public int getBPM() {
-		return 60000 / sequencer.getTimeSequence();
+		return bpm;
 	}
 
 	public void setBPM(int bpm) {
+		boolean wasPlaying=sequencer.isPlaying();
+		
+		this.bpm = bpm;
+		if (bpm < 1) {
+			sequencer.setTimeSequence(60000);
+			sequencer.pause();
+			return;
+		}
 		sequencer.setTimeSequence(60000 / bpm);
+		
+		if(wasPlaying){
+			sequencer.start();// Renew sequencer
+		}
 	}
 	
 	public GameContext getGameContext() { 

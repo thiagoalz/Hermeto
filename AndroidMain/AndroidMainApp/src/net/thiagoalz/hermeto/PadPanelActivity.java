@@ -9,7 +9,7 @@ import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.control.XMPPGameplayControl;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
-import net.thiagoalz.hermeto.panel.controls.listeners.BPMBarListener;
+import net.thiagoalz.hermeto.panel.controls.listeners.BPMChangeListener;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -171,12 +171,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializeControls() {
-		SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
+		final SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
 		bpmBar.setProgress(gameManager.getBPM() / 4);
 		
 		TextView bpmView = (TextView) findViewById(R.id.bpmLabel);
+		BPMChangeListener bpmListener = new BPMChangeListener(gameManager, bpmView, bpmBar, this);
 		bpmView.setText("BPM: " + gameManager.getBPM());
-		bpmBar.setOnSeekBarChangeListener(new BPMBarListener(gameManager, bpmView, this));
+		bpmBar.setOnSeekBarChangeListener(bpmListener);
 				
 		final ImageButton play = (ImageButton) findViewById(R.id.play);
 		play.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +206,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				gameManager.getSequencer().reset();
 			}
 		});
+		
+		ImageButton pĺus = (ImageButton) findViewById(R.id.plus);
+		pĺus.setOnClickListener(bpmListener);
+		
+		ImageButton minus = (ImageButton) findViewById(R.id.minus);
+		minus.setOnClickListener(bpmListener);
 	}
 
 	@Override

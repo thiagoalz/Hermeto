@@ -108,8 +108,7 @@ public class Sequencer implements ExecutionControl {
 			Log.d(TAG, "Cancelling timer.");
 			timer.cancel();
 		}
-		// Think this timer is not that trustable. It may be the cause of the
-		// lags.
+		// Think this timer is not that trustable. It may be the cause of the lags.
 		timer = new Timer();
 		Log.d(TAG, "Scheduling a new timer.");
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -122,7 +121,7 @@ public class Sequencer implements ExecutionControl {
 					long waitTime = (timeSequence / 2)
 							- (System.currentTimeMillis() - startTime); 
 	
-					// If we really need to wait more
+					// Check if it can wait more
 					if (waitTime > 0) { 
 						try {
 							Thread.sleep(waitTime);
