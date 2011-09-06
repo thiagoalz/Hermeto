@@ -9,7 +9,7 @@ import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.control.XMPPGameplayControl;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
-import net.thiagoalz.hermeto.panel.controls.listeners.BPMBarListener;
+import net.thiagoalz.hermeto.panel.controls.listeners.BPMChangeListener;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -82,19 +83,58 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.panel_menu, menu);
+		
 		return true;
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu (Menu menu){
+		//Configure XMPP menu
+		MenuItem xmppItem = menu.findItem(R.id.connect_xmpp);
+		if(xmppControl.isRunning()){
+			xmppItem.setTitle("Deny Web Players");
+			xmppItem.setIcon(R.drawable.menu_phone_on);
+		}else{
+			xmppItem.setTitle("Allow Web Players");
+			xmppItem.setIcon(R.drawable.menu_phone_off);
+		}
+		
+		
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.connect_xmpp:
+	    	if(xmppControl.isRunning()){
+	    		xmppControl.stop();
+	    	}else{
+	    		xmppControl.start();
+	    	}
+	        return true;
+	    case R.id.red:
+	        //TODO: Change Instrument
+	    
+	        return true;
+	    case R.id.blue:
+	    	//TODO: Change Instrument
+	    	
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		xmppControl.stop();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		xmppControl.start();
 	}
 	
 	@Override
@@ -115,17 +155,18 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		gameManager.getSequencer().pause();
 		gameManager.cleanUp();
 		soundManager.cleanUp();
+		xmppControl.stop();
 		this.finish();
 	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		if (hasFocus) {
-			if (!adkControl.isDefaultPlayersConnected()) {
-				adkControl.connectDefaultPlayers(ADK_PLAYERS);
-			}
-		}
+//		if (hasFocus) {
+//			if (!adkControl.isDefaultPlayersConnected()) {
+//				adkControl.connectDefaultPlayers(ADK_PLAYERS);
+//			}
+//		}
 	}
 
 	private void configureScreen() {
@@ -171,12 +212,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	private void initializeControls() {
-		SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
+		final SeekBar bpmBar = (SeekBar) findViewById(R.id.bpmBar);
 		bpmBar.setProgress(gameManager.getBPM() / 4);
 		
 		TextView bpmView = (TextView) findViewById(R.id.bpmLabel);
+		BPMChangeListener bpmListener = new BPMChangeListener(gameManager, bpmView, bpmBar, this);
 		bpmView.setText("BPM: " + gameManager.getBPM());
-		bpmBar.setOnSeekBarChangeListener(new BPMBarListener(gameManager, bpmView, this));
+		bpmBar.setOnSeekBarChangeListener(bpmListener);
 				
 		final ImageButton play = (ImageButton) findViewById(R.id.play);
 		play.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +247,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				gameManager.getSequencer().reset();
 			}
 		});
+		
+		ImageButton pĺus = (ImageButton) findViewById(R.id.plus);
+		pĺus.setOnClickListener(bpmListener);
+		
+		ImageButton minus = (ImageButton) findViewById(R.id.minus);
+		minus.setOnClickListener(bpmListener);
 	}
 
 	@Override
@@ -331,6 +379,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 
 	////////////////////////ADK CODE/////////////////////
+	
+	@Override
+	protected void enableControls(boolean enable){
+		if(enable){
+			if (adkControl!=null && !adkControl.isDefaultPlayersConnected()) {
+				adkControl.connectDefaultPlayers(ADK_PLAYERS);
+			}
+		}else{
+			if(adkControl!=null){
+				adkControl.disconnectAllPlayers();
+			}
+		}
+	}
+	
 	protected void handleJoyMessage(JoyMsg j) {
 //		if (mInputController != null) {
 //			mInputController.joystickMoved(j.getX(), j.getY());

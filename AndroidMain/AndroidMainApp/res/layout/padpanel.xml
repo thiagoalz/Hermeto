@@ -20,6 +20,16 @@
 			android:paddingBottom="10dp"
 			android:paddingRight="3dp" android:gravity="right" android:weightSum="1">
 			
+			<ImageButton android:text="Button" android:id="@+id/minus" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:background="@drawable/minus"
+				android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
+			<ImageButton android:text="Button" android:id="@+id/plus" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:background="@drawable/plus"
+				android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
 			<SeekBar android:layout_width="200dp" 
 				android:id="@+id/bpmBar" android:layout_height="wrap_content" 
 				android:layout_alignParentTop="true" 

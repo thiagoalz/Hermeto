@@ -6,7 +6,7 @@
           android:icon="@drawable/menu_controlpad" />
     <item android:id="@+id/connect_xmpp"
           android:title="Allow Web Players"
-          android:icon="@drawable/menu_iphone" />
+          android:icon="@drawable/menu_phone_off" />
     <item android:id="@+id/change_instruments"
           android:title="Change Instruments"
           android:icon="@drawable/menu_guitar">
