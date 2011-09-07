@@ -55,6 +55,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private static final int ADK_PLAYERS = 4;
 	
+	private 
+	
 	public PadPanelActivity(){
 		super();
 	}
