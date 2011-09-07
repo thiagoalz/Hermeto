@@ -17,9 +17,15 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import net.thiagoalz.hermeto.panel.sequence.BounceGroupSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.LinearGroupSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.LinearLineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.view.strategies.GroupSequenceViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.LineSequenceViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.SelectionViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -55,8 +61,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private static final int ADK_PLAYERS = 4;
 	
-	private 
-	
+	/** 
+	 * Responsible for animate the buttons in the panel 
+	 * when the game is playing. 
+	 * */
+	private SelectionViewBehavior selectionViewBehavior;
+		
 	public PadPanelActivity(){
 		super();
 	}
@@ -64,17 +74,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
+		
 		configureScreen();
-		
-		gameManager = GameManager.getInstance();
-		
-		SoundManager soundManager = new SoundManager(this);
-		//SequenceStrategy sequenceStrategy = new BounceGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
-		SequenceStrategy sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
-		if (sequenceStrategy instanceof LinearLineSequenceStrategy) {
-			gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
-		}
-		gameManager.getSequencer().setSequenceStrategy(sequenceStrategy);
+		configSequenceStrategy(SequenceStrategyType.LINEAR_LINE);
 		
 		constructView();
 		
@@ -267,16 +269,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onSelected(SelectionEvent event) {
-		int x = event.getPosition().getX();
-		int y = event.getPosition().getY();
-		padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected));
+		selectionViewBehavior.onSelected(event);
 	}
 
 	@Override
 	public void onDeselected(SelectionEvent event) {
-		int x = event.getPosition().getX();
-		int y = event.getPosition().getY();
-		padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonstopped));
+		selectionViewBehavior.onDeselected(event);
 	}
 
 	@Override
@@ -386,6 +384,33 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	public void setPadsMatrix(ImageButton[][] padsMatrix) {
 		this.padsMatrix = padsMatrix;
+	}
+	
+	private void configSequenceStrategy(SequenceStrategyType type) {
+		gameManager = GameManager.getInstance();
+		SoundManager soundManager = new SoundManager(this);
+		SequenceStrategy sequenceStrategy = null;
+		switch (type) {
+			case BOUNCE_GROUP: 
+				sequenceStrategy = new BounceGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
+				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				break;
+			case LINEAR_GROUP:
+				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
+				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				break;
+			case BOUNCE_LINE:
+				
+				break;
+			case LINEAR_LINE:
+				sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
+				gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
+				selectionViewBehavior = new LineSequenceViewBehavior(this);
+				break;
+			default:
+				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
+		}
+		gameManager.getSequencer().setSequenceStrategy(sequenceStrategy);
 	}
 
 	////////////////////////ADK CODE/////////////////////

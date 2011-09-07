@@ -1,10 +1,9 @@
 package net.thiagoalz.hermeto.view.strategies;
 
-import android.widget.ImageButton;
 import net.thiagoalz.hermeto.PadPanelActivity;
 import net.thiagoalz.hermeto.R;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import android.widget.ImageButton;
 
 public class LineSequenceViewBehavior implements SelectionViewBehavior {
 private PadPanelActivity padPanelActivity;
@@ -14,7 +13,7 @@ private PadPanelActivity padPanelActivity;
 	}
 	
 	@Override
-	public void onSelected(SelectionEvent event) {
+	public synchronized void onSelected(SelectionEvent event) {
 		int x = event.getPosition().getX();
 		int y = event.getPosition().getY();
 		ImageButton[][] padsMatrix = padPanelActivity.getPadsMatrix();
@@ -24,7 +23,7 @@ private PadPanelActivity padPanelActivity;
 	}
 
 	@Override
-	public void onDeselected(SelectionEvent event) {
+	public synchronized void onDeselected(SelectionEvent event) {
 		int x = event.getPosition().getX();
 		int y = event.getPosition().getY();
 		ImageButton[][] padsMatrix = padPanelActivity.getPadsMatrix();

@@ -3,10 +3,9 @@ package net.thiagoalz.hermeto.view.strategies;
 import net.thiagoalz.hermeto.PadPanelActivity;
 import net.thiagoalz.hermeto.R;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import android.widget.ImageButton;
 
-public class GroupSequenceViewBehavior implements SelectionListener {
+public class GroupSequenceViewBehavior implements SelectionViewBehavior {
 
 	private PadPanelActivity padPanelActivity;
 	
