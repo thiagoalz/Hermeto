@@ -33,12 +33,7 @@ public class Sequencer implements ExecutionControl {
 		this.gameManager = gameManager;
 		this.executionListeners = new ArrayList<ExecutionListener>();
 		this.executionListeners.add(gameManager);
-		if (sequenceStrategy != null)
-			this.sequenceStrategy = sequenceStrategy;
-		else {
-			//this.sequenceStrategy = new LinearGroupSequenceStrategy(this);
-			this.sequenceStrategy = new BounceGroupSequenceStrategy(this);
-		}
+		this.sequenceStrategy = sequenceStrategy;
 	}
 	
 	@Override
@@ -50,6 +45,9 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void start() {
+		if (sequenceStrategy == null) {
+			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		}
 		sequenceStrategy.start();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
@@ -59,6 +57,10 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void stop() {
+		if (sequenceStrategy == null) {
+			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		}
+		Log.d(TAG, "Sequencer delegating the stop action to the sequence strategy");
 		sequenceStrategy.stop();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
@@ -68,6 +70,9 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void pause() {
+		if (sequenceStrategy == null) {
+			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		}
 		sequenceStrategy.pause();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
@@ -77,6 +82,9 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void reset() {
+		if (sequenceStrategy == null) {
+			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		}
 		Log.d(TAG, "Reseting the sequencer.");
 		sequenceStrategy.stop();
 		ExecutionEvent event = new ExecutionEvent();
@@ -127,10 +135,10 @@ public class Sequencer implements ExecutionControl {
 	}
 
 	public void setSequenceStrategy(SequenceStrategy sequenceStrategy) {
-		this.sequenceStrategy.stop();
+		if (sequenceStrategy != null)
+			sequenceStrategy.stop();
 		this.sequenceStrategy = sequenceStrategy;
-		if (gameManager.getGameContext().isPlaying()) {
-			this.sequenceStrategy.start();
-		}
+		if (sequenceStrategy != null && isPlaying()) 
+			sequenceStrategy.start();
 	}
 }

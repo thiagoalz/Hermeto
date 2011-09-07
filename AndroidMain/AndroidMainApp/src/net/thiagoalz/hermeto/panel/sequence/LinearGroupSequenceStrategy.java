@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel.sequence;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import android.util.Log;
 
 /**
@@ -14,13 +15,13 @@ public class LinearGroupSequenceStrategy extends GroupSequenceStrategy {
 
 	private int currentPlayingSquare;
 	
-	public LinearGroupSequenceStrategy(Sequencer sequencer) {
-		super(sequencer);
+	public LinearGroupSequenceStrategy(Sequencer sequencer, SoundManager soundManager) {
+		super(sequencer, soundManager);
 	}
 
 	@Override
 	public void start() {
-		cleanTimer();
+		super.start();
 		Log.d(TAG, "Starting the sequencer at square #" + currentPlayingSquare + ".");
 		// Think this timer is not that trustable. It may be the cause of the
 		// lags.
@@ -30,18 +31,10 @@ public class LinearGroupSequenceStrategy extends GroupSequenceStrategy {
 	}
 
 	@Override
-	public synchronized void stop() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Stoping the sequencer, and reset the current playing square #" + currentPlayingSquare+ " to 0.");
-			getTimer().cancel();
-			setTimer(null);
-			currentPlayingSquare = 0;
-		}
-	}
-
-	@Override
-	public synchronized void pause() {
-		cleanTimer();
+	public void stop() {
+		super.stop();
+		Log.d(TAG, "Stoping the sequencer, and reset the current playing square #" + currentPlayingSquare+ " to 0.");
+		currentPlayingSquare = 0;
 	}
 
 	private class LinearGroupTimerTask extends TimerTask {

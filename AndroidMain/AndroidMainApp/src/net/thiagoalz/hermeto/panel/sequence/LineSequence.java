@@ -21,13 +21,28 @@ public class LineSequence {
 	
 	public void schedule(int maxSquare, int timeSequence) {
 		this.maxSquare = maxSquare;
-		
+		Log.d(TAG, "Scheduling the line sequence #" + playingLine + " to execute until the #" + maxSquare + "position.");
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new LinearLineTimerTask() , 0, timeSequence);
 	}
 	
-	public void stop() {
-		
+	public void unschedule() {
+		Log.d(TAG, "Unscheduling the line sequence #" + playingLine);
+		if (timer != null) {
+			if (sequenceStrategy.getSequencer().getGameManager().getBPM() >= 60) {
+				synchronized (timer) {
+					Log.d(TAG, "Cancelling timer.");
+					getTimer().cancel();
+				}
+			} else {//If BPM is too slow, do not wait for completion.
+				Log.d(TAG, "Cancelling timer.");
+				timer.cancel();
+			}
+		}
+	}
+	
+	public void resetToStart() {
+		currentPlayingSquare = 0;
 	}
 	
 	
@@ -65,7 +80,7 @@ public class LineSequence {
 				}
 				
 				sequenceStrategy.stopPlayingSquare(playingLine, currentPlayingSquare);
-				currentPlayingSquare = (currentPlayingSquare + 1) % maxSquare;
+				currentPlayingSquare = (currentPlayingSquare + 1) % (maxSquare + 1);
 				Log.d(TAG, "Setting the current playing column to : " + currentPlayingSquare + ".");
 			}
 		}
@@ -78,6 +93,4 @@ public class LineSequence {
 	public void setPlayingLine(int playingLine) {
 		this.playingLine = playingLine;
 	}
-	
-	
 }

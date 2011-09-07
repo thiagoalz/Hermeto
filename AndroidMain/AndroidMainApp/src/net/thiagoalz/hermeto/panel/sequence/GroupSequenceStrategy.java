@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel.sequence;
 import java.util.List;
 import java.util.Timer;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameContext;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
@@ -18,10 +19,12 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 	private Timer timer;
 	private Sequencer sequencer;
 	private GameContext context;
+	private SoundManager soundManager;
 	
-	public GroupSequenceStrategy(Sequencer sequencer) {
+	public GroupSequenceStrategy(Sequencer sequencer, SoundManager soundManager) {
 		this.sequencer = sequencer;
 		this.context = sequencer.getGameManager().getGameContext();
+		this.soundManager = soundManager;
 	}
 	
 	public Timer getTimer() {
@@ -40,26 +43,34 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 		this.sequencer = sequencer;
 	}
 
-	protected synchronized void startPlayingGroup(int group) {
+	protected void startPlayingGroup(int group) {
 		Log.d(TAG, "Starting playing group " + group);
-		List<Position> playingPositions = context.getColumnMarkedSquares(group);
-		if (playingPositions.size() > 0) {
-			ExecutionEvent event = new ExecutionEvent();
-			event.setPositions(playingPositions);
-			for (ExecutionListener listener : sequencer.getExecutionListeners()) {
-				listener.onStartPlayingGroup(event);
+		
+		synchronized(timer) {
+			List<Position> playingPositions = context.getColumnMarkedSquares(group);
+			if (playingPositions.size() > 0) {
+				playGroupSound(playingPositions);
+				
+				ExecutionEvent event = new ExecutionEvent();
+				event.setPositions(playingPositions);
+				for (ExecutionListener listener : sequencer.getExecutionListeners()) {
+					listener.onStartPlayingGroup(event);
+				}
 			}
 		}
 	}
 
-	protected synchronized void stopPlayingGroup(int group) {
+	protected void stopPlayingGroup(int group) {
 		Log.d(TAG, "Stoping playing group " + group);
-		List<Position> playingPositions = context.getColumnMarkedSquares(group);
-		if (playingPositions.size() > 0) {
-			ExecutionEvent event = new ExecutionEvent();
-			event.setPositions(playingPositions);
-			for (ExecutionListener listener : sequencer.getExecutionListeners()) {
-				listener.onStopPlayingGroup(event);
+		
+		synchronized (timer) {
+			List<Position> playingPositions = context.getColumnMarkedSquares(group);
+			if (playingPositions.size() > 0) {
+				ExecutionEvent event = new ExecutionEvent();
+				event.setPositions(playingPositions);
+				for (ExecutionListener listener : sequencer.getExecutionListeners()) {
+					listener.onStopPlayingGroup(event);
+				}
 			}
 		}
 	}
@@ -76,5 +87,43 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 				getTimer().cancel();
 			}
 		}
+	}
+	
+	protected void playGroupSound(List<Position> positions) {
+		for (Position position : positions) {
+			soundManager.playSound(position.getY());
+		}
+	}
+
+	public SoundManager getSoundManager() {
+		return soundManager;
+	}
+
+	public void setSoundManager(SoundManager soundManager) {
+		this.soundManager = soundManager;
+	}
+	
+	@Override
+	public void start() {
+		if (soundManager == null) {
+			throw new IllegalStateException("SoundManager cannot be null");
+		}
+		cleanTimer();
+	}
+	
+	@Override
+	public void stop() {
+		Log.d(TAG, "Stoping the timer in the sequence strategy");
+		cleanTimer();
+	}
+	
+	@Override
+	public void pause() {
+		cleanTimer();
+	}
+	
+	@Override 
+	public void cleanUp() {
+		soundManager.cleanUp();
 	}
 }

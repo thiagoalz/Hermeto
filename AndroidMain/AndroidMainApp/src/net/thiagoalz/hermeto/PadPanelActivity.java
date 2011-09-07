@@ -17,6 +17,8 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import net.thiagoalz.hermeto.panel.sequence.LinearLineSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.SequenceStrategy;
 import net.thiagoalz.hermeto.player.Player;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
@@ -43,7 +45,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private static final String TAG = PadPanelActivity.class.getCanonicalName();
 	
 	private GameManager gameManager;
-	private SoundManager soundManager;
 	private ADKGameplayControl adkControl;
 	private XMPPGameplayControl xmppControl;
 	
@@ -63,8 +64,15 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		super.onCreate(savedInstanceState);
 		configureScreen();
 		
-		soundManager = new SoundManager(this);
 		gameManager = GameManager.getInstance();
+		
+		SoundManager soundManager = new SoundManager(this);
+		//SequenceStrategy sequenceStrategy = new BounceGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
+		SequenceStrategy sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
+		if (sequenceStrategy instanceof LinearLineSequenceStrategy) {
+			gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
+		}
+		gameManager.getSequencer().setSequenceStrategy(sequenceStrategy);
 		
 		constructView();
 		
@@ -154,7 +162,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		gameManager.getSequencer().pause();
 		gameManager.cleanUp();
-		soundManager.cleanUp();
 		xmppControl.stop();
 		this.finish();
 	}
@@ -236,6 +243,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		stop.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "onClick stop button");
 				gameManager.getSequencer().stop();
 			}
 		});
@@ -351,7 +359,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				for (Position position : positions) {
 					ImageButton button = padsMatrix[position.getX()][position.getY()];
 					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonplaying));
-					soundManager.playSound(position.getY());
+					//soundManager.playSound(position.getY());
 				}
 			}
 		});

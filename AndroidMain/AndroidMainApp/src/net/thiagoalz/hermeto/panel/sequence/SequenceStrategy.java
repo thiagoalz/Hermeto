@@ -9,4 +9,5 @@ public interface SequenceStrategy {
 	public void start();
 	public void stop();
 	public void pause();
+	public void cleanUp();
 }

@@ -277,6 +277,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	public void cleanUp() {
 		sequencer.stop();
+		sequencer.getSequenceStrategy().cleanUp();
 		sequencer = new Sequencer(this);
 		gameContext = new GameContextImpl(COLUMNS_CONF, ROWS_CONF);
 		selectionListeners = new ArrayList<SelectionListener>();
@@ -325,4 +326,22 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public Sequencer getSequencer() {
 		return sequencer;
 	}
+
+	public List<SelectionListener> getSelectionListeners() {
+		return selectionListeners;
+	}
+
+	public void setSelectionListeners(List<SelectionListener> selectionListeners) {
+		this.selectionListeners = selectionListeners;
+	}
+
+	public List<PlayerListener> getPlayerListeners() {
+		return playerListeners;
+	}
+
+	public void setPlayerListeners(List<PlayerListener> playerListeners) {
+		this.playerListeners = playerListeners;
+	}
+	
+	
 }

@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel.sequence;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import android.util.Log;
 
 /**
@@ -14,16 +15,13 @@ public class BounceGroupSequenceStrategy extends GroupSequenceStrategy  {
 
 	private int currentPlayingSquare;
 	
-	public BounceGroupSequenceStrategy(Sequencer sequencer) {
-		super(sequencer);
+	public BounceGroupSequenceStrategy(Sequencer sequencer, SoundManager soundManager) {
+		super(sequencer, soundManager);
 	}
 
 	@Override
 	public void start() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Cancelling timer.");
-			getTimer().cancel();
-		}
+		super.start();
 		Log.d(TAG, "Starting the sequencer at square #" + currentPlayingSquare + ".");
 		// Think this timer is not that trustable. It may be the cause of the
 		// lags.
@@ -34,21 +32,9 @@ public class BounceGroupSequenceStrategy extends GroupSequenceStrategy  {
 
 	@Override
 	public synchronized void stop() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Stoping the sequencer, and reset the current playing square #" + currentPlayingSquare+ " to 0.");
-			getTimer().cancel();
-			setTimer(null);
-			currentPlayingSquare = 0;
-		}
-	}
-
-	@Override
-	public synchronized void pause() {
-		if (getTimer() != null) {
-			Log.d(TAG, "Pausing the sequencer at column #" + currentPlayingSquare + ".");
-			getTimer().cancel();
-			setTimer(null);
-		}
+		super.stop();
+		Log.d(TAG, "Stoping the sequencer, and reset the current playing square #" + currentPlayingSquare+ " to 0.");
+		currentPlayingSquare = 0;
 	}
 	
 	private class BounceGroupTimerTask extends TimerTask {
