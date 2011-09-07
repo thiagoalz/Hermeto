@@ -194,9 +194,11 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 		}
 
 		// Disconnect all players
-		int size = players.size();
-		for (int i = 0; i < size; i++) {
-			disconnectPlayer(players.get(i));
+		if(players!=null){
+			int size = players.size();
+			for (int i = 0; i < size; i++) {
+				disconnectPlayer(players.get(i));
+			}
 		}
 		players = null;
 	}
