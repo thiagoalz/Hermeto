@@ -36,7 +36,7 @@ public class BounceGroupSequenceStrategy extends GroupSequenceStrategy  {
 		Log.d(TAG, "Stoping the sequencer, and reset the current playing square #" + currentPlayingSquare+ " to 0.");
 		currentPlayingSquare = 0;
 	}
-	
+		
 	private class BounceGroupTimerTask extends TimerTask {
 		private boolean reversedDirection;
 
@@ -76,5 +76,4 @@ public class BounceGroupSequenceStrategy extends GroupSequenceStrategy  {
 			}
 		}
 	}
-
 }

@@ -27,22 +27,6 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 		this.soundManager = soundManager;
 	}
 	
-	public Timer getTimer() {
-		return timer;
-	}
-
-	public void setTimer(Timer timer) {
-		this.timer = timer;
-	}
-	
-	public Sequencer getSequencer() {
-		return sequencer;
-	}
-
-	public void setSequencer(Sequencer sequencer) {
-		this.sequencer = sequencer;
-	}
-
 	protected void startPlayingGroup(int group) {
 		Log.d(TAG, "Starting playing group " + group);
 		
@@ -93,6 +77,22 @@ public abstract class GroupSequenceStrategy implements SequenceStrategy {
 		for (Position position : positions) {
 			soundManager.playSound(position.getY());
 		}
+	}
+	
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+	
+	public Sequencer getSequencer() {
+		return sequencer;
+	}
+
+	public void setSequencer(Sequencer sequencer) {
+		this.sequencer = sequencer;
 	}
 
 	public SoundManager getSoundManager() {

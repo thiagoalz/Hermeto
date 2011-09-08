@@ -23,7 +23,9 @@ import net.thiagoalz.hermeto.panel.sequence.LinearLineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.SequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSequenceViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.LineSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.LineSequenceViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.SelectionViewBehavior;
 import android.app.AlertDialog;
@@ -50,23 +52,50 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private static final String TAG = PadPanelActivity.class.getCanonicalName();
 	
+	/**
+	 * The number of player in the the ADK
+	 */
+	private static final int ADK_PLAYERS = 4;
+	
+	/**
+	 * Game Manager is responsible for all the logic of the game.
+	 */
 	private GameManager gameManager;
+	
+	/**
+	 * It is the interface for the ADK Players
+	 */
 	private ADKGameplayControl adkControl;
+	
+	/**
+	 * It is the interface for the WEB players.
+	 */
 	private XMPPGameplayControl xmppControl;
 	
+	/**
+	 * The matrix of buttons where the game is played.
+	 */
 	private ImageButton[][] padsMatrix;
+	
+	/**
+	 * The layout of the button matrix
+	 */
 	private TableLayout tableLayout;
 	
+	/**
+	 * The labels with the players name.
+	 */
 	Map<Player, PlayerNameView> playersName = new HashMap<Player, PlayerNameView>();
-	
-	private static final int ADK_PLAYERS = 4;
 	
 	/** 
 	 * Responsible for animate the buttons in the panel 
 	 * when the game is playing. 
 	 * */
 	private SelectionViewBehavior selectionViewBehavior;
-		
+	
+	/**
+	 * Empty Constructor
+	 */
 	public PadPanelActivity(){
 		super();
 	}
@@ -119,21 +148,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
-	    case R.id.connect_xmpp:
-	    	if(xmppControl.isRunning()){
-	    		xmppControl.stop();
-	    	}else{
-	    		xmppControl.start();
-	    	}
-	        return true;
-	    case R.id.red:
-	        //TODO: Change Instrument
-	    
-	        return true;
-	    case R.id.blue:
-	    	//TODO: Change Instrument
-	    	
-	        return true;
+		    case R.id.connect_xmpp:
+		    	if(xmppControl.isRunning()){
+		    		xmppControl.stop();
+		    	}else{
+		    		xmppControl.start();
+		    	}
+		        return true;
+		    case R.id.red:
+		        //TODO: Change Instrument
+		    
+		        return true;
+		    case R.id.blue:
+		    	//TODO: Change Instrument
+		    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
@@ -394,10 +422,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			case BOUNCE_GROUP: 
 				sequenceStrategy = new BounceGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
 				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
 				break;
 			case LINEAR_GROUP:
 				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
 				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
 				break;
 			case BOUNCE_LINE:
 				
@@ -406,6 +436,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
 				gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
 				selectionViewBehavior = new LineSequenceViewBehavior(this);
+				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
 				break;
 			default:
 				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);

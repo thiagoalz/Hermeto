@@ -5,14 +5,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
-import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
+import net.thiagoalz.hermeto.panel.listeners.SelectionControl;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
 import net.thiagoalz.hermeto.player.DefaultPlayer;
@@ -30,18 +29,46 @@ import android.util.Log;
 public class GameManager implements SquarePanelManager, PlayersManager,
 		ExecutionListener {
 
+	private static final String tag = GameManager.class.getCanonicalName();
+	
 	private static final int COLUMNS_CONF = 16;
 	private static final int ROWS_CONF = 16;
+	
+	private static final int DEFAULT_BPM = 300;
 
 	private static GameManager instance;
 
-	private static final String tag = GameManager.class.getCanonicalName();
-	private Sequencer sequencer;
-	private int bpm = 300;
 	
+	
+	/**
+	 * Responsible for the behavior of the execution and actions 
+	 * like play, pause and stop. 
+	 */
+	private Sequencer sequencer;
+	
+	/**
+	 * The control responsible for mark the selected positions.
+	 */
+	private SelectionControl selectionControl;
+	
+	/**
+	 * The beat per minute used in the game
+	 */
+	private int bpm = DEFAULT_BPM;
+	
+	/**
+	 * The components that are listening the selection events.
+	 */
 	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
+	
+	/**
+	 * The components that are listening the players events.
+	 */
 	private List<PlayerListener> playerListeners = new ArrayList<PlayerListener>();
 	
+	/**
+	 * The game context keep all the game data.
+	 */
 	private GameContextImpl gameContext;
 
 	public synchronized static GameManager getInstance() {
@@ -128,23 +155,8 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	@Override
 	public boolean mark(Player player) {
-		Set<Position> markedSquares = gameContext.getMarkedSquares();
-		
-		Position selectedPosition = new Position(player.getPosition().getX(),
-				player.getPosition().getY());
-		if (markedSquares.contains(selectedPosition)) {
-			Log.d(tag, "Dismarking square [" + player.getPosition().getX() + ", "
-					+ player.getPosition().getY() + "]");
-			markedSquares.remove(selectedPosition);
-			notifyDeselection(player, selectedPosition);
-			return false;
-		} else {
-			Log.d(tag, "Marking square [" + player.getPosition().getX() + ", "
-					+ player.getPosition().getY() + "]");
-			markedSquares.add(player.getPosition());
-			notifySelection(player, selectedPosition);
-			return true;
-		}
+		// Delegate to the selectionControl
+		return selectionControl.mark(player);
 	}
 
 	@Override
@@ -215,20 +227,6 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	// ==========Notify==========
-	private void notifySelection(Player player, Position position) {
-		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : selectionListeners) {
-			listener.onSelected(event);
-		}
-	}
-
-	private void notifyDeselection(Player player, Position position) {
-		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : selectionListeners) {
-			listener.onDeselected(event);
-		}
-	}
-
 	private void notifyConnectPlayerListeners(Player player) {
 		ConnectEvent event = new ConnectEvent(player, player.getPosition());
 		for (PlayerListener listener : playerListeners) {
@@ -299,9 +297,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public void onReset(ExecutionEvent event) {
 		gameContext.setPlaying(false);
 		// Deselect all the markedSquares and stop playing.
-		for (Position position : gameContext.getMarkedSquares()) {
-			notifyDeselection(null, position);
-		}
+		selectionControl.cleanAll();
 		gameContext.setMarkedSquares(new LinkedHashSet<Position>());
 	}
 
@@ -342,6 +338,12 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public void setPlayerListeners(List<PlayerListener> playerListeners) {
 		this.playerListeners = playerListeners;
 	}
-	
-	
+
+	public SelectionControl getSelectionControl() {
+		return selectionControl;
+	}
+
+	public void setSelectionControl(SelectionControl selectionControl) {
+		this.selectionControl = selectionControl;
+	}
 }
