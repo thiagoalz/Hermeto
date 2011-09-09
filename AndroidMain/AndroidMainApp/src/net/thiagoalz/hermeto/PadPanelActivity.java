@@ -381,29 +381,31 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	public void onStartPlayingGroup(final ExecutionEvent event) {
 		Log.d(TAG, "Printing selected buttons with playing color ");
-		runOnUiThread(new Runnable() {
-			public void run() {
-				List<Position> positions = event.getPositions();
-				for (Position position : positions) {
-					ImageButton button = padsMatrix[position.getX()][position.getY()];
+		List<Position> positions = event.getPositions();
+		for (Position position : positions) {
+			final ImageButton button = padsMatrix[position.getX()][position.getY()];
+			button.post(new Runnable() {
+				public void run() {
 					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonplaying));
-					//soundManager.playSound(position.getY());
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	public void onStopPlayingGroup(final ExecutionEvent event) {
 		Log.d(TAG, "Printing selected buttons with selected color ");
-		runOnUiThread(new Runnable() {
-			public void run() {
-				List<Position> positions = event.getPositions();
-				for (Position position : positions) {
-					ImageButton button = padsMatrix[position.getX()][position.getY()];
+		Log.d(TAG, "Outside from the main thread");
+		
+		List<Position> positions = event.getPositions();
+		for (Position position : positions) {
+			final ImageButton button = padsMatrix[position.getX()][position.getY()];
+			Log.d(TAG, "Inside from the main thread");
+			button.post(new Runnable() {
+				public void run() {
 					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonselected));
 				}
-			}
-		});
+			});
+		}
 	}
 	
 	public ImageButton[][] getPadsMatrix() {
@@ -435,7 +437,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			case LINEAR_LINE:
 				sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
 				gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
-				selectionViewBehavior = new LineSequenceViewBehavior(this);
+				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
 				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
 				break;
 			default:

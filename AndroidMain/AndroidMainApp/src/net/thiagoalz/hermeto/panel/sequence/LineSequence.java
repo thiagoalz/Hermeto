@@ -12,6 +12,7 @@ public class LineSequence {
 	private int playingLine;
 	private int currentPlayingSquare;
 	private int maxSquare;
+	private boolean running;
 	
 	private LineSequenceStrategy sequenceStrategy;
 	
@@ -20,17 +21,28 @@ public class LineSequence {
 	}
 	
 	public void schedule(int maxSquare, int timeSequence) {
-		this.maxSquare = maxSquare;
 		Log.d(TAG, "Scheduling the line sequence #" + playingLine + " to execute until the #" + maxSquare + "position.");
-		timer = new Timer();
-		timer.scheduleAtFixedRate(new LinearLineTimerTask() , 0, timeSequence);
+		this.maxSquare = maxSquare;
+		this.running = true;
+		this.timer = new Timer();
+		this.timer.scheduleAtFixedRate(new LinearLineTimerTask() , 0, timeSequence);
+	}
+		
+	public void unschedule() {
+		/* 
+		 * Just marking the line sequence to be cancelled in the next
+		 * iteration of the sequence.
+		 * */
+		this.running = false;
+		this.stopTimer();
+		
 	}
 	
-	public void unschedule() {
+	private void stopTimer() {
 		Log.d(TAG, "Unscheduling the line sequence #" + playingLine);
 		if (timer != null) {
 			if (sequenceStrategy.getSequencer().getGameManager().getBPM() >= 60) {
-				synchronized (timer) {
+				synchronized (sequenceStrategy) {
 					Log.d(TAG, "Cancelling timer.");
 					getTimer().cancel();
 				}
@@ -62,7 +74,11 @@ public class LineSequence {
 	private class LinearLineTimerTask extends TimerTask {
 				
 		public void run() {
-			synchronized(getTimer()) {
+			synchronized(sequenceStrategy) {
+				if (!running) {
+					stopTimer();
+				}
+				
 				long startTime = System.currentTimeMillis();
 				sequenceStrategy.startPlayingSquare(playingLine, currentPlayingSquare);
 				
@@ -78,10 +94,10 @@ public class LineSequence {
 						e.printStackTrace();
 					}
 				}
-				
+
 				sequenceStrategy.stopPlayingSquare(playingLine, currentPlayingSquare);
 				currentPlayingSquare = (currentPlayingSquare + 1) % (maxSquare + 1);
-				Log.d(TAG, "Setting the current playing column to : " + currentPlayingSquare + ".");
+				Log.d(TAG, "Setting the current playing column to : " + currentPlayingSquare + ". Thread: " + Thread.currentThread().getName());
 			}
 		}
 	}
@@ -93,4 +109,14 @@ public class LineSequence {
 	public void setPlayingLine(int playingLine) {
 		this.playingLine = playingLine;
 	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	
+	
 }

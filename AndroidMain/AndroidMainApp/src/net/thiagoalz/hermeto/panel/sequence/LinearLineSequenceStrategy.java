@@ -61,9 +61,11 @@ public class LinearLineSequenceStrategy extends LineSequenceStrategy implements 
 		Position position = event.getPosition();
 		LineSequence lineSequence = null;
 		if (getLineSequences().containsKey(position.getX())) {
-			Log.d(TAG, "The line sequence #" + position.getX() + " already exists, retrieving it.");
-			lineSequence = getLineSequences().get(position.getX());
-			lineSequence.unschedule();
+			synchronized(this) {
+				Log.d(TAG, "The line sequence #" + position.getX() + " already exists, retrieving it.");
+				lineSequence = getLineSequences().get(position.getX());
+				lineSequence.unschedule();
+			}
 		} else {
 			Log.d(TAG, "Creating line sequence at #" + position.getX() + ".");
 			lineSequence = new LineSequence(this);
@@ -80,8 +82,10 @@ public class LinearLineSequenceStrategy extends LineSequenceStrategy implements 
 		Position position = event.getPosition();
 		LineSequence lineSequence = getLineSequences().get(position.getX());
 		if (lineSequence != null) {
-			lineSequence.unschedule();
-			getLineSequences().remove(position.getX());
+			synchronized(this) {
+				lineSequence.unschedule();
+				getLineSequences().remove(position.getX());
+			}
 		} else {
 			Log.d(TAG, "The line sequence #" + position.getX() + " doesn't exist.");
 		}

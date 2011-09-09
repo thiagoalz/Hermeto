@@ -28,28 +28,32 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 				player.getPosition().getY());
 	
 		if (markedSquares.contains(selectedPosition)) {
-			// If the position is already selected, so undo it.
-			Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
-					+ player.getPosition().getY() + "]");
-			markedSquares.remove(selectedPosition);
-			notifyDeselection(player, selectedPosition);
-			return false;
-		} else {
-			// Verify if any position in the same line is already selected, if it is, undo it.
-			for (Position markedSquare: markedSquares) {
-				if (markedSquare.getX() == player.getPosition().getX()) {
-					Log.d(TAG, "Dismarking square [" + markedSquare.getX() + ", "
-							+ markedSquare.getY() + "]");
-					markedSquares.remove(markedSquare);
-					notifyDeselection(player, markedSquare);
-				}
+			synchronized(this) {
+				// If the position is already selected, so undo it.
+				Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
+						+ player.getPosition().getY() + "]");
+				markedSquares.remove(selectedPosition);
+				notifyDeselection(player, selectedPosition);
+				return false;
 			}
-			// If the position is not marked yet, mark it.
-			Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
-					+ player.getPosition().getY() + "]");
-			markedSquares.add(player.getPosition());
-			notifySelection(player, selectedPosition);
-			return true;
+		} else {
+			synchronized(this) {
+				// Verify if any position in the same line is already selected, if it is, undo it.
+				for (Position markedSquare: markedSquares) {
+					if (markedSquare.getX() == player.getPosition().getX()) {
+						Log.d(TAG, "Dismarking square [" + markedSquare.getX() + ", "
+								+ markedSquare.getY() + "]");
+						markedSquares.remove(markedSquare);
+						notifyDeselection(player, markedSquare);
+					}
+				}
+				// If the position is not marked yet, mark it.
+				Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
+						+ player.getPosition().getY() + "]");
+				markedSquares.add(player.getPosition());
+				notifySelection(player, selectedPosition);
+				return true;
+			}
 		}
 	}
 	
