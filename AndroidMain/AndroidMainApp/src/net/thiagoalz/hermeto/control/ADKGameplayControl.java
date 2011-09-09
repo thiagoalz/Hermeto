@@ -119,7 +119,11 @@ public class ADKGameplayControl implements GameplayControl {
 		if(playerIDMap!=null){
 			for (Integer id : playerIDMap.keySet()) {
 				String playerID = playerIDMap.get(id);
-				gameManager.disconnectPlayer(gameManager.getPlayer(playerID));
+				
+				Player player = gameManager.getPlayer(playerID);
+				if (player!=null){//The player is still connected?
+					gameManager.disconnectPlayer(player);
+				}
 			}
 		}
 		playerIDMap = null;
