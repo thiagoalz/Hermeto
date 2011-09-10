@@ -27,52 +27,72 @@ public class LinearLineSequenceStrategy extends LineSequenceStrategy implements 
 	@Override
 	public void start() {
 		GameContext gameContext = getSequencer().getGameManager().getGameContext();
-		int rows = gameContext.getDimensions()[1];
-		for (int i = 0; i < rows; i++) {
-			List<Position> positions = gameContext.getRowMarkedSquares(rows);
+		int columns = gameContext.getDimensions()[0];
+		
+		LineSequence lineSequence = null;
+		for (int i = 0; i < columns; i++) {
+			List<Position> positions = gameContext.getColumnMarkedSquares(i);
+			
+			// If the column has some square selected
 			if (positions.size() > 0) {
+				// If that column does not have a LineSequence yet, create one.
+				if (!(getLineSequences().containsKey(i))) {
+					lineSequence = new LineSequence(this, i);
+					getLineSequences().put(lineSequence.getPlayingLine(), lineSequence);
+					Log.d(TAG, "Adding new line sequence for column #" + lineSequence.getPlayingLine() + ": " + getLineSequences().get(i));
+				} else {
+					lineSequence = getLineSequences().get(i);
+				}
 				Position lastSquare = positions.get(positions.size() - 1);
-				LineSequence lineSequence = new LineSequence(this);
-				lineSequence.setPlayingLine(lastSquare.getX());
-				lineSequence.schedule(lastSquare.getX(), getSequencer().getTimeSequence());
+				Log.d(TAG, "Starting line sequene at [" + lastSquare.getX() + ", " + lastSquare.getY() + "]");
+				// Schedule the lineSequence to execute until the last marked square
+				lineSequence.schedule(lastSquare.getY(), getSequencer().getTimeSequence());
 			}
+			
 		}		
 	}
 
 	@Override
 	public void stop() {
-		for (int i = 0; i < getLineSequences().size(); i++) {
-			LineSequence lineSequence = getLineSequences().get(i);
-			lineSequence.unschedule();
-			lineSequence.resetToStart();
+		for (Integer lineSequenceColumn : getLineSequences().keySet()) {
+			LineSequence lineSequence = getLineSequences().get(lineSequenceColumn);
+			if (lineSequence != null) {
+				lineSequence.unschedule();
+				lineSequence.resetToStart();
+			}
 		}
 	}
 
 	@Override
 	public void pause() {
-		for (int i = 0; i < getLineSequences().size(); i++) {
-			LineSequence lineSequence = getLineSequences().get(i);
-			lineSequence.unschedule();
+		Log.d(TAG, getLineSequences().size() + " line sequences to be paused.");
+		for (Integer lineSequenceColumn : getLineSequences().keySet()) {
+			LineSequence lineSequence = getLineSequences().get(lineSequenceColumn);
+			if (lineSequence != null) {
+				lineSequence.unschedule();
+			}
+			
 		}
 	}
 
 	@Override
 	public void onSelected(SelectionEvent event) {
-		Position position = event.getPosition();
-		LineSequence lineSequence = null;
-		if (getLineSequences().containsKey(position.getX())) {
-			synchronized(this) {
-				Log.d(TAG, "The line sequence #" + position.getX() + " already exists, retrieving it.");
-				lineSequence = getLineSequences().get(position.getX());
-				lineSequence.unschedule();
-			}
-		} else {
-			Log.d(TAG, "Creating line sequence at #" + position.getX() + ".");
-			lineSequence = new LineSequence(this);
-			lineSequence.setPlayingLine(position.getX());
-			getLineSequences().put(position.getX(), lineSequence);
-		}
 		if (getSequencer().isPlaying()) {
+			Position position = event.getPosition();
+			LineSequence lineSequence = null;
+			if (getLineSequences().containsKey(position.getX())) {
+				synchronized(this) {
+					Log.d(TAG, "The line sequence #" + position.getX() + " already exists, retrieving it.");
+					lineSequence = getLineSequences().get(position.getX());
+					if (lineSequence != null) {
+						lineSequence.unschedule();
+					}
+				}
+			} else {
+				Log.d(TAG, "Creating line sequence at #" + position.getX() + ".");
+				lineSequence = new LineSequence(this, position.getX());
+				getLineSequences().put(lineSequence.getPlayingLine(), lineSequence);
+			}
 			lineSequence.schedule(position.getY(), getSequencer().getTimeSequence());
 		}		
 	}

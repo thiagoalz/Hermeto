@@ -16,8 +16,9 @@ public class LineSequence {
 	
 	private LineSequenceStrategy sequenceStrategy;
 	
-	public LineSequence(LineSequenceStrategy sequenceStrategy) {
+	public LineSequence(LineSequenceStrategy sequenceStrategy, int playingLine) {
 		this.sequenceStrategy = sequenceStrategy;
+		this.playingLine = playingLine;
 	}
 	
 	public void schedule(int maxSquare, int timeSequence) {
@@ -33,6 +34,7 @@ public class LineSequence {
 		 * Just marking the line sequence to be cancelled in the next
 		 * iteration of the sequence.
 		 * */
+		Log.d(TAG, "Line sequence #" + playingLine + " unsheduling itself");
 		this.running = false;
 		this.stopTimer();
 		
@@ -101,13 +103,9 @@ public class LineSequence {
 			}
 		}
 	}
-
+	
 	public int getPlayingLine() {
 		return playingLine;
-	}
-
-	public void setPlayingLine(int playingLine) {
-		this.playingLine = playingLine;
 	}
 
 	public boolean isRunning() {

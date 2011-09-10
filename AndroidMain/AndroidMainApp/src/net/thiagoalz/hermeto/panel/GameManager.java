@@ -256,7 +256,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	public void setBPM(int bpm) {
-		boolean wasPlaying=sequencer.isPlaying();
+		boolean wasPlaying = sequencer.isPlaying();
 		
 		this.bpm = bpm;
 		if (bpm < 1) {
