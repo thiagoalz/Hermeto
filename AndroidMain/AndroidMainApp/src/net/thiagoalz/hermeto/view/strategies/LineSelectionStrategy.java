@@ -29,7 +29,7 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 	
 		if (markedSquares.contains(selectedPosition)) {
 			synchronized(this) {
-				// If the position is already selected, so undo it.
+				// If the position is already selected, undo it.
 				Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
 						+ player.getPosition().getY() + "]");
 				markedSquares.remove(selectedPosition);
@@ -38,15 +38,22 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 			}
 		} else {
 			synchronized(this) {
+				Position selectedSquare = null;
+				
 				// Verify if any position in the same line is already selected, if it is, undo it.
 				for (Position markedSquare: markedSquares) {
 					if (markedSquare.getX() == player.getPosition().getX()) {
-						Log.d(TAG, "Dismarking square [" + markedSquare.getX() + ", "
-								+ markedSquare.getY() + "]");
-						markedSquares.remove(markedSquare);
-						notifyDeselection(player, markedSquare);
+						selectedSquare = markedSquare;
 					}
 				}
+				
+				if (selectedSquare != null) {
+					Log.d(TAG, "Dismarking square [" + selectedSquare.getX() + ", "
+							+ selectedSquare.getY() + "]");
+					markedSquares.remove(selectedSquare);
+					notifyDeselection(player, selectedSquare);
+				}
+				
 				// If the position is not marked yet, mark it.
 				Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
 						+ player.getPosition().getY() + "]");
