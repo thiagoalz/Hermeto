@@ -12,12 +12,13 @@ public class ADKGameplayControl implements GameplayControl {
 	protected static final String tag = ADKGameplayControl.class.getCanonicalName();
 	
 	protected GameManager gameManager;
-	protected Map<Integer, String> playerIDMap = new HashMap<Integer, String>();
+	protected Map<Integer, String> playerIDMap;
 	
 	private boolean defaultPlayersConnected = false;
 	
 	public ADKGameplayControl(GameManager gameManager){
 		this.gameManager = gameManager;
+		playerIDMap = new HashMap<Integer, String>();
 	}
 	
 	/**
@@ -119,10 +120,14 @@ public class ADKGameplayControl implements GameplayControl {
 		if(playerIDMap!=null){
 			for (Integer id : playerIDMap.keySet()) {
 				String playerID = playerIDMap.get(id);
-				gameManager.disconnectPlayer(gameManager.getPlayer(playerID));
+				
+				Player player = gameManager.getPlayer(playerID);
+				if (player!=null){//The player is still connected?
+					gameManager.disconnectPlayer(player);
+				}
 			}
 		}
-		playerIDMap = null;
+		playerIDMap = new HashMap<Integer, String>();
 		defaultPlayersConnected = false;
 	}
 

@@ -194,8 +194,10 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	@Override
 	public void disconnectPlayer(Player player) {
-		gameContext.getAllPlayers().remove(player.getId());
-		notifyDisconnectPlayerListeners(player);
+		if(player!=null){
+			gameContext.getAllPlayers().remove(player.getId());
+			notifyDisconnectPlayerListeners(player);
+		}
 	}
 
 	@Override

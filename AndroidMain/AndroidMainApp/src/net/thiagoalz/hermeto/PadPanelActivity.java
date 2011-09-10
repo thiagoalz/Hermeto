@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.control.ADKGameplayControl;
@@ -201,11 +202,18 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-//		if (hasFocus) {
-//			if (!adkControl.isDefaultPlayersConnected()) {
-//				adkControl.connectDefaultPlayers(ADK_PLAYERS);
-//			}
-//		}
+		
+		//Be sure that connected players are shown on correct place.
+		if(hasFocus){
+			Set<Player> players=playersName.keySet();
+			for (Player player : players) {
+				PlayerNameView playerNameView = playersName.get(player);
+				playerNameView.setLocation(getLocation(player.getPosition()));
+			}
+			
+			RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
+			namesLayout.invalidate();
+		}
 	}
 
 	private void configureScreen() {
@@ -341,7 +349,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	private void drawPlayerLabel(Player player) {
 		PlayerNameView playerNameView = new PlayerNameView(this);
 		playerNameView.setText(player.getName());
-		playerNameView.setLocation(getLocation(player.getPosition()));
+		playerNameView.setLocation(getLocation(player.getPosition()));		
 		playersName.put(player, playerNameView);
 		RelativeLayout namesLayout = (RelativeLayout) findViewById(R.id.namesLayout);
 		namesLayout.addView(playerNameView);
