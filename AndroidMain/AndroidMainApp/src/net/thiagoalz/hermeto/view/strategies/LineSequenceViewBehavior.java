@@ -42,7 +42,7 @@ public class LineSequenceViewBehavior implements SelectionViewBehavior {
 
 	@Override
 	public void onDeselected(SelectionEvent event) {
-		synchronized(gameManager.getSequencer().getSequenceStrategy()) {
+		synchronized(gameManager.getSequencer().getCurrentSequenceStrategy()) {
 			int x = event.getPosition().getX();
 			int y = event.getPosition().getY();
 			ImageButton[][] padsMatrix = padPanelActivity.getPadsMatrix();

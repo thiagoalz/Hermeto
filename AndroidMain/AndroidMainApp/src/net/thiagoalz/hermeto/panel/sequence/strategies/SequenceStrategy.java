@@ -1,6 +1,5 @@
-package net.thiagoalz.hermeto.panel.sequence;
+package net.thiagoalz.hermeto.panel.sequence.strategies;
 
-import net.thiagoalz.hermeto.player.Player;
 
 
 /**
@@ -8,6 +7,21 @@ import net.thiagoalz.hermeto.player.Player;
  * execute the square in a determined sequence.
  */
 public interface SequenceStrategy {
+	
+	/**
+	 * All the sequence strategies that can be used.
+	 */
+	public enum SequenceStrategyType {
+		GROUP, LINE, FREE;
+	}
+	
+	/*
+	 * All the valid behavior for the strategies
+	 */
+	public enum PositionBehavior {
+		REPEAT, BOUNCE
+	}
+	
 	/**
 	 * Starts the execution of the squares. If the pause was pressed before the execution will continue 
 	 * from that position.

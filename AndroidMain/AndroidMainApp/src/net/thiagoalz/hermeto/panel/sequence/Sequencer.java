@@ -1,12 +1,21 @@
 package net.thiagoalz.hermeto.panel.sequence;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionControl;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.sequence.strategies.GroupSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.Positioner;
+import net.thiagoalz.hermeto.panel.sequence.strategies.RepeatPositioner;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
 import android.util.Log;
 
 /**
@@ -17,23 +26,51 @@ import android.util.Log;
  */
 public class Sequencer implements ExecutionControl {
 	private static final String TAG = Sequencer.class.getCanonicalName();
+		
+	/**
+	 * Default sequence time used by the sequencer.
+	 */
 	private static final int DEFAULT_TIME_SEQUENCE = 200;
 	
+	/**
+	 * The manager responsible to control the game
+	 */
 	private GameManager gameManager;
+	
+	/**
+	 * The list of listeners that are observing the execution 
+	 * events like play, pause and stop.
+	 */
 	private List<ExecutionListener> executionListeners;
+	
+	/**
+	 * The sequence time that the sequence is using.
+	 */
 	private int timeSequence = DEFAULT_TIME_SEQUENCE;
 	
-	private SequenceStrategy sequenceStrategy;
+	/**
+	 * The strategy that the sequence are using.
+	 */
+	private SequenceStrategy currentSequenceStrategy;
+	
+	/**
+	 * The sequence strategies used in the sequencer
+	 */
+	private Map<SequenceStrategyType, SequenceStrategy> sequenceStrategies;
+	
+	private SoundManager soundManager;
 	
 	public Sequencer(GameManager gameManager) {
 		this(gameManager, null);
 	}
 	
-	public Sequencer(GameManager gameManager, SequenceStrategy sequenceStrategy) {
+	public Sequencer(GameManager gameManager, SequenceStrategyType type) {
 		this.gameManager = gameManager;
+		this.soundManager = SoundManager.getInstance();
 		this.executionListeners = new ArrayList<ExecutionListener>();
 		this.executionListeners.add(gameManager);
-		this.sequenceStrategy = sequenceStrategy;
+		this.sequenceStrategies = new HashMap<SequenceStrategyType, SequenceStrategy>();
+		this.currentSequenceStrategy = type != null ? getSequenceStrategy(type) : getSequenceStrategy(SequenceStrategyType.GROUP);
 	}
 	
 	@Override
@@ -45,10 +82,10 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void start() {
-		if (sequenceStrategy == null) {
-			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
+			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			strategy.start();
 		}
-		sequenceStrategy.start();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onStart(event);
@@ -57,11 +94,12 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void stop() {
-		if (sequenceStrategy == null) {
-			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
+			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			strategy.stop();
 		}
 		Log.d(TAG, "Sequencer delegating the stop action to the sequence strategy");
-		sequenceStrategy.stop();
+		currentSequenceStrategy.stop();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onStop(event);
@@ -70,10 +108,10 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void pause() {
-		if (sequenceStrategy == null) {
-			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
+			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			strategy.pause();
 		}
-		sequenceStrategy.pause();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onPause(event);
@@ -82,11 +120,10 @@ public class Sequencer implements ExecutionControl {
 
 	@Override
 	public synchronized void reset() {
-		if (sequenceStrategy == null) {
-			throw new IllegalStateException("No SequenceStrategy was set to the Sequencer.");
+		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
+			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			strategy.stop();
 		}
-		Log.d(TAG, "Reseting the sequencer.");
-		sequenceStrategy.stop();
 		ExecutionEvent event = new ExecutionEvent();
 		for (ExecutionListener listener : executionListeners) {
 			listener.onReset(event);
@@ -130,15 +167,40 @@ public class Sequencer implements ExecutionControl {
 		this.executionListeners = executionListeners;
 	}
 
-	public SequenceStrategy getSequenceStrategy() {
-		return sequenceStrategy;
+	public SequenceStrategy getCurrentSequenceStrategy() {
+		return currentSequenceStrategy;
 	}
 
-	public void setSequenceStrategy(SequenceStrategy sequenceStrategy) {
-		if (sequenceStrategy != null)
-			sequenceStrategy.stop();
-		this.sequenceStrategy = sequenceStrategy;
-		if (sequenceStrategy != null && isPlaying()) 
-			sequenceStrategy.start();
+	public void setCurrentSequenceStrategy(SequenceStrategyType sequenceStrategyType) {
+		currentSequenceStrategy = getSequenceStrategy(sequenceStrategyType);
 	}
+	
+	public SequenceStrategy getSequenceStrategy(SequenceStrategyType type) {
+		SequenceStrategy strategy = sequenceStrategies.get(type);
+		if (strategy == null) {
+			strategy = createNewStrategy(type);
+			sequenceStrategies.put(type, strategy);
+		}
+		return strategy;
+	}
+	
+	private SequenceStrategy createNewStrategy(SequenceStrategyType type) {
+		Positioner positioner = null;
+		switch (type) {
+			case GROUP:
+				//positioner = new RepeatPositioner(gameManager.getGameContext().getDimensions()[0]);
+				return new GroupSequenceStrategy(this, soundManager);
+			case LINE:
+				//positioner = new RepeatPositioner(gameManager.getGameContext().getDimensions()[1]);
+				return new LineSequenceStrategy(this, soundManager);
+			case FREE:
+				return null;
+			default:
+				//positioner = new RepeatPositioner(gameManager.getGameContext().getDimensions()[0]);
+				return new GroupSequenceStrategy(this, soundManager);
+		}
+	}
+	
+	
+	
 }

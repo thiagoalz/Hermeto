@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -37,8 +38,6 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	private static final int DEFAULT_BPM = 300;
 
 	private static GameManager instance;
-
-	
 	
 	/**
 	 * Responsible for the behavior of the execution and actions 
@@ -70,7 +69,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	 * The game context keep all the game data.
 	 */
 	private GameContextImpl gameContext;
-
+	
 	public synchronized static GameManager getInstance() {
 		return getInstance(COLUMNS_CONF, ROWS_CONF);
 	}
@@ -277,7 +276,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	public void cleanUp() {
 		sequencer.stop();
-		sequencer.getSequenceStrategy().cleanUp();
+		sequencer.getCurrentSequenceStrategy().cleanUp();
 		sequencer = new Sequencer(this);
 		gameContext = new GameContextImpl(COLUMNS_CONF, ROWS_CONF);
 		selectionListeners = new ArrayList<SelectionListener>();

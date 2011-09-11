@@ -18,11 +18,9 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
-import net.thiagoalz.hermeto.panel.sequence.BounceGroupSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.LinearGroupSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.LinearLineSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.SequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.SequenceStrategyType;
+import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSequenceViewBehavior;
@@ -105,9 +103,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	public void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
 		
-		configureScreen();
-		configSequenceStrategy(SequenceStrategyType.LINEAR_LINE);
+		SoundManager soundManager = SoundManager.getInstance();
+		soundManager.initSounds(this);
+		soundManager.loadSounds();
 		
+		configureScreen();
+		configSequenceStrategy(SequenceStrategyType.GROUP);
 		constructView();
 		
 		Log.d(TAG, "Making the panel activity listen to the square selection events.");
@@ -426,32 +427,27 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private void configSequenceStrategy(SequenceStrategyType type) {
 		gameManager = GameManager.getInstance();
-		SoundManager soundManager = new SoundManager(this);
-		SequenceStrategy sequenceStrategy = null;
 		switch (type) {
-			case BOUNCE_GROUP: 
-				sequenceStrategy = new BounceGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
+			case GROUP:
+				// Configuring the sequence strategy in the sequencer
+				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.GROUP);
+				// Configuring the way that the squares are animated.
 				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
 				break;
-			case LINEAR_GROUP:
-				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
-				selectionViewBehavior = new GroupSequenceViewBehavior(this);
-				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
-				break;
-			case BOUNCE_LINE:
-				
-				break;
-			case LINEAR_LINE:
-				sequenceStrategy = new LinearLineSequenceStrategy(gameManager.getSequencer(), soundManager);
-				gameManager.addSelectionListener(((LinearLineSequenceStrategy)sequenceStrategy));
+			case LINE:
+				// Configuring the sequence strategy in the sequencer
+				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.LINE);
+				// Configuring the sequence strategy to linsting the selection events
+				SequenceStrategy sequenceStrategy = gameManager.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
+				gameManager.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
+				// Configuring the way that the squares are animated.
 				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
+				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
 				break;
-			default:
-				sequenceStrategy = new LinearGroupSequenceStrategy(gameManager.getSequencer(), soundManager);
 		}
-		gameManager.getSequencer().setSequenceStrategy(sequenceStrategy);
 	}
 
 	////////////////////////ADK CODE/////////////////////

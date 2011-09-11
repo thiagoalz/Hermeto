@@ -14,25 +14,19 @@ import android.media.SoundPool;
  */
 public class SoundManager {
 	
-	//private static SoundManager instance;
+	private static SoundManager instance;
 	
 	private SoundPool soundPool;
 	private HashMap<Integer, Integer> soundPoolMap;
 	private AudioManager audioManager;
 	private Context context;
 	
-	public SoundManager(Context context) {
-		this.initSounds(context);
-		this.loadSounds();
-		
+	public static synchronized SoundManager getInstance() {
+		if (instance == null) {
+			instance = new SoundManager();
+		}
+		return instance;
 	}
-	
-//	public static synchronized SoundManager getInstance() {
-//		if (instance == null) {
-//			instance = new SoundManager();
-//		}
-//		return instance;
-//	}
 	
 	public void loadSounds(){
 		this.addSound(0, R.raw.m1);
