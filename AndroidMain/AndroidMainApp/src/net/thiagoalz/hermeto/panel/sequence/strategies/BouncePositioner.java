@@ -12,13 +12,13 @@ public class BouncePositioner implements Positioner {
 	@Override
 	public int nextPosition() {
 		if (!reversedDirection)
-			currentPosition = currentPosition + 1;
+			currentPosition++;
 		else
-			currentPosition = currentPosition - 1;
+			currentPosition--;
 		
 		if ( currentPosition == 0 ) {
 			reversedDirection = false;
-		} else if ( currentPosition + 1 == maxPosition) {
+		} else if ( currentPosition == maxPosition ) {
 			reversedDirection = true;
 		}
 		return currentPosition;

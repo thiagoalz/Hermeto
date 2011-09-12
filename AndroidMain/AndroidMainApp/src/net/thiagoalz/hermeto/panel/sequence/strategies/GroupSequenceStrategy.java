@@ -100,11 +100,11 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 
 		switch(positionBehavior) {
 			case BOUNCE:
-				positioner = new BouncePositioner(totalColumns);
+				positioner = new BouncePositioner(totalColumns-1);
 				break;
 			case REPEAT:
 			default:
-				positioner = new RepeatPositioner(totalColumns);
+				positioner = new RepeatPositioner(totalColumns-1);
 				break;
 		}
 		if (oldPositioner != null)
