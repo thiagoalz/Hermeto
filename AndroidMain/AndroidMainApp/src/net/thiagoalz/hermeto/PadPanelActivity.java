@@ -14,21 +14,21 @@ import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.controls.listeners.BPMChangeListener;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
-import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
+import net.thiagoalz.hermeto.panel.listeners.IPlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.PositionBehavior;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.PositionBehavior;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
+import net.thiagoalz.hermeto.player.IPlayer;
 import net.thiagoalz.hermeto.view.strategies.FreeSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.LineSelectionStrategy;
-import net.thiagoalz.hermeto.view.strategies.LineSequenceViewBehavior;
-import net.thiagoalz.hermeto.view.strategies.SelectionViewBehavior;
-import net.thiagoalz.hermeto.view.strategies.SimpleSequenceViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.behavior.LineSequenceViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.behavior.ISelectionViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.behavior.SimpleSequenceViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
@@ -51,7 +51,7 @@ import android.widget.ToggleButton;
 
 import com.google.android.DemoKit.DemoKitActivity;
 
-public class PadPanelActivity extends DemoKitActivity implements SelectionListener, PlayerListener, ExecutionListener {
+public class PadPanelActivity extends DemoKitActivity implements ISelectionListener, IPlayerListener, IExecutionListener {
 	
 	private static final String TAG = PadPanelActivity.class.getCanonicalName();
 	
@@ -88,13 +88,13 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	/**
 	 * The labels with the players name.
 	 */
-	Map<Player, PlayerNameView> playersName = new HashMap<Player, PlayerNameView>();
+	Map<IPlayer, PlayerNameView> playersName = new HashMap<IPlayer, PlayerNameView>();
 	
 	/** 
 	 * Responsible for animate the buttons in the panel 
 	 * when the game is playing. 
 	 * */
-	private SelectionViewBehavior selectionViewBehavior;
+	private ISelectionViewBehavior selectionViewBehavior;
 	
 	/**
 	 * Empty Constructor
@@ -208,8 +208,8 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		//Be sure that connected players are shown on correct place.
 		if(hasFocus){
-			Set<Player> players=playersName.keySet();
-			for (Player player : players) {
+			Set<IPlayer> players=playersName.keySet();
+			for (IPlayer player : players) {
 				PlayerNameView playerNameView = playersName.get(player);
 				playerNameView.setLocation(getLocation(player.getPosition()));
 			}
@@ -309,7 +309,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		bounce.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SequenceStrategy strategy = gameManager.getSequencer().getCurrentSequenceStrategy();
+				ISequenceStrategy strategy = gameManager.getSequencer().getCurrentSequenceStrategy();
 				if (bounce.isChecked()) {
 					Log.d(TAG, "Changin to bounce");
 		            strategy.setPositionBehavior(PositionBehavior.BOUNCE);
@@ -336,7 +336,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		final int padding = 5;
 		int alreadyThere = 0;
 		
-		Map<String, Player> players = gameManager.getPlayers();
+		Map<String, IPlayer> players = gameManager.getPlayers();
 		for (String playerID : players.keySet()) {
 			if (event.getNewPosition().equals(players.get(playerID)))
 				alreadyThere++;
@@ -357,14 +357,14 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 
 	@Override
 	public void onPlayerConnect(ConnectEvent event) {
-		Player player = event.getPlayer();
-		Player masterDJ = gameManager.getGameContext().getMasterDJ();
+		IPlayer player = event.getPlayer();
+		IPlayer masterDJ = gameManager.getGameContext().getMasterDJ();
 		if(!(player.equals(masterDJ))){
 			drawPlayerLabel(player);
 		}
 	}
 	
-	private void drawPlayerLabel(Player player) {
+	private void drawPlayerLabel(IPlayer player) {
 		PlayerNameView playerNameView = new PlayerNameView(this);
 		playerNameView.setText(player.getName());
 		playerNameView.setLocation(getLocation(player.getPosition()));		

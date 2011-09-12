@@ -3,14 +3,14 @@ package net.thiagoalz.hermeto;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
-import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
+import net.thiagoalz.hermeto.panel.listeners.IPlayerListener;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.TypedValue;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class PlayerNameView extends TextView implements PlayerListener {
+public class PlayerNameView extends TextView implements IPlayerListener {
 	private Position newPosition;
 	
 	public PlayerNameView(Context context) {

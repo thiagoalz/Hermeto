@@ -1,4 +1,5 @@
-package net.thiagoalz.hermeto.panel.sequence.strategies;
+package net.thiagoalz.hermeto.panel.sequence.positioner;
+
 
 public class BouncePositioner implements Positioner {
 	private int maxPosition;

@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto.view.strategies;
+package net.thiagoalz.hermeto.view.strategies.behavior;
 
 import net.thiagoalz.hermeto.PadPanelActivity;
 import net.thiagoalz.hermeto.R;
@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageButton;
 
-public class LineSequenceViewBehavior implements SelectionViewBehavior {
+public class LineSequenceViewBehavior implements ISelectionViewBehavior {
 	private final static String TAG = LineSequenceViewBehavior.class.getCanonicalName();
 	
 	private PadPanelActivity padPanelActivity;

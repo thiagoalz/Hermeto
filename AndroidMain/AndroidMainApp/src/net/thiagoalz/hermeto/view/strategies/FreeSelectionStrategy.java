@@ -8,8 +8,8 @@ import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 public class FreeSelectionStrategy extends AbstractSelectionStrategy {
@@ -20,8 +20,8 @@ public class FreeSelectionStrategy extends AbstractSelectionStrategy {
 	}
 	
 	@Override
-	public boolean mark(Player player) {
-		
+
+	public boolean mark(IPlayer player) {
 		int column = player.getPosition().getX();
 		int row = player.getPosition().getY();
 		
@@ -40,7 +40,7 @@ public class FreeSelectionStrategy extends AbstractSelectionStrategy {
 			if (playingPositions.size() > 0) {
 				ExecutionEvent executionEvent = new ExecutionEvent();
 				executionEvent.setPositions(playingPositions);
-				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
+				for (IExecutionListener listener : getSequencer().getExecutionListeners()) {
 					Log.d(TAG, "Telling to the " + listener + " to start playing the group");
 					listener.onStartPlayingGroup(executionEvent);
 				}

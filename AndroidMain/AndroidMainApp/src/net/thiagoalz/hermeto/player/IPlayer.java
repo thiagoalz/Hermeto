@@ -8,7 +8,7 @@ import net.thiagoalz.hermeto.panel.Position;
  * @author Gabriel Ozeas de Oliveira
  * @version 0.1
  */
-public interface Player {
+public interface IPlayer {
 	/**
 	 * Directions that the player can go.
 	 */

@@ -2,14 +2,11 @@ package net.thiagoalz.hermeto.view.strategies;
 
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
-import net.thiagoalz.hermeto.panel.listeners.SelectionControl;
-import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import net.thiagoalz.hermeto.panel.listeners.ISelectionControl;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
-import net.thiagoalz.hermeto.player.Player;
-import android.util.Log;
+import net.thiagoalz.hermeto.player.IPlayer;
 
-public abstract class AbstractSelectionStrategy implements SelectionControl {
+public abstract class AbstractSelectionStrategy implements ISelectionControl {
 	private static final String TAG = AbstractSelectionStrategy.class.getCanonicalName();
 	
 	private GameManager gameManager;
@@ -20,11 +17,11 @@ public abstract class AbstractSelectionStrategy implements SelectionControl {
 		this.sequencer = gameManager.getSequencer();
 	}
 	
-	public void notifySelection(Player player, Position position) {
+	public void notifySelection(IPlayer player, Position position) {
 		gameManager.notifySelection(player, position);
 	}
 
-	public void notifyDeselection(Player player, Position position) {
+	public void notifyDeselection(IPlayer player, Position position) {
 		gameManager.notifyDeselection(player, position);
 	}
 	

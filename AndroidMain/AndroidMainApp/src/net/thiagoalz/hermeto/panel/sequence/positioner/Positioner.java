@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto.panel.sequence.strategies;
+package net.thiagoalz.hermeto.panel.sequence.positioner;
 
 /**
  * The positioner is responsible for the behavior of the sequencer. 

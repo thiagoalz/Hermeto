@@ -8,20 +8,23 @@ import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
-import net.thiagoalz.hermeto.panel.GameContext;
+import net.thiagoalz.hermeto.panel.IGameContext;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
+import net.thiagoalz.hermeto.panel.sequence.positioner.BouncePositioner;
+import net.thiagoalz.hermeto.panel.sequence.positioner.Positioner;
+import net.thiagoalz.hermeto.panel.sequence.positioner.RepeatPositioner;
 import android.util.Log;
 
 /**
  * In the line sequence strategy, the lines in the panel are independent and can be 
  * started when the user select the first square in that line.
  */
-public class LineSequenceStrategy extends AbstractSequenceStrategy implements SelectionListener {
+public class LineSequenceStrategy extends AbstractSequenceStrategy implements ISelectionListener {
 	private static final String TAG = LineSequenceStrategy.class.getCanonicalName();
 	
 	/**
@@ -42,7 +45,7 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 	
 	@Override
 	public void start() {
-		GameContext gameContext = getSequencer().getGameManager().getGameContext();
+		IGameContext gameContext = getSequencer().getGameManager().getGameContext();
 		int columns = gameContext.getDimensions()[0];
 		
 		LineSequence lineSequence = null;
@@ -117,7 +120,7 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
+				for (IExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStartPlayingGroup(event);
 				}
 			}
@@ -133,7 +136,7 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
+				for (IExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStopPlayingGroup(event);
 				}
 			}
@@ -142,7 +145,7 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 	
 	@Override
 	public void onSelected(SelectionEvent event) {
-		GameContext gameContext = getSequencer().getGameManager().getGameContext();
+		IGameContext gameContext = getSequencer().getGameManager().getGameContext();
 		
 		if (getSequencer().isPlaying()) {
 			Position position = event.getPosition();
