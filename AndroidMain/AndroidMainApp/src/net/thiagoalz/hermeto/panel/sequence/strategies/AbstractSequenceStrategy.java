@@ -1,8 +1,6 @@
 package net.thiagoalz.hermeto.panel.sequence.strategies;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.InstrumentType;

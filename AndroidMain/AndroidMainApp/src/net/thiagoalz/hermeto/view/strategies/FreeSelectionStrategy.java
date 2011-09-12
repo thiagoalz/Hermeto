@@ -32,7 +32,7 @@ public class FreeSelectionStrategy extends AbstractSelectionStrategy {
 			playingPositions.put(new Position(column, row), getGameManager().getGameContext().getCurrentInstrumentType());
 						
 			// Play the sound
-			SoundManager.getInstance().playSound(row);
+			SoundManager.getInstance().playSound(row,getGameManager().getGameContext().getCurrentInstrumentType());
 			
 			/*
 			 * Need to start playing the position.

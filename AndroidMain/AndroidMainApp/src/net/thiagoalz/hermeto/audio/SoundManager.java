@@ -1,7 +1,6 @@
 package net.thiagoalz.hermeto.audio;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import net.thiagoalz.hermeto.R;
 import android.content.Context;
@@ -52,26 +51,24 @@ public class SoundManager {
 		this.addSound(currentIndex++, R.raw.m13);
 		this.addSound(currentIndex++, R.raw.m14);
 		this.addSound(currentIndex++, R.raw.m15);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m15);
 	}
 	
 	public void loadVoices() {
-		this.addSound(currentIndex++, R.raw.m1);
-		this.addSound(currentIndex++, R.raw.m2);
-		this.addSound(currentIndex++, R.raw.m3);
-		this.addSound(currentIndex++, R.raw.m4);
-		this.addSound(currentIndex++, R.raw.m5);
-		this.addSound(currentIndex++, R.raw.m6);
-		this.addSound(currentIndex++, R.raw.m7);
-		this.addSound(currentIndex++, R.raw.m8);
-		this.addSound(currentIndex++, R.raw.m9);
-		this.addSound(currentIndex++, R.raw.m10);
-		this.addSound(currentIndex++, R.raw.m11);
-		this.addSound(currentIndex++, R.raw.m12);
-		this.addSound(currentIndex++, R.raw.m13);
-		this.addSound(currentIndex++, R.raw.m14);
-		this.addSound(currentIndex++, R.raw.m15);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m16a);
+		this.addSound(currentIndex++, R.raw.m16b);
 		this.addSound(currentIndex++, R.raw.m16a);
 		this.addSound(currentIndex++, R.raw.m16b);
 	}
@@ -88,24 +85,13 @@ public class SoundManager {
 	}
 	
 	public void playSound(int index, InstrumentType type) {
-		if (type.equals(InstrumentType.VOICES)) {
-			index = maxPerInstrument + index;
-		}
+		//Switch instrument
+		index = (type.ordinal() * maxPerInstrument) + index;
 		
-		if(index == 15){//Random 15/16
-			Random r = new Random(System.currentTimeMillis());
-			index = 15 + r.nextInt(2);
-		}
-		float streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		streamVolume = streamVolume / audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		soundPool.play(soundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
+		playSound(index);
 	}
 	
-	public void playSound(int index) {
-		if(index == 15){//Random 15/16
-			Random r = new Random(System.currentTimeMillis());
-			index = 15 + r.nextInt(2);
-		}
+	protected void playSound(int index) {
 		float streamVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		soundPool.play(soundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);

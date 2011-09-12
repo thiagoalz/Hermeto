@@ -1,7 +1,6 @@
 package net.thiagoalz.hermeto;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,10 +14,10 @@ import net.thiagoalz.hermeto.panel.controls.listeners.BPMChangeListener;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
-import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.IPlayerListener;
-import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
+import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
+import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
@@ -26,8 +25,8 @@ import net.thiagoalz.hermeto.player.IPlayer;
 import net.thiagoalz.hermeto.view.strategies.FreeSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.LineSelectionStrategy;
-import net.thiagoalz.hermeto.view.strategies.behavior.LineSequenceViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.behavior.ISelectionViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.behavior.LineSequenceViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.behavior.SimpleSequenceViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
@@ -112,7 +111,7 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		soundManager.loadSounds();
 		
 		configureScreen();
-		configSequenceStrategy(SequenceStrategyType.LINE);
+		configSequenceStrategy(SequenceStrategyType.GROUP);
 		constructView();
 		
 		Log.d(TAG, "Making the panel activity listen to the square selection events.");
