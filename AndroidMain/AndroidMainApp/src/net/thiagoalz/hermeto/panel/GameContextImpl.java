@@ -1,11 +1,7 @@
 package net.thiagoalz.hermeto.panel;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.thiagoalz.hermeto.player.Player;
 import android.util.Log;
@@ -25,7 +21,6 @@ public class GameContextImpl implements GameContext {
 	
 	private boolean playing;
 	
-	private Set<Position> markedSquares;
 	
 	public GameContextImpl(int columns, int lines) {
 		this.columns = columns > 1 ? columns : 2;
@@ -33,7 +28,6 @@ public class GameContextImpl implements GameContext {
 		Log.d(TAG, "Creating game context with [" + this.columns + ", " + this.lines + "]");
 		
 		players = new LinkedHashMap<String, Player>();
-		markedSquares = new LinkedHashSet<Position>();
 	}
 	
 	@Override
@@ -64,36 +58,4 @@ public class GameContextImpl implements GameContext {
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
 	}
-
-	@Override
-	public Set<Position> getMarkedSquares() {
-		return markedSquares;
-	}
-
-	public void setMarkedSquares(Set<Position> markedSquares) {
-		this.markedSquares = markedSquares;
-	}
-
-	@Override
-	public List<Position> getColumnMarkedSquares(int column) {
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : getMarkedSquares()) {
-			if (position.getX() == column) {
-				playingPositions.add(position);
-			}
-		}
-		return playingPositions;
-	}
-
-	@Override
-	public List<Position> getRowMarkedSquares(int row) {
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : getMarkedSquares()) {
-			if (position.getY() == row) {
-				playingPositions.add(position);
-			}
-		}
-		return playingPositions;
-	}
-
 }

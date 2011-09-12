@@ -15,29 +15,14 @@ import android.util.Log;
 /**
  * The group sequence strategy make the lines play together.
  */
-public class GroupSequenceStrategy implements SequenceStrategy {
+public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 	private static final String TAG = GroupSequenceStrategy.class.getCanonicalName();
 	
 	/**
 	 * Timer used to schedule the sequence
 	 */
 	private Timer timer;
-	
-	/**
-	 * The sequencer that are invokes this strategy
-	 */
-	private Sequencer sequencer;
-	
-	/**
-	 * The context with all game information.
-	 */
-	private GameContext context;
-	
-	/**
-	 * The sound manager that are playing the musics
-	 */
-	private SoundManager soundManager;
-	
+		
 	/**
 	 * Responsible for control the flow of the execution.
 	 */
@@ -45,9 +30,7 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 
 	
 	public GroupSequenceStrategy(Sequencer sequencer, SoundManager soundManager) {
-		this.sequencer = sequencer;
-		this.context = sequencer.getGameManager().getGameContext();
-		this.soundManager = soundManager;
+		super(sequencer, soundManager);
 		// By default use the repeat behavior
 		setPositionBehavior(PositionBehavior.REPEAT);
 	}
@@ -56,13 +39,13 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 		Log.d(TAG, "Starting playing group " + group);
 		
 		synchronized(timer) {
-			List<Position> playingPositions = context.getColumnMarkedSquares(group);
+			List<Position> playingPositions = getColumnMarkedSquares(group);
 			if (playingPositions.size() > 0) {
 				playGroupSound(playingPositions);
 				
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : sequencer.getExecutionListeners()) {
+				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStartPlayingGroup(event);
 				}
 			}
@@ -73,11 +56,11 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 		Log.d(TAG, "Stoping playing group " + group);
 		
 		synchronized (timer) {
-			List<Position> playingPositions = context.getColumnMarkedSquares(group);
+			List<Position> playingPositions = getColumnMarkedSquares(group);
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : sequencer.getExecutionListeners()) {
+				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStopPlayingGroup(event);
 				}
 			}
@@ -100,21 +83,40 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 	
 	protected void playGroupSound(List<Position> positions) {
 		for (Position position : positions) {
-			soundManager.playSound(position.getY());
+			getSoundManager().playSound(position.getY());
 		}
 	}
 	
 	public synchronized void setPositionBehavior(PositionBehavior positionBehavior) {
-		GameContext context = sequencer.getGameManager().getGameContext();
+		GameContext context = getSequencer().getGameManager().getGameContext();
 		int totalColumns = context.getDimensions()[0];
 		
+		// If the game is playing, pause it.
+		if (getSequencer().isPlaying()) {
+			pause();
+		}
+		
+		Positioner oldPositioner = positioner;
+
 		switch(positionBehavior) {
-			case REPEAT:
-				positioner = new RepeatPositioner(totalColumns);
+			
 			case BOUNCE:
 				positioner = new BouncePositioner(totalColumns);
+				if (oldPositioner != null)
+					positioner.setCurrentPosition(oldPositioner.getCurrentPosition());
+				break;
+				
+			case REPEAT:
 			default:
-				positioner =new RepeatPositioner(totalColumns);
+				positioner = new RepeatPositioner(totalColumns);
+				if (oldPositioner != null)
+					positioner.setCurrentPosition(oldPositioner.getCurrentPosition());
+				break;
+		}
+
+		// Return to the execution.
+		if (getSequencer().isPlaying()) {
+			start();
 		}
 	}
 	
@@ -124,22 +126,6 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 
 	public void setTimer(Timer timer) {
 		this.timer = timer;
-	}
-	
-	public Sequencer getSequencer() {
-		return sequencer;
-	}
-
-	public void setSequencer(Sequencer sequencer) {
-		this.sequencer = sequencer;
-	}
-
-	public SoundManager getSoundManager() {
-		return soundManager;
-	}
-
-	public void setSoundManager(SoundManager soundManager) {
-		this.soundManager = soundManager;
 	}
 	
 	public Positioner getPositioner() {
@@ -152,7 +138,7 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 
 	@Override
 	public void start() {
-		if (soundManager == null) {
+		if (getSoundManager() == null) {
 			throw new IllegalStateException("SoundManager cannot be null");
 		}
 		cleanTimer();
@@ -182,7 +168,7 @@ public class GroupSequenceStrategy implements SequenceStrategy {
 	
 	@Override 
 	public void cleanUp() {
-		soundManager.cleanUp();
+		//getSoundManager().cleanUp();
 	}
 	
 	private class GroupTimerTask extends TimerTask {

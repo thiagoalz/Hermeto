@@ -43,4 +43,11 @@ public interface SequenceStrategy {
 	 * Clean up all the resources used by the sequence strategy.
 	 */
 	public void cleanUp();
+	
+	/**
+	 * Change the behavior of the strategy.
+	 * 
+	 * @param positionBehavior
+	 */
+	public void setPositionBehavior(PositionBehavior positionBehavior);
 }

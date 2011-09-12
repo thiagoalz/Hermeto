@@ -20,13 +20,15 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.view.strategies.FreeSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
-import net.thiagoalz.hermeto.view.strategies.GroupSequenceViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.LineSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.LineSequenceViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.SelectionViewBehavior;
+import net.thiagoalz.hermeto.view.strategies.SimpleSequenceViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -44,6 +46,7 @@ import android.widget.SeekBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.DemoKit.DemoKitActivity;
 
@@ -108,7 +111,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		soundManager.loadSounds();
 		
 		configureScreen();
-		configSequenceStrategy(SequenceStrategyType.GROUP);
+		configSequenceStrategy(SequenceStrategyType.FREE);
 		constructView();
 		
 		Log.d(TAG, "Making the panel activity listen to the square selection events.");
@@ -302,6 +305,21 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		
 		ImageButton minus = (ImageButton) findViewById(R.id.minus);
 		minus.setOnClickListener(bpmListener);
+		
+		final ToggleButton bounce = (ToggleButton) findViewById(R.id.bouncebutton);
+		bounce.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SequenceStrategy strategy = gameManager.getSequencer().getCurrentSequenceStrategy();
+				if (bounce.isChecked()) {
+					Log.d(TAG, "Changin to bounce");
+		            strategy.setPositionBehavior(PositionBehavior.BOUNCE);
+		        } else {
+		        	Log.d(TAG, "Changin to repeat");
+		        	strategy.setPositionBehavior(PositionBehavior.REPEAT);
+		        }
+			}
+		});
 	}
 
 	@Override
@@ -389,12 +407,12 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStartPlayingGroup(final ExecutionEvent event) {
-		Log.d(TAG, "Printing selected buttons with playing color ");
 		List<Position> positions = event.getPositions();
 		for (Position position : positions) {
 			final ImageButton button = padsMatrix[position.getX()][position.getY()];
 			button.post(new Runnable() {
 				public void run() {
+					Log.d(TAG, "Printing selected buttons with playing color ");
 					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonplaying));
 				}
 			});
@@ -402,9 +420,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStopPlayingGroup(final ExecutionEvent event) {
-		Log.d(TAG, "Printing selected buttons with selected color ");
-		Log.d(TAG, "Outside from the main thread");
-		
+		Log.d(TAG, "Printing selected buttons with selected color ");		
 		List<Position> positions = event.getPositions();
 		for (Position position : positions) {
 			final ImageButton button = padsMatrix[position.getX()][position.getY()];
@@ -427,12 +443,14 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private void configSequenceStrategy(SequenceStrategyType type) {
 		gameManager = GameManager.getInstance();
+		SequenceStrategy sequenceStrategy = null;
+		
 		switch (type) {
 			case GROUP:
 				// Configuring the sequence strategy in the sequencer
 				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.GROUP);
 				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new GroupSequenceViewBehavior(this);
+				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
 				break;
@@ -440,12 +458,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				// Configuring the sequence strategy in the sequencer
 				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.LINE);
 				// Configuring the sequence strategy to linsting the selection events
-				SequenceStrategy sequenceStrategy = gameManager.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
+				sequenceStrategy = gameManager.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 				gameManager.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
 				// Configuring the way that the squares are animated.
 				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
+				break;
+			case FREE:
+				// Configuring the sequence strategy in the sequencer
+				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.FREE);
+				// Configuring the way that the squares are clicked.
+				gameManager.setSelectionControl(new FreeSelectionStrategy(gameManager));
+				// Configuring the way that the squares are animated.
+				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
 				break;
 		}
 	}

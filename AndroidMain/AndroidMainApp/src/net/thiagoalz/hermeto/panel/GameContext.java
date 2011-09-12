@@ -49,7 +49,7 @@ public interface GameContext {
 	 * Retrieve all the squares that are marked to execute in the panel.
 	 * @return A set with all the positions that are marked.
 	 */
-	public Set<Position> getMarkedSquares();
+	//public Set<Position> getMarkedSquares();
 	
 	/**
 	 * Retrieve all the square that are marked in a column
@@ -57,7 +57,7 @@ public interface GameContext {
 	 * @param The column number that will be search. 
 	 * @return A set with all the positions that are marked. 
 	 */
-	public List<Position> getColumnMarkedSquares(int column);
+	//public List<Position> getColumnMarkedSquares(int column);
 	
 	/**
 	 * Retrieve all the square that are marked in a column
@@ -65,6 +65,6 @@ public interface GameContext {
 	 * @param The column number that will be search.
 	 * @return A set with all the positions that are marked. 
 	 */
-	public List<Position> getRowMarkedSquares(int row);
+	//public List<Position> getRowMarkedSquares(int row);
 	
 }

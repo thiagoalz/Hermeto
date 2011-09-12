@@ -1,12 +1,10 @@
 package net.thiagoalz.hermeto.panel;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -299,7 +297,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		gameContext.setPlaying(false);
 		// Deselect all the markedSquares and stop playing.
 		selectionControl.cleanAll();
-		gameContext.setMarkedSquares(new LinkedHashSet<Position>());
+		//gameContext.setMarkedSquares(new LinkedHashSet<Position>());
 	}
 
 	@Override

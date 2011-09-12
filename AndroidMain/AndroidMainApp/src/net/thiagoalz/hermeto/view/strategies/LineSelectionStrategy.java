@@ -1,10 +1,12 @@
 package net.thiagoalz.hermeto.view.strategies;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.thiagoalz.hermeto.panel.GameContext;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
+import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.Player;
 import android.util.Log;
 
@@ -19,10 +21,10 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 	@Override
 	public boolean mark(Player player) {
 		// Retrieving the game context.
-		GameContext gameContext = getGameManager().getGameContext();
+		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 		
 		// Retrieving all the marked squares
-		Set<Position> markedSquares = gameContext.getMarkedSquares();
+		Set<Position> markedSquares = sequenceStrategy.getMarkedSquares();
 		
 		Position selectedPosition = new Position(player.getPosition().getX(),
 				player.getPosition().getY());
@@ -62,6 +64,18 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 				return true;
 			}
 		}
+	}
+	
+	@Override
+	public void cleanAll() {
+		// Retrieving the game context.
+		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
+		// Deselect all the markedSquares and stop playing.
+		for (Position position : sequenceStrategy.getMarkedSquares()) {
+			notifyDeselection(null, position);
+		}
+		sequenceStrategy.setMarkedSquares(new LinkedHashSet<Position>());
+		
 	}
 	
 	
