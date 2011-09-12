@@ -99,21 +99,17 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 		Positioner oldPositioner = positioner;
 
 		switch(positionBehavior) {
-			
 			case BOUNCE:
 				positioner = new BouncePositioner(totalColumns);
-				if (oldPositioner != null)
-					positioner.setCurrentPosition(oldPositioner.getCurrentPosition());
 				break;
-				
 			case REPEAT:
 			default:
 				positioner = new RepeatPositioner(totalColumns);
-				if (oldPositioner != null)
-					positioner.setCurrentPosition(oldPositioner.getCurrentPosition());
 				break;
 		}
-
+		if (oldPositioner != null)
+			positioner.setCurrentPosition(oldPositioner.getCurrentPosition());
+		
 		// Return to the execution.
 		if (getSequencer().isPlaying()) {
 			start();

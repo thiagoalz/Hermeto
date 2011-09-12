@@ -68,10 +68,9 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 	
 	private Positioner createPositioner(int maxPosition) {
 		switch(positionBehavior) {
-			case REPEAT:
-				return new RepeatPositioner(maxPosition);
 			case BOUNCE:
 				return new BouncePositioner(maxPosition);
+			case REPEAT:
 			default:
 				return new RepeatPositioner(maxPosition);
 		}

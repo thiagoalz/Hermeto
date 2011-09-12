@@ -21,18 +21,11 @@ public abstract class AbstractSelectionStrategy implements SelectionControl {
 	}
 	
 	public void notifySelection(Player player, Position position) {
-		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : gameManager.getSelectionListeners()) {
-			listener.onSelected(event);
-		}
+		gameManager.notifySelection(player, position);
 	}
 
 	public void notifyDeselection(Player player, Position position) {
-		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : gameManager.getSelectionListeners()) {
-			Log.d(TAG, "Informing the " + listener + " about deselection.");
-			listener.onDeselected(event);
-		}
+		gameManager.notifyDeselection(player, position);
 	}
 	
 	public GameManager getGameManager() {

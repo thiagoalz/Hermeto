@@ -18,7 +18,6 @@ import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
-import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
@@ -111,7 +110,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		soundManager.loadSounds();
 		
 		configureScreen();
-		configSequenceStrategy(SequenceStrategyType.FREE);
+		configSequenceStrategy(SequenceStrategyType.GROUP);
 		constructView();
 		
 		Log.d(TAG, "Making the panel activity listen to the square selection events.");
@@ -144,7 +143,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 			xmppItem.setTitle("Allow Web Players");
 			xmppItem.setIcon(R.drawable.menu_phone_off);
 		}
-		
 		
 		return true;
 	}
@@ -443,31 +441,27 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	
 	private void configSequenceStrategy(SequenceStrategyType type) {
 		gameManager = GameManager.getInstance();
-		SequenceStrategy sequenceStrategy = null;
 		
 		switch (type) {
 			case GROUP:
 				// Configuring the sequence strategy in the sequencer
-				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.GROUP);
-				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
+				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.GROUP);				
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
+				// Configuring the way that the squares are animated.
+				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
 				break;
 			case LINE:
 				// Configuring the sequence strategy in the sequencer
-				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.LINE);
-				// Configuring the sequence strategy to linsting the selection events
-				sequenceStrategy = gameManager.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
-				gameManager.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
-				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
+				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.LINE);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
+				// Configuring the way that the squares are animated.
+				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
 				break;
 			case FREE:
 				// Configuring the sequence strategy in the sequencer
-				gameManager.getSequencer().setCurrentSequenceStrategy(SequenceStrategyType.FREE);
+				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.FREE);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new FreeSelectionStrategy(gameManager));
 				// Configuring the way that the squares are animated.
@@ -477,7 +471,6 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 
 	////////////////////////ADK CODE/////////////////////
-	
 	@Override
 	protected void enableControls(boolean enable){
 		if(enable){
@@ -511,6 +504,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 //		}
 	}
 
+	/**
+	 * Used to test ADK connection
+	 */
 	protected void handleSwitchMessage(SwitchMsg o) {
 //		if (mInputController != null) {
 //			byte sw = o.getSw();

@@ -11,8 +11,12 @@ import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.SelectionControl;
+import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.DefaultPlayer;
 import net.thiagoalz.hermeto.player.Player;
 import net.thiagoalz.hermeto.player.Player.Direction;
@@ -28,7 +32,7 @@ import android.util.Log;
 public class GameManager implements SquarePanelManager, PlayersManager,
 		ExecutionListener {
 
-	private static final String tag = GameManager.class.getCanonicalName();
+	private static final String TAG = GameManager.class.getCanonicalName();
 	
 	private static final int COLUMNS_CONF = 16;
 	private static final int ROWS_CONF = 16;
@@ -97,7 +101,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public boolean move(Player player, Position newPosition) {
 		Position oldPos = player.getPosition();
 		player.setPosition(newPosition);
-		Log.d(tag, "Changing position of the player: [" + newPosition.getX()
+		Log.d(TAG, "Changing position of the player: [" + newPosition.getX()
 				+ ", " + newPosition.getY() + "]");
 		notifyMovePlayerListeners(player, oldPos, player.getPosition());
 		return true;
@@ -112,7 +116,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		int x = oldPos.getX();
 		int y = oldPos.getY();
 
-		Log.d(tag, "Actual position of the player: [" + x + ", " + y + "]");
+		Log.d(TAG, "Actual position of the player: [" + x + ", " + y + "]");
 
 		switch (direction) {
 		case LEFT:
@@ -165,7 +169,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	public Player connectPlayer(String playerName) {
 		Player player = createPlayer(playerName);
 
-		Log.d(tag, "Connection " + playerName + "(" + player.getId()
+		Log.d(TAG, "Connection " + playerName + "(" + player.getId()
 				+ ") at the position [" + player.getPosition().getX() + ", "
 				+ player.getPosition().getY() + "]");
 		notifyConnectPlayerListeners(player);
@@ -247,6 +251,22 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 			listener.onPlayerMove(event);
 		}
 	}
+	
+	public void notifySelection(Player player, Position position) {
+		SelectionEvent event = new SelectionEvent(player, position);
+		for (SelectionListener listener : this.selectionListeners) {
+			Log.d(TAG, "Informing the " + listener + " about selection.");
+			listener.onSelected(event);
+		}
+	}
+
+	public void notifyDeselection(Player player, Position position) {
+		SelectionEvent event = new SelectionEvent(player, position);
+		for (SelectionListener listener : this.selectionListeners) {
+			Log.d(TAG, "Informing the " + listener + " about deselection.");
+			listener.onDeselected(event);
+		}
+	}
 
 	public int getBPM() {
 		return bpm;
@@ -322,14 +342,6 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		return sequencer;
 	}
 
-	public List<SelectionListener> getSelectionListeners() {
-		return selectionListeners;
-	}
-
-	public void setSelectionListeners(List<SelectionListener> selectionListeners) {
-		this.selectionListeners = selectionListeners;
-	}
-
 	public List<PlayerListener> getPlayerListeners() {
 		return playerListeners;
 	}
@@ -344,5 +356,15 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 
 	public void setSelectionControl(SelectionControl selectionControl) {
 		this.selectionControl = selectionControl;
+	}
+
+	public void setCurrentSequenceStrategy(SequenceStrategyType group) {
+		this.getSequencer().setCurrentSequenceStrategy(group);
+		
+		if(group == SequenceStrategyType.LINE){
+			// Configuring the sequence strategy to listing the selection events
+			SequenceStrategy sequenceStrategy = this.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
+			this.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
+		}
 	}
 }

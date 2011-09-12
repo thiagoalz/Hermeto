@@ -185,12 +185,11 @@ public class Sequencer implements ExecutionControl {
 	
 	private SequenceStrategy createNewStrategy(SequenceStrategyType type) {
 		switch (type) {
-			case GROUP:
-				return new GroupSequenceStrategy(this, soundManager);
 			case LINE:
 				return new LineSequenceStrategy(this, soundManager);
 			case FREE:
 				return new FreeSequenceStrategy(this, soundManager);
+			case GROUP:
 			default:
 				return new GroupSequenceStrategy(this, soundManager);
 		}
