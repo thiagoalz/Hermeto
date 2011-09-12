@@ -2,9 +2,11 @@ package net.thiagoalz.hermeto.panel.sequence.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameContext;
 import net.thiagoalz.hermeto.panel.Position;
@@ -45,7 +47,10 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 		
 		LineSequence lineSequence = null;
 		for (int i = 0; i < columns; i++) {
-			List<Position> positions = getColumnMarkedSquares(i);
+			Map<Position, InstrumentType> positions = getColumnMarkedSquares(i);
+			
+			// Get a list with all the retrieve positions from the column
+			List<Position> orderedPositions = new ArrayList<Position>(positions.keySet());
 			
 			// If the column has some square selected
 			if (positions.size() > 0) {
@@ -57,11 +62,11 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 				} else {
 					lineSequence = getLineSequences().get(i);
 				}
-				Position lastSquare = positions.get(positions.size() - 1);
+				Position lastSquare = orderedPositions.get(orderedPositions.size() - 1);
 				Positioner positioner = createPositioner(lastSquare.getY());
 	
 				// Schedule the lineSequence to execute until the last marked square
-				lineSequence.schedule(positioner, getSequencer().getTimeSequence());
+				lineSequence.schedule(positioner, getSequencer().getTimeSequence(), gameContext.getCurrentInstrumentType());
 			}
 		}		
 	}
@@ -99,14 +104,14 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 		}
 	}
 
-	public void startPlayingSquare(int column, int row) {
+	public void startPlayingSquare(int column, int row, InstrumentType instrumentType) {
 		Log.d(TAG, "Starting playing the button at position [" + column + ", " + row + "].");
 		synchronized (this) {
 			// Put the position in a list to send to the listeners
-			List<Position> playingPositions = new ArrayList<Position>();
-			playingPositions.add(new Position(column, row));
+			Map<Position, InstrumentType> playingPositions = new LinkedHashMap<Position, InstrumentType>();
+			playingPositions.put(new Position(column, row), instrumentType);
 			// Play the sound
-			getSoundManager().playSound(row);
+			getSoundManager().playSound(row, instrumentType);
 			
 			// Send the event with the position to be played to the listeners.
 			if (playingPositions.size() > 0) {
@@ -120,11 +125,11 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 		
 	}
 
-	public void stopPlayingSquare(int column, int row) {
+	public void stopPlayingSquare(int column, int row, InstrumentType instrumentType) {
 		Log.d(TAG, "Stoping playing square [" + column + ", " + row + "]");
 		synchronized (this) {
-			List<Position> playingPositions = new ArrayList<Position>();
-			playingPositions.add(new Position(column, row));
+			Map<Position, InstrumentType> playingPositions = new LinkedHashMap<Position, InstrumentType>();
+			playingPositions.put(new Position(column, row), instrumentType);
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
@@ -137,6 +142,8 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 	
 	@Override
 	public void onSelected(SelectionEvent event) {
+		GameContext gameContext = getSequencer().getGameManager().getGameContext();
+		
 		if (getSequencer().isPlaying()) {
 			Position position = event.getPosition();
 			LineSequence lineSequence = null;
@@ -154,7 +161,7 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements Se
 				getLineSequences().put(lineSequence.getPlayingLine(), lineSequence);
 			}
 			Positioner positioner = createPositioner(position.getY());
-			lineSequence.schedule(positioner, getSequencer().getTimeSequence());
+			lineSequence.schedule(positioner, getSequencer().getTimeSequence(), gameContext.getCurrentInstrumentType());
 		}		
 	}
 

@@ -2,7 +2,10 @@ package net.thiagoalz.hermeto.view.strategies;
 
 import net.thiagoalz.hermeto.PadPanelActivity;
 import net.thiagoalz.hermeto.R;
+import net.thiagoalz.hermeto.audio.InstrumentType;
+import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageButton;
 
@@ -10,9 +13,19 @@ public class SimpleSequenceViewBehavior implements SelectionViewBehavior {
 	private static final String TAG = SimpleSequenceViewBehavior.class.getCanonicalName();
 	
 	private PadPanelActivity padPanelActivity;
+	private GameManager gameManager;
 	
-	public SimpleSequenceViewBehavior(PadPanelActivity padPanelActivity) {
+	private Drawable buttonPercusionSelected;
+	private Drawable buttonVoiceSelected;
+	private Drawable buttonDeselected;
+	
+	public SimpleSequenceViewBehavior(PadPanelActivity padPanelActivity, GameManager gameManager) {
 		this.padPanelActivity = padPanelActivity;
+		this.gameManager = gameManager;
+		
+		buttonPercusionSelected = padPanelActivity.getResources().getDrawable(R.drawable.buttonselected);
+		buttonVoiceSelected = padPanelActivity.getResources().getDrawable(R.drawable.buttonselected_blue);
+		buttonDeselected = padPanelActivity.getResources().getDrawable(R.drawable.buttonstopped);
 	}
 	
 	@Override
@@ -24,7 +37,15 @@ public class SimpleSequenceViewBehavior implements SelectionViewBehavior {
 		final ImageButton button = padsMatrix[x][y];
 		button.post(new Runnable() {
 			public void run() {
-				button.setBackgroundDrawable(padPanelActivity.getResources().getDrawable(R.drawable.buttonselected));
+				InstrumentType type = gameManager.getGameContext().getCurrentInstrumentType();
+				switch (type) {
+					case PERCUSIONS: 
+						button.setBackgroundDrawable(buttonPercusionSelected);
+						break;
+					case VOICES: 
+						button.setBackgroundDrawable(buttonVoiceSelected);
+						break;
+				}
 			}
 		});
 	}
@@ -39,8 +60,10 @@ public class SimpleSequenceViewBehavior implements SelectionViewBehavior {
 		final ImageButton button = padsMatrix[x][y];
 		button.post(new Runnable() {
 			public void run() {
-				button.setBackgroundDrawable(padPanelActivity.getResources().getDrawable(R.drawable.buttonstopped));
+				button.setBackgroundDrawable(buttonDeselected);
 			}
 		});
 	}
+	
+	
 }

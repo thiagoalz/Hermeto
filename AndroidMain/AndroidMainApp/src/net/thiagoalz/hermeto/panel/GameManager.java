@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
@@ -366,5 +367,9 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 			SequenceStrategy sequenceStrategy = this.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 			this.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
 		}
+	}
+
+	public void setInstrumentyType(InstrumentType currentInstrumentType) {
+		gameContext.setCurrentInstrumentType(currentInstrumentType);
 	}
 }

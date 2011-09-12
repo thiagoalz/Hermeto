@@ -1,10 +1,11 @@
 package net.thiagoalz.hermeto.panel.sequence.strategies;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
@@ -17,8 +18,8 @@ public abstract class AbstractSequenceStrategy implements SequenceStrategy {
 	/**
 	 * All the marked square for that strategy.
 	 */
-	private Set<Position> markedSquares;
-	
+	private Map<Position, InstrumentType> markedSquares;
+		
 	/**
 	 * The sequencer that are invokes this strategy
 	 */
@@ -32,34 +33,34 @@ public abstract class AbstractSequenceStrategy implements SequenceStrategy {
 	public AbstractSequenceStrategy(Sequencer sequencer, SoundManager soundManager) {
 		this.sequencer = sequencer;
 		this.soundManager = soundManager;
-		this.markedSquares = new LinkedHashSet<Position>();
+		this.markedSquares = new LinkedHashMap<Position, InstrumentType>();
 	}
 	
-	public List<Position> getColumnMarkedSquares(int column) {
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : getMarkedSquares()) {
+	public Map<Position, InstrumentType> getColumnMarkedSquares(int column) {
+		Map<Position, InstrumentType> playingPositions = new LinkedHashMap<Position, InstrumentType>();
+		for (Position position : getMarkedSquares().keySet()) {
 			if (position.getX() == column) {
-				playingPositions.add(position);
+				playingPositions.put(position, getMarkedSquares().get(position));
 			}
 		}
 		return playingPositions;
 	}
 
-	public List<Position> getRowMarkedSquares(int row) {
-		List<Position> playingPositions = new ArrayList<Position>();
-		for (Position position : getMarkedSquares()) {
+	public Map<Position, InstrumentType> getRowMarkedSquares(int row) {
+		Map<Position, InstrumentType> playingPositions = new LinkedHashMap<Position, InstrumentType>();
+		for (Position position : getMarkedSquares().keySet()) {
 			if (position.getY() == row) {
-				playingPositions.add(position);
+				playingPositions.put(position, getMarkedSquares().get(position));
 			}
 		}
 		return playingPositions;
 	}
 	
-	public Set<Position> getMarkedSquares() {
+	public Map<Position, InstrumentType> getMarkedSquares() {
 		return markedSquares;
 	}
 
-	public void setMarkedSquares(Set<Position> markedSquares) {
+	public void setMarkedSquares(Map<Position, InstrumentType> markedSquares) {
 		this.markedSquares = markedSquares;
 	}
 

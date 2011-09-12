@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.player.Player;
 
 /**
@@ -44,6 +45,13 @@ public interface GameContext {
 	 * @return
 	 */
 	public boolean isPlaying();
+	
+	/**
+	 * Return the current instrument selected.
+	 * 
+	 * @return The current instrument selected.
+	 */
+	public InstrumentType getCurrentInstrumentType();
 	
 	/**
 	 * Retrieve all the squares that are marked to execute in the panel.

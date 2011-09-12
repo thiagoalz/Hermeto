@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.player.Player;
 import android.util.Log;
 
@@ -21,13 +22,16 @@ public class GameContextImpl implements GameContext {
 	
 	private boolean playing;
 	
-	
+	private InstrumentType currentInstrumentType;
+		
 	public GameContextImpl(int columns, int lines) {
 		this.columns = columns > 1 ? columns : 2;
 		this.lines = lines > 1 ? lines : 2;
 		Log.d(TAG, "Creating game context with [" + this.columns + ", " + this.lines + "]");
 		
 		players = new LinkedHashMap<String, Player>();
+		
+		currentInstrumentType = InstrumentType.PERCUSIONS;
 	}
 	
 	@Override
@@ -57,5 +61,13 @@ public class GameContextImpl implements GameContext {
 	
 	public void setPlaying(boolean playing) {
 		this.playing = playing;
+	}
+
+	public InstrumentType getCurrentInstrumentType() {
+		return currentInstrumentType;
+	}
+
+	public void setCurrentInstrumentType(InstrumentType currentInstrumentType) {
+		this.currentInstrumentType = currentInstrumentType;
 	}
 }

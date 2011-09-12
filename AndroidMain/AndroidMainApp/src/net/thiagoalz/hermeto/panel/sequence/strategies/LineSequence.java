@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel.sequence.strategies;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import android.util.Log;
 
 public class LineSequence {
@@ -12,6 +13,7 @@ public class LineSequence {
 	private int playingLine;
 	private boolean running;
 	private Positioner positioner;
+	private InstrumentType instrumentType;
 	
 	private LineSequenceStrategy sequenceStrategy;
 	
@@ -20,9 +22,10 @@ public class LineSequence {
 		this.playingLine = playingLine;
 	}
 	
-	public void schedule(Positioner positioner, int timeSequence) {
+	public void schedule(Positioner positioner, int timeSequence, InstrumentType instrumentType) {
 		this.positioner = positioner;
 		this.running = true;
+		this.instrumentType = instrumentType;
 		this.timer = new Timer();
 		this.timer.scheduleAtFixedRate(new LinearLineTimerTask() , 0, timeSequence);
 	}
@@ -81,7 +84,7 @@ public class LineSequence {
 				}
 				
 				long startTime = System.currentTimeMillis();
-				sequenceStrategy.startPlayingSquare(playingLine, positioner.getCurrentPosition());
+				sequenceStrategy.startPlayingSquare(playingLine, positioner.getCurrentPosition(), instrumentType);
 				
 				/* keep it turned on until the half of the total period time */
 				long waitTime = (sequenceStrategy.getSequencer().getTimeSequence() / 2)
@@ -96,7 +99,7 @@ public class LineSequence {
 					}
 				}
 
-				sequenceStrategy.stopPlayingSquare(playingLine, positioner.getCurrentPosition());
+				sequenceStrategy.stopPlayingSquare(playingLine, positioner.getCurrentPosition(), instrumentType);
 				positioner.nextPosition();
 			}
 		}

@@ -1,9 +1,10 @@
 package net.thiagoalz.hermeto.panel.sequence.strategies;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameContext;
 import net.thiagoalz.hermeto.panel.Position;
@@ -39,7 +40,7 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 		Log.d(TAG, "Starting playing group " + group);
 		
 		synchronized(timer) {
-			List<Position> playingPositions = getColumnMarkedSquares(group);
+			Map<Position, InstrumentType> playingPositions = getColumnMarkedSquares(group);
 			if (playingPositions.size() > 0) {
 				playGroupSound(playingPositions);
 				
@@ -56,7 +57,7 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 		Log.d(TAG, "Stoping playing group " + group);
 		
 		synchronized (timer) {
-			List<Position> playingPositions = getColumnMarkedSquares(group);
+			Map<Position, InstrumentType> playingPositions = getColumnMarkedSquares(group);
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
@@ -81,9 +82,9 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 		}
 	}
 	
-	protected void playGroupSound(List<Position> positions) {
-		for (Position position : positions) {
-			getSoundManager().playSound(position.getY());
+	protected void playGroupSound(Map<Position, InstrumentType> positions) {
+		for (Position position : positions.keySet()) {
+			getSoundManager().playSound(position.getY(), positions.get(position));
 		}
 	}
 	

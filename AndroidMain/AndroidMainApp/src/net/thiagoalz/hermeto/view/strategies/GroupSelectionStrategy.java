@@ -1,8 +1,9 @@
 package net.thiagoalz.hermeto.view.strategies;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.sequence.strategies.GroupSequenceStrategy;
@@ -22,12 +23,12 @@ public class GroupSelectionStrategy extends AbstractSelectionStrategy {
 		GroupSequenceStrategy sequenceStrategy = (GroupSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.GROUP);
 		
 		// Retrieving all the marked squares
-		Set<Position> markedSquares = sequenceStrategy.getMarkedSquares();
+		Map<Position, InstrumentType> markedSquares = sequenceStrategy.getMarkedSquares();
 		
 		Position selectedPosition = new Position(player.getPosition().getX(),
 				player.getPosition().getY());
 	
-		if (markedSquares.contains(selectedPosition)) {
+		if (markedSquares.containsKey(selectedPosition)) {
 			// If the position is already selected, so undo it.
 			Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
 					+ player.getPosition().getY() + "]");
@@ -38,7 +39,7 @@ public class GroupSelectionStrategy extends AbstractSelectionStrategy {
 			// If the position is not marked yet, mark it.
 			Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
 					+ player.getPosition().getY() + "]");
-			markedSquares.add(player.getPosition());
+			markedSquares.put(player.getPosition(), getGameManager().getGameContext().getCurrentInstrumentType());
 			notifySelection(player, selectedPosition);
 			return true;
 		}
@@ -49,10 +50,10 @@ public class GroupSelectionStrategy extends AbstractSelectionStrategy {
 		// Retrieving the game context.
 		GroupSequenceStrategy sequenceStrategy = (GroupSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.GROUP);
 		// Deselect all the markedSquares and stop playing.
-		for (Position position : sequenceStrategy.getMarkedSquares()) {
+		for (Position position : sequenceStrategy.getMarkedSquares().keySet()) {
 			notifyDeselection(null, position);
 		}
-		sequenceStrategy.setMarkedSquares(new LinkedHashSet<Position>());
+		sequenceStrategy.setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
 		
 	}
 }

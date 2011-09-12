@@ -1,8 +1,9 @@
 package net.thiagoalz.hermeto.view.strategies;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
@@ -24,12 +25,12 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 		
 		// Retrieving all the marked squares
-		Set<Position> markedSquares = sequenceStrategy.getMarkedSquares();
+		Map<Position, InstrumentType> markedSquares = sequenceStrategy.getMarkedSquares();
 		
 		Position selectedPosition = new Position(player.getPosition().getX(),
 				player.getPosition().getY());
 	
-		if (markedSquares.contains(selectedPosition)) {
+		if (markedSquares.containsKey(selectedPosition)) {
 			synchronized(this) {
 				// If the position is already selected, undo it.
 				Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
@@ -43,7 +44,7 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 				Position selectedSquare = null;
 				
 				// Verify if any position in the same line is already selected, if it is, undo it.
-				for (Position markedSquare: markedSquares) {
+				for (Position markedSquare: markedSquares.keySet()) {
 					if (markedSquare.getX() == player.getPosition().getX()) {
 						selectedSquare = markedSquare;
 					}
@@ -59,7 +60,7 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 				// If the position is not marked yet, mark it.
 				Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
 						+ player.getPosition().getY() + "]");
-				markedSquares.add(player.getPosition());
+				markedSquares.put(player.getPosition(), getGameManager().getGameContext().getCurrentInstrumentType());
 				notifySelection(player, selectedPosition);
 				return true;
 			}
@@ -71,11 +72,10 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 		// Retrieving the game context.
 		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 		// Deselect all the markedSquares and stop playing.
-		for (Position position : sequenceStrategy.getMarkedSquares()) {
+		for (Position position : sequenceStrategy.getMarkedSquares().keySet()) {
 			notifyDeselection(null, position);
 		}
-		sequenceStrategy.setMarkedSquares(new LinkedHashSet<Position>());
-		
+		sequenceStrategy.setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
 	}
 	
 	

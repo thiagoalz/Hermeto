@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.control.ADKGameplayControl;
 import net.thiagoalz.hermeto.control.XMPPGameplayControl;
@@ -30,6 +31,7 @@ import net.thiagoalz.hermeto.view.strategies.SelectionViewBehavior;
 import net.thiagoalz.hermeto.view.strategies.SimpleSequenceViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -110,7 +112,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 		soundManager.loadSounds();
 		
 		configureScreen();
-		configSequenceStrategy(SequenceStrategyType.GROUP);
+		configSequenceStrategy(SequenceStrategyType.LINE);
 		constructView();
 		
 		Log.d(TAG, "Making the panel activity listen to the square selection events.");
@@ -152,21 +154,20 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	    // Handle item selection
 	    switch (item.getItemId()) {
 		    case R.id.connect_xmpp:
-		    	if(xmppControl.isRunning()){
+		    	if (xmppControl.isRunning()) {
 		    		xmppControl.stop();
-		    	}else{
+		    	} else {
 		    		xmppControl.start();
 		    	}
 		        return true;
 		    case R.id.red:
-		        //TODO: Change Instrument
-		    
+		        gameManager.setInstrumentyType(InstrumentType.PERCUSIONS);
 		        return true;
 		    case R.id.blue:
-		    	//TODO: Change Instrument
+		    	gameManager.setInstrumentyType(InstrumentType.VOICES);
 		    	return true;
-	    default:
-	        return super.onOptionsItemSelected(item);
+		    default:
+		    	return super.onOptionsItemSelected(item);
 	    }
 	}
 	
@@ -405,8 +406,9 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStartPlayingGroup(final ExecutionEvent event) {
-		List<Position> positions = event.getPositions();
-		for (Position position : positions) {
+		
+		Map<Position, InstrumentType> positions = event.getPositions();
+		for (Position position : positions.keySet()) {
 			final ImageButton button = padsMatrix[position.getX()][position.getY()];
 			button.post(new Runnable() {
 				public void run() {
@@ -418,14 +420,24 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 	}
 	
 	public void onStopPlayingGroup(final ExecutionEvent event) {
-		Log.d(TAG, "Printing selected buttons with selected color ");		
-		List<Position> positions = event.getPositions();
-		for (Position position : positions) {
+		Log.d(TAG, "Printing selected buttons with selected color ");
+		
+		final Drawable buttonPercusionSelected = getResources().getDrawable(R.drawable.buttonselected);
+		final Drawable buttonVoiceSelected = getResources().getDrawable(R.drawable.buttonselected_blue);
+		
+		Map<Position, InstrumentType> positions = event.getPositions();
+		for (final Position position : positions.keySet()) {
 			final ImageButton button = padsMatrix[position.getX()][position.getY()];
-			Log.d(TAG, "Inside from the main thread");
 			button.post(new Runnable() {
 				public void run() {
-					button.setBackgroundDrawable(PadPanelActivity.this.getResources().getDrawable(R.drawable.buttonselected));
+					switch (event.getPositions().get(position)) {
+						case PERCUSIONS: 
+							button.setBackgroundDrawable(buttonPercusionSelected);
+							break;
+						case VOICES: 
+							button.setBackgroundDrawable(buttonVoiceSelected);
+							break;
+					}
 				}
 			});
 		}
@@ -449,7 +461,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
 				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
+				selectionViewBehavior = new SimpleSequenceViewBehavior(this, gameManager);
 				break;
 			case LINE:
 				// Configuring the sequence strategy in the sequencer
@@ -465,7 +477,7 @@ public class PadPanelActivity extends DemoKitActivity implements SelectionListen
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new FreeSelectionStrategy(gameManager));
 				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new SimpleSequenceViewBehavior(this);
+				selectionViewBehavior = new SimpleSequenceViewBehavior(this, gameManager);
 				break;
 		}
 	}

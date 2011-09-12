@@ -1,8 +1,9 @@
 package net.thiagoalz.hermeto.view.strategies;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
@@ -20,14 +21,15 @@ public class FreeSelectionStrategy extends AbstractSelectionStrategy {
 	
 	@Override
 	public boolean mark(Player player) {
+		
 		int column = player.getPosition().getX();
 		int row = player.getPosition().getY();
 		
 		Log.d(TAG, "Starting playing the button at position [" + column + ", " + row + "].");
 		synchronized (this) {
 			// Put the position in a list to send to the listeners
-			List<Position> playingPositions = new ArrayList<Position>();
-			playingPositions.add(new Position(column, row));
+			Map<Position, InstrumentType> playingPositions = new LinkedHashMap<Position, InstrumentType>();
+			playingPositions.put(new Position(column, row), getGameManager().getGameContext().getCurrentInstrumentType());
 						
 			// Play the sound
 			SoundManager.getInstance().playSound(row);

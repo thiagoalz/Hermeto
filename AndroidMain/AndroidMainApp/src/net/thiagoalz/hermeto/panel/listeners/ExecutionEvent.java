@@ -1,12 +1,13 @@
 package net.thiagoalz.hermeto.panel.listeners;
 
-import java.util.List;
+import java.util.Map;
 
+import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.panel.Position;
 
 public class ExecutionEvent {
 
-	private List<Position> positions;
+	private Map<Position, InstrumentType> positions;
 	private Position position;
 	
 	public Position getPosition() {
@@ -17,11 +18,11 @@ public class ExecutionEvent {
 		this.position = position;
 	}
 
-	public List<Position> getPositions() {
+	public Map<Position, InstrumentType> getPositions() {
 		return positions;
 	}
 
-	public void setPositions(List<Position> playingPositions) {
+	public void setPositions(Map<Position, InstrumentType> playingPositions) {
 		positions = playingPositions;		
 	}	
 }
