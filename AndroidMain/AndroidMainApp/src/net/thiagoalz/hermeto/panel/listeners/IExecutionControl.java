@@ -3,7 +3,7 @@ package net.thiagoalz.hermeto.panel.listeners;
 /**
  * Control the execution of the game like play, pause and reset.
  */
-public interface ExecutionControl {
+public interface IExecutionControl {
 	/**
 	 * Retrieve if the game is playing the sequence.
 	 * 

@@ -13,7 +13,7 @@ import net.thiagoalz.hermeto.panel.sequence.Sequencer;
  * This is an abstract implementation of the sequence strategy that 
  * will be used by the sequencer.
  */
-public abstract class AbstractSequenceStrategy implements SequenceStrategy {
+public abstract class AbstractSequenceStrategy implements ISequenceStrategy {
 	/**
 	 * All the marked square for that strategy.
 	 */

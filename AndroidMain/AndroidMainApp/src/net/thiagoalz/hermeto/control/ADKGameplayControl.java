@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
-public class ADKGameplayControl implements GameplayControl {
+public class ADKGameplayControl implements IGameplayControl {
 
 	protected static final String tag = ADKGameplayControl.class.getCanonicalName();
 	
@@ -74,19 +74,19 @@ public class ADKGameplayControl implements GameplayControl {
 	}
 	
 	protected boolean movePlayer(int playerID, int command) {
-		Player.Direction direction = null;
+		IPlayer.Direction direction = null;
 		switch(command) {
 			case 1:
-				direction = Player.Direction.UP;
+				direction = IPlayer.Direction.UP;
 				break;
 			case 2:
-				direction = Player.Direction.DOWN;
+				direction = IPlayer.Direction.DOWN;
 				break;
 			case 3:
-				direction = Player.Direction.LEFT;
+				direction = IPlayer.Direction.LEFT;
 				break;
 			case 4:
-				direction = Player.Direction.RIGHT;
+				direction = IPlayer.Direction.RIGHT;
 				break;
 		}
 		if (direction != null && playerIDMap.get(playerID)!=null) {
@@ -121,7 +121,7 @@ public class ADKGameplayControl implements GameplayControl {
 			for (Integer id : playerIDMap.keySet()) {
 				String playerID = playerIDMap.get(id);
 				
-				Player player = gameManager.getPlayer(playerID);
+				IPlayer player = gameManager.getPlayer(playerID);
 				if (player!=null){//The player is still connected?
 					gameManager.disconnectPlayer(player);
 				}

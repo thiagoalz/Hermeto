@@ -6,8 +6,8 @@ import java.util.Set;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.sequence.strategies.GroupSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 public class GroupSelectionStrategy extends AbstractSelectionStrategy {
@@ -18,7 +18,7 @@ public class GroupSelectionStrategy extends AbstractSelectionStrategy {
 	}
 	
 	@Override
-	public boolean mark(Player player) {
+	public boolean mark(IPlayer player) {
 		GroupSequenceStrategy sequenceStrategy = (GroupSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.GROUP);
 		
 		// Retrieving all the marked squares

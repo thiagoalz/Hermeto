@@ -8,27 +8,27 @@ import java.util.Map;
  * @author Gabriel Ozeas de Oliveira
  * @version 0.1
  */
-public interface PlayersManager {
+public interface IPlayersManager {
 	/**
 	 * The players that are the panel. 
 	 * 
 	 * @return The list of players. If no player is in the panel, an empty list will be returned.
 	 */
-	public Map<String, Player> getPlayers();
+	public Map<String, IPlayer> getPlayers();
 	
 	/**
 	 * Add a player to the panel.
 	 * 
 	 * @param player The player that will be added.
 	 */
-	public Player connectPlayer();
+	public IPlayer connectPlayer();
 	
 	/**
 	 * Remove the player in the panel;
 	 * 
 	 * @param player The player that will be removed.
 	 */
-	public void disconnectPlayer(Player player);
+	public void disconnectPlayer(IPlayer player);
 	
 	/**
 	 * Retrieve the player using the ID. 
@@ -36,5 +36,5 @@ public interface PlayersManager {
 	 * @param playerID The unique identifier of the player.
 	 * @return The player corresponding to the ID passed.
 	 */
-	public Player getPlayer(String playerID);
+	public IPlayer getPlayer(String playerID);
 }

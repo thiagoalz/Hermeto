@@ -5,8 +5,8 @@ import java.util.List;
 
 import net.hermeto.android.main.XMPPClient;
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.player.Player;
-import net.thiagoalz.hermeto.player.Player.Direction;
+import net.thiagoalz.hermeto.player.IPlayer;
+import net.thiagoalz.hermeto.player.IPlayer.Direction;
 
 import org.jivesoftware.smack.XMPPException;
 
@@ -17,7 +17,7 @@ import android.util.Log;
 /**
  * Control the access of the players using the XMPP protocol.
  */
-public class XMPPGameplayControl implements GameplayControl, Runnable {
+public class XMPPGameplayControl implements IGameplayControl, Runnable {
 
 	private static final int MESSAGE_PLAYER = 1;
 
@@ -64,10 +64,10 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	}
 
 	protected boolean movePlayer(String playerID, String dir) {
-		Player player = gameManager.getPlayer(playerID);
+		IPlayer player = gameManager.getPlayer(playerID);
 
 		if (player != null) {// Player exists
-			Player.Direction direction = parseDirection(dir);
+			IPlayer.Direction direction = parseDirection(dir);
 			return gameManager.move(player, direction);
 		}
 		return false;
@@ -76,21 +76,21 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	private Direction parseDirection(String direction) {
 		Log.d(tag, "Parsing direction '" + direction + "'");
 		direction = direction.toLowerCase();
-		Player.Direction dir;
-		if (direction.equals(Player.Direction.LEFT.getValue())) {
-			dir = Player.Direction.LEFT;
-		} else if (direction.equals(Player.Direction.RIGHT.getValue())) {
-			dir = Player.Direction.RIGHT;
-		} else if (direction.equals(Player.Direction.UP.getValue())) {
-			dir = Player.Direction.UP;
+		IPlayer.Direction dir;
+		if (direction.equals(IPlayer.Direction.LEFT.getValue())) {
+			dir = IPlayer.Direction.LEFT;
+		} else if (direction.equals(IPlayer.Direction.RIGHT.getValue())) {
+			dir = IPlayer.Direction.RIGHT;
+		} else if (direction.equals(IPlayer.Direction.UP.getValue())) {
+			dir = IPlayer.Direction.UP;
 		} else {
-			dir = Player.Direction.DOWN;
+			dir = IPlayer.Direction.DOWN;
 		}
 		return dir;
 	}
 
 	protected boolean markSquare(String playerID) {
-		Player player = gameManager.getPlayer(playerID);
+		IPlayer player = gameManager.getPlayer(playerID);
 
 		if (player != null) {// Player exists
 			return gameManager.mark(player);
@@ -100,7 +100,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	}
 
 	protected boolean disconnectPlayer(String playerID) {
-		Player player = gameManager.getPlayer(playerID);
+		IPlayer player = gameManager.getPlayer(playerID);
 		players.remove(playerID);
 		if (player != null) {// Player exists
 			gameManager.disconnectPlayer(player);
@@ -111,7 +111,7 @@ public class XMPPGameplayControl implements GameplayControl, Runnable {
 	}
 
 	protected String connectPlayer(String name) {
-		Player player = gameManager.connectPlayer(name);
+		IPlayer player = gameManager.connectPlayer(name);
 		String id = player.getId();
 		players.add(id);
 		try {

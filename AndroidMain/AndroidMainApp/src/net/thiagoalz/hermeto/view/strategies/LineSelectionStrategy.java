@@ -6,8 +6,8 @@ import java.util.Set;
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 public class LineSelectionStrategy extends AbstractSelectionStrategy {
@@ -19,7 +19,7 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 	}
 	
 	@Override
-	public boolean mark(Player player) {
+	public boolean mark(IPlayer player) {
 		// Retrieving the game context.
 		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 		

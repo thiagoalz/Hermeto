@@ -7,14 +7,14 @@ import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
 import net.thiagoalz.hermeto.panel.GameManager;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionControl;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionControl;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
 import net.thiagoalz.hermeto.panel.sequence.strategies.FreeSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.GroupSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
 import android.util.Log;
 
 /**
@@ -23,7 +23,7 @@ import android.util.Log;
  *  
  * @see GameManager#GameManager
  */
-public class Sequencer implements ExecutionControl {
+public class Sequencer implements IExecutionControl {
 	private static final String TAG = Sequencer.class.getCanonicalName();
 		
 	/**
@@ -40,7 +40,7 @@ public class Sequencer implements ExecutionControl {
 	 * The list of listeners that are observing the execution 
 	 * events like play, pause and stop.
 	 */
-	private List<ExecutionListener> executionListeners;
+	private List<IExecutionListener> executionListeners;
 	
 	/**
 	 * The sequence time that the sequence is using.
@@ -50,12 +50,12 @@ public class Sequencer implements ExecutionControl {
 	/**
 	 * The strategy that the sequence are using.
 	 */
-	private SequenceStrategy currentSequenceStrategy;
+	private ISequenceStrategy currentSequenceStrategy;
 	
 	/**
 	 * The sequence strategies used in the sequencer
 	 */
-	private Map<SequenceStrategyType, SequenceStrategy> sequenceStrategies;
+	private Map<SequenceStrategyType, ISequenceStrategy> sequenceStrategies;
 	
 	private SoundManager soundManager;
 	
@@ -66,9 +66,9 @@ public class Sequencer implements ExecutionControl {
 	public Sequencer(GameManager gameManager, SequenceStrategyType type) {
 		this.gameManager = gameManager;
 		this.soundManager = SoundManager.getInstance();
-		this.executionListeners = new ArrayList<ExecutionListener>();
+		this.executionListeners = new ArrayList<IExecutionListener>();
 		this.executionListeners.add(gameManager);
-		this.sequenceStrategies = new HashMap<SequenceStrategyType, SequenceStrategy>();
+		this.sequenceStrategies = new HashMap<SequenceStrategyType, ISequenceStrategy>();
 		this.currentSequenceStrategy = type != null ? getSequenceStrategy(type) : getSequenceStrategy(SequenceStrategyType.GROUP);
 	}
 	
@@ -82,11 +82,11 @@ public class Sequencer implements ExecutionControl {
 	@Override
 	public synchronized void start() {
 		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
-			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
 			strategy.start();
 		}
 		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
+		for (IExecutionListener listener : executionListeners) {
 			listener.onStart(event);
 		}
 	}
@@ -94,13 +94,13 @@ public class Sequencer implements ExecutionControl {
 	@Override
 	public synchronized void stop() {
 		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
-			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
 			strategy.stop();
 		}
 		Log.d(TAG, "Sequencer delegating the stop action to the sequence strategy");
 		currentSequenceStrategy.stop();
 		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
+		for (IExecutionListener listener : executionListeners) {
 			listener.onStop(event);
 		}
 	}
@@ -108,11 +108,11 @@ public class Sequencer implements ExecutionControl {
 	@Override
 	public synchronized void pause() {
 		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
-			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
 			strategy.pause();
 		}
 		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
+		for (IExecutionListener listener : executionListeners) {
 			listener.onPause(event);
 		}
 	}
@@ -120,11 +120,11 @@ public class Sequencer implements ExecutionControl {
 	@Override
 	public synchronized void reset() {
 		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
-			SequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
 			strategy.stop();
 		}
 		ExecutionEvent event = new ExecutionEvent();
-		for (ExecutionListener listener : executionListeners) {
+		for (IExecutionListener listener : executionListeners) {
 			listener.onReset(event);
 		}
 	}
@@ -134,11 +134,11 @@ public class Sequencer implements ExecutionControl {
 		// TODO Auto-generated method stub
 	}
 	
-	public void removeExecutionListener(ExecutionListener executionListener) {
+	public void removeExecutionListener(IExecutionListener executionListener) {
 		this.executionListeners.remove(executionListener);
 	}
 	
-	public void addExecutionListener(ExecutionListener executionListener) {
+	public void addExecutionListener(IExecutionListener executionListener) {
 		this.executionListeners.add(executionListener);
 	}
 
@@ -158,15 +158,15 @@ public class Sequencer implements ExecutionControl {
 		this.timeSequence = timeSequence;
 	}
 
-	public List<ExecutionListener> getExecutionListeners() {
+	public List<IExecutionListener> getExecutionListeners() {
 		return executionListeners;
 	}
 
-	public void setExecutionListeners(List<ExecutionListener> executionListeners) {
+	public void setExecutionListeners(List<IExecutionListener> executionListeners) {
 		this.executionListeners = executionListeners;
 	}
 
-	public SequenceStrategy getCurrentSequenceStrategy() {
+	public ISequenceStrategy getCurrentSequenceStrategy() {
 		return currentSequenceStrategy;
 	}
 
@@ -174,8 +174,8 @@ public class Sequencer implements ExecutionControl {
 		currentSequenceStrategy = getSequenceStrategy(sequenceStrategyType);
 	}
 	
-	public SequenceStrategy getSequenceStrategy(SequenceStrategyType type) {
-		SequenceStrategy strategy = sequenceStrategies.get(type);
+	public ISequenceStrategy getSequenceStrategy(SequenceStrategyType type) {
+		ISequenceStrategy strategy = sequenceStrategies.get(type);
 		if (strategy == null) {
 			strategy = createNewStrategy(type);
 			sequenceStrategies.put(type, strategy);
@@ -183,7 +183,7 @@ public class Sequencer implements ExecutionControl {
 		return strategy;
 	}
 	
-	private SequenceStrategy createNewStrategy(SequenceStrategyType type) {
+	private ISequenceStrategy createNewStrategy(SequenceStrategyType type) {
 		switch (type) {
 			case LINE:
 				return new LineSequenceStrategy(this, soundManager);

@@ -1,17 +1,17 @@
 package net.thiagoalz.hermeto.player;
 
 import net.thiagoalz.hermeto.panel.Position;
-import net.thiagoalz.hermeto.panel.SquarePanelManager;
+import net.thiagoalz.hermeto.panel.ISquarePanelManager;
 
-public class DefaultPlayer implements Player {
+public class DefaultPlayer implements IPlayer {
 
 	private String name;
 	private String id;
 	private Position position;
 	
-	private SquarePanelManager squarePanelManager; 
+	private ISquarePanelManager squarePanelManager; 
 	
-	public DefaultPlayer(String name, String id, SquarePanelManager squarePanelManager) {
+	public DefaultPlayer(String name, String id, ISquarePanelManager squarePanelManager) {
 		this.name = name;
 		this.id = id;
 		this.squarePanelManager = squarePanelManager;

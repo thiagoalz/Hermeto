@@ -1,17 +1,15 @@
 package net.thiagoalz.hermeto.panel;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.IPlayer;
 
 /**
  * Contain all the states of the game, so all the components can easily 
  * access the state of the game.
  * 
  */
-public interface GameContext {
+public interface IGameContext {
 	/**
 	 * Retrieve the dimension of the game context, it will be returned 
 	 * as an {@code} array where the first {@code int} is the columns 
@@ -27,7 +25,7 @@ public interface GameContext {
 	 * 
 	 * @return A {@code Map} collection with all the player in the game.
 	 */
-	public Map<String, Player> getAllPlayers();
+	public Map<String, IPlayer> getAllPlayers();
 	
 	
 	/**
@@ -35,7 +33,7 @@ public interface GameContext {
 	 * 
 	 * @return A {@code Player} instance that is the Master DJ.
 	 */
-	public Player getMasterDJ();
+	public IPlayer getMasterDJ();
 	
 	/**
 	 * Return {@code TRUE} if the game is executing the music. 

@@ -7,20 +7,20 @@ import java.util.Random;
 
 import net.thiagoalz.hermeto.panel.listeners.ConnectEvent;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
-import net.thiagoalz.hermeto.panel.listeners.PlayerListener;
-import net.thiagoalz.hermeto.panel.listeners.SelectionControl;
+import net.thiagoalz.hermeto.panel.listeners.IPlayerListener;
+import net.thiagoalz.hermeto.panel.listeners.ISelectionControl;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.listeners.SelectionListener;
+import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
-import net.thiagoalz.hermeto.panel.sequence.strategies.SequenceStrategy.SequenceStrategyType;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.DefaultPlayer;
-import net.thiagoalz.hermeto.player.Player;
-import net.thiagoalz.hermeto.player.Player.Direction;
-import net.thiagoalz.hermeto.player.PlayersManager;
+import net.thiagoalz.hermeto.player.IPlayer;
+import net.thiagoalz.hermeto.player.IPlayer.Direction;
+import net.thiagoalz.hermeto.player.IPlayersManager;
 import android.util.Log;
 
 /**
@@ -29,8 +29,8 @@ import android.util.Log;
  * @author Gabriel Ozeas de Oliveira
  * @version 0.1
  */
-public class GameManager implements SquarePanelManager, PlayersManager,
-		ExecutionListener {
+public class GameManager implements ISquarePanelManager, IPlayersManager,
+		IExecutionListener {
 
 	private static final String TAG = GameManager.class.getCanonicalName();
 	
@@ -50,7 +50,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	/**
 	 * The control responsible for mark the selected positions.
 	 */
-	private SelectionControl selectionControl;
+	private ISelectionControl selectionControl;
 	
 	/**
 	 * The beat per minute used in the game
@@ -60,12 +60,12 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	/**
 	 * The components that are listening the selection events.
 	 */
-	private List<SelectionListener> selectionListeners = new ArrayList<SelectionListener>();
+	private List<ISelectionListener> selectionListeners = new ArrayList<ISelectionListener>();
 	
 	/**
 	 * The components that are listening the players events.
 	 */
-	private List<PlayerListener> playerListeners = new ArrayList<PlayerListener>();
+	private List<IPlayerListener> playerListeners = new ArrayList<IPlayerListener>();
 	
 	/**
 	 * The game context keep all the game data.
@@ -93,12 +93,12 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	private GameManager(int columns, int rows) {
 		gameContext = new GameContextImpl(columns, rows);
 		sequencer = new Sequencer(this);
-		Player masterDJ = createPlayer("Master DJ");
+		IPlayer masterDJ = createPlayer("Master DJ");
 		gameContext.setMasterDJ(masterDJ);
 		notifyConnectPlayerListeners(masterDJ);
 	}
 
-	public boolean move(Player player, Position newPosition) {
+	public boolean move(IPlayer player, Position newPosition) {
 		Position oldPos = player.getPosition();
 		player.setPosition(newPosition);
 		Log.d(TAG, "Changing position of the player: [" + newPosition.getX()
@@ -108,7 +108,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	@Override
-	public boolean move(Player player, Direction direction) {
+	public boolean move(IPlayer player, Direction direction) {
 		int columns = gameContext.getDimensions()[0];
 		int rows = gameContext.getDimensions()[1];
 		
@@ -155,19 +155,19 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	@Override
-	public boolean mark(Player player) {
+	public boolean mark(IPlayer player) {
 		// Delegate to the selectionControl
 		return selectionControl.mark(player);
 	}
 
 	@Override
-	public Player connectPlayer() {
+	public IPlayer connectPlayer() {
 		String playerName = "Player " + (gameContext.getAllPlayers().size() + 1);
 		return this.connectPlayer(playerName);
 	}
 
-	public Player connectPlayer(String playerName) {
-		Player player = createPlayer(playerName);
+	public IPlayer connectPlayer(String playerName) {
+		IPlayer player = createPlayer(playerName);
 
 		Log.d(TAG, "Connection " + playerName + "(" + player.getId()
 				+ ") at the position [" + player.getPosition().getX() + ", "
@@ -176,7 +176,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		return player;
 	}
 	
-	private Player createPlayer(String playerName) {
+	private IPlayer createPlayer(String playerName) {
 		int[] dimensions = gameContext.getDimensions();
 		
 		long nanotime = System.nanoTime();
@@ -194,7 +194,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	@Override
-	public void disconnectPlayer(Player player) {
+	public void disconnectPlayer(IPlayer player) {
 		if(player!=null){
 			gameContext.getAllPlayers().remove(player.getId());
 			notifyDisconnectPlayerListeners(player);
@@ -202,67 +202,67 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 	}
 
 	@Override
-	public Map<String, Player> getPlayers() {
+	public Map<String, IPlayer> getPlayers() {
 		return gameContext.getAllPlayers();
 	}
 
 	@Override
-	public Player getPlayer(String playerID) {
+	public IPlayer getPlayer(String playerID) {
 		return gameContext.getAllPlayers().get(playerID);
 	}
 
 	// ==========Listeners==========
-	public void addSelectionListener(SelectionListener selectionListener) {
+	public void addSelectionListener(ISelectionListener selectionListener) {
 		this.selectionListeners.add(selectionListener);
 	}
 
-	public void removeSelectionListener(SelectionListener selectionListener) {
+	public void removeSelectionListener(ISelectionListener selectionListener) {
 		this.selectionListeners.remove(selectionListener);
 	}
 
-	public void addPlayerListener(PlayerListener playerListener) {
+	public void addPlayerListener(IPlayerListener playerListener) {
 		this.playerListeners.add(playerListener);
 
 	}
 
-	public void removePlayerListener(PlayerListener playerListener) {
+	public void removePlayerListener(IPlayerListener playerListener) {
 		this.playerListeners.remove(playerListener);
 	}
 
 	// ==========Notify==========
-	private void notifyConnectPlayerListeners(Player player) {
+	private void notifyConnectPlayerListeners(IPlayer player) {
 		ConnectEvent event = new ConnectEvent(player, player.getPosition());
-		for (PlayerListener listener : playerListeners) {
+		for (IPlayerListener listener : playerListeners) {
 			listener.onPlayerConnect(event);
 		}
 	}
 
-	private void notifyDisconnectPlayerListeners(Player player) {
+	private void notifyDisconnectPlayerListeners(IPlayer player) {
 		ConnectEvent event = new ConnectEvent(player, player.getPosition());
-		for (PlayerListener listener : playerListeners) {
+		for (IPlayerListener listener : playerListeners) {
 			listener.onPlayerDisconnect(event);
 		}
 	}
 
-	private void notifyMovePlayerListeners(Player player, Position oldPos,
+	private void notifyMovePlayerListeners(IPlayer player, Position oldPos,
 			Position newPos) {
 		MoveEvent event = new MoveEvent(player, oldPos, newPos);
-		for (PlayerListener listener : playerListeners) {
+		for (IPlayerListener listener : playerListeners) {
 			listener.onPlayerMove(event);
 		}
 	}
 	
-	public void notifySelection(Player player, Position position) {
+	public void notifySelection(IPlayer player, Position position) {
 		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : this.selectionListeners) {
+		for (ISelectionListener listener : this.selectionListeners) {
 			Log.d(TAG, "Informing the " + listener + " about selection.");
 			listener.onSelected(event);
 		}
 	}
 
-	public void notifyDeselection(Player player, Position position) {
+	public void notifyDeselection(IPlayer player, Position position) {
 		SelectionEvent event = new SelectionEvent(player, position);
-		for (SelectionListener listener : this.selectionListeners) {
+		for (ISelectionListener listener : this.selectionListeners) {
 			Log.d(TAG, "Informing the " + listener + " about deselection.");
 			listener.onDeselected(event);
 		}
@@ -288,7 +288,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		}
 	}
 	
-	public GameContext getGameContext() { 
+	public IGameContext getGameContext() { 
 		return gameContext;
 	}
 
@@ -297,8 +297,8 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		sequencer.getCurrentSequenceStrategy().cleanUp();
 		sequencer = new Sequencer(this);
 		gameContext = new GameContextImpl(COLUMNS_CONF, ROWS_CONF);
-		selectionListeners = new ArrayList<SelectionListener>();
-		playerListeners = new ArrayList<PlayerListener>();
+		selectionListeners = new ArrayList<ISelectionListener>();
+		playerListeners = new ArrayList<IPlayerListener>();
 		GameManager.instance=null;
 	}
 
@@ -342,19 +342,19 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		return sequencer;
 	}
 
-	public List<PlayerListener> getPlayerListeners() {
+	public List<IPlayerListener> getPlayerListeners() {
 		return playerListeners;
 	}
 
-	public void setPlayerListeners(List<PlayerListener> playerListeners) {
+	public void setPlayerListeners(List<IPlayerListener> playerListeners) {
 		this.playerListeners = playerListeners;
 	}
 
-	public SelectionControl getSelectionControl() {
+	public ISelectionControl getSelectionControl() {
 		return selectionControl;
 	}
 
-	public void setSelectionControl(SelectionControl selectionControl) {
+	public void setSelectionControl(ISelectionControl selectionControl) {
 		this.selectionControl = selectionControl;
 	}
 
@@ -363,7 +363,7 @@ public class GameManager implements SquarePanelManager, PlayersManager,
 		
 		if(group == SequenceStrategyType.LINE){
 			// Configuring the sequence strategy to listing the selection events
-			SequenceStrategy sequenceStrategy = this.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
+			ISequenceStrategy sequenceStrategy = this.getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 			this.addSelectionListener(((LineSequenceStrategy)sequenceStrategy));
 		}
 	}

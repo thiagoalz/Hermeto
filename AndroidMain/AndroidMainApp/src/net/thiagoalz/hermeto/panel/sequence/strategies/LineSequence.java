@@ -3,6 +3,7 @@ package net.thiagoalz.hermeto.panel.sequence.strategies;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.thiagoalz.hermeto.panel.sequence.positioner.Positioner;
 import android.util.Log;
 
 public class LineSequence {

@@ -1,4 +1,4 @@
-package net.thiagoalz.hermeto.panel.sequence.strategies;
+package net.thiagoalz.hermeto.panel.sequence.positioner;
 
 public class RepeatPositioner implements Positioner {
 

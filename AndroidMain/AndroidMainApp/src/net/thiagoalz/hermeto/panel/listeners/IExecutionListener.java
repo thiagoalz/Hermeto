@@ -1,6 +1,6 @@
 package net.thiagoalz.hermeto.panel.listeners;
 
-public interface ExecutionListener {
+public interface IExecutionListener {
 	public void onStart(ExecutionEvent event);
 	public void onStop(ExecutionEvent event);
 	public void onReset(ExecutionEvent event);

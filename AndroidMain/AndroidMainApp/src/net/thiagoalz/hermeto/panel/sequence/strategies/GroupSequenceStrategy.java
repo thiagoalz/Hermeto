@@ -5,11 +5,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.thiagoalz.hermeto.audio.SoundManager;
-import net.thiagoalz.hermeto.panel.GameContext;
+import net.thiagoalz.hermeto.panel.IGameContext;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
-import net.thiagoalz.hermeto.panel.listeners.ExecutionListener;
+import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
+import net.thiagoalz.hermeto.panel.sequence.positioner.BouncePositioner;
+import net.thiagoalz.hermeto.panel.sequence.positioner.Positioner;
+import net.thiagoalz.hermeto.panel.sequence.positioner.RepeatPositioner;
 import android.util.Log;
 
 /**
@@ -45,7 +48,7 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 				
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
+				for (IExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStartPlayingGroup(event);
 				}
 			}
@@ -60,7 +63,7 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 			if (playingPositions.size() > 0) {
 				ExecutionEvent event = new ExecutionEvent();
 				event.setPositions(playingPositions);
-				for (ExecutionListener listener : getSequencer().getExecutionListeners()) {
+				for (IExecutionListener listener : getSequencer().getExecutionListeners()) {
 					listener.onStopPlayingGroup(event);
 				}
 			}
@@ -88,7 +91,7 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 	}
 	
 	public synchronized void setPositionBehavior(PositionBehavior positionBehavior) {
-		GameContext context = getSequencer().getGameManager().getGameContext();
+		IGameContext context = getSequencer().getGameManager().getGameContext();
 		int totalColumns = context.getDimensions()[0];
 		
 		// If the game is playing, pause it.

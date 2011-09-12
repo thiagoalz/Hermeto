@@ -6,7 +6,7 @@ package net.thiagoalz.hermeto.panel.sequence.strategies;
  * This interface represent a sequence strategy that can be used to 
  * execute the square in a determined sequence.
  */
-public interface SequenceStrategy {
+public interface ISequenceStrategy {
 	
 	/**
 	 * All the sequence strategies that can be used.

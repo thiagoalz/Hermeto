@@ -3,7 +3,7 @@ package net.thiagoalz.hermeto.control;
 /**
  * Control used by the ADK and XMPP to simple execute a command in the application.
  */
-public interface GameplayControl {
+public interface IGameplayControl {
 	
 	/**
 	 * Process a message coming from a player

@@ -2,7 +2,7 @@ package net.thiagoalz.hermeto;
 
 import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.Position;
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -23,7 +23,7 @@ public class MasterDjListener implements View.OnClickListener {
 		for (int i = 0; i < padsMatrix.length; i++) {
 			for (int j = 0; j < padsMatrix[i].length; j++) {
 				if (padsMatrix[j][i] == selectedButton) {
-					Player masterDJ = gameManager.getGameContext().getMasterDJ();
+					IPlayer masterDJ = gameManager.getGameContext().getMasterDJ();
 					gameManager.move(masterDJ, new Position(j, i));
 					gameManager.mark(masterDJ);
 				}

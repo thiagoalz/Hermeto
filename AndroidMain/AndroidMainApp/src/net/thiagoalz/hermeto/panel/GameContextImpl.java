@@ -3,21 +3,21 @@ package net.thiagoalz.hermeto.panel;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import net.thiagoalz.hermeto.player.Player;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 /**
  * The default implementation of the {@code GameContext} interface.
  *
  */
-public class GameContextImpl implements GameContext {
+public class GameContextImpl implements IGameContext {
 	private final String TAG = GameContextImpl.class.getCanonicalName();
 	
 	private int columns;
 	private int lines;
 	
-	private Map<String, Player> players;
-	private Player masterDJ;
+	private Map<String, IPlayer> players;
+	private IPlayer masterDJ;
 	
 	private boolean playing;
 	
@@ -27,7 +27,7 @@ public class GameContextImpl implements GameContext {
 		this.lines = lines > 1 ? lines : 2;
 		Log.d(TAG, "Creating game context with [" + this.columns + ", " + this.lines + "]");
 		
-		players = new LinkedHashMap<String, Player>();
+		players = new LinkedHashMap<String, IPlayer>();
 	}
 	
 	@Override
@@ -36,16 +36,16 @@ public class GameContextImpl implements GameContext {
 	}
 
 	@Override
-	public Map<String, Player> getAllPlayers() {
+	public Map<String, IPlayer> getAllPlayers() {
 		return players;
 	}
 
 	@Override
-	public Player getMasterDJ() {
+	public IPlayer getMasterDJ() {
 		return masterDJ;
 	}
 	
-	public void setMasterDJ(Player player) {
+	public void setMasterDJ(IPlayer player) {
 		this.masterDJ = player;
 		players.put(player.getId(), player);
 	}
