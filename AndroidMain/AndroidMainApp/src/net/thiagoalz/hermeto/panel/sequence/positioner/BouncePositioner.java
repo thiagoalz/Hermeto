@@ -17,9 +17,9 @@ public class BouncePositioner implements Positioner {
 		else
 			currentPosition--;
 		
-		if ( currentPosition == 0 ) {
+		if ( currentPosition <= 0 ) {
 			reversedDirection = false;
-		} else if ( currentPosition == maxPosition ) {
+		} else if ( currentPosition >= maxPosition ) {
 			reversedDirection = true;
 		}
 		return currentPosition;
@@ -50,6 +50,7 @@ public class BouncePositioner implements Positioner {
 	}
 	
 	public void resetPosition() {
+		reversedDirection = false;
 		currentPosition = 0;
 	}
 }
