@@ -101,6 +101,8 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		SoundManager soundManager = SoundManager.getInstance();
 		soundManager.initSounds(this);
 		
+		gameManager = GameManager.getInstance();
+		
 		configureScreen();
 		configSequenceStrategy(SequenceStrategyType.GROUP);
 		constructView();
@@ -455,8 +457,6 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 	}
 	
 	private void configSequenceStrategy(SequenceStrategyType type) {
-		gameManager = GameManager.getInstance();
-		
 		switch (type) {
 			case GROUP:
 				// Configuring the sequence strategy in the sequencer

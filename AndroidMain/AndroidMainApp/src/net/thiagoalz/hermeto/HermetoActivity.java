@@ -1,5 +1,6 @@
 package net.thiagoalz.hermeto;
 
+import net.thiagoalz.hermeto.panel.GameManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -36,6 +37,16 @@ public class HermetoActivity extends Activity{
 		MediaPlayer mp = MediaPlayer.create(this, R.raw.m16b);
 		mp.start();
 	}
+	
+	/*@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		
+		GameManager.getInstance().getSequencer().pause();
+		GameManager.getInstance().cleanUp();
+		
+		this.finish();
+	}*/
     
     private void configureScreen() {
     	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
