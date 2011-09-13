@@ -36,7 +36,9 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 				Log.d(TAG, "Dismarking square [" + player.getPosition().getX() + ", "
 						+ player.getPosition().getY() + "]");
 				markedSquares.remove(selectedPosition);
-				notifyDeselection(player, selectedPosition);
+				
+				deselectLine(player,selectedPosition);
+				
 				return false;
 			}
 		} else {
@@ -54,26 +56,40 @@ public class LineSelectionStrategy extends AbstractSelectionStrategy {
 					Log.d(TAG, "Dismarking square [" + selectedSquare.getX() + ", "
 							+ selectedSquare.getY() + "]");
 					markedSquares.remove(selectedSquare);
-					notifyDeselection(player, selectedSquare);
+					deselectLine(player, selectedSquare);
 				}
 				
 				// If the position is not marked yet, mark it.
 				Log.d(TAG, "Marking square [" + player.getPosition().getX() + ", "
 						+ player.getPosition().getY() + "]");
 				markedSquares.put(player.getPosition(), getGameManager().getGameContext().getCurrentInstrumentType());
-				notifySelection(player, selectedPosition);
+				selectLine(player, selectedPosition);
 				return true;
 			}
 		}
 	}
 	
+	private void selectLine(IPlayer player, Position selectedPosition) {
+		for(int y=0; y<=selectedPosition.getY();y++){
+			Position pos=new Position(selectedPosition.getX(),y);
+			notifySelection(player, pos);
+		}
+	}
+
+	private void deselectLine(IPlayer player, Position selectedPosition) {
+		for(int y=0; y<=selectedPosition.getY();y++){
+			Position pos=new Position(selectedPosition.getX(),y);
+			notifyDeselection(player, pos);
+		}
+	}
+
 	@Override
 	public void cleanAll() {
 		// Retrieving the game context.
 		LineSequenceStrategy sequenceStrategy = (LineSequenceStrategy) getSequencer().getSequenceStrategy(SequenceStrategyType.LINE);
 		// Deselect all the markedSquares and stop playing.
 		for (Position position : sequenceStrategy.getMarkedSquares().keySet()) {
-			notifyDeselection(null, position);
+			deselectLine(null, position);
 		}
 		sequenceStrategy.setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
 	}

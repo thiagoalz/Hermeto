@@ -25,9 +25,6 @@ import net.thiagoalz.hermeto.player.IPlayer;
 import net.thiagoalz.hermeto.view.strategies.FreeSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.GroupSelectionStrategy;
 import net.thiagoalz.hermeto.view.strategies.LineSelectionStrategy;
-import net.thiagoalz.hermeto.view.strategies.behavior.ISelectionViewBehavior;
-import net.thiagoalz.hermeto.view.strategies.behavior.LineSequenceViewBehavior;
-import net.thiagoalz.hermeto.view.strategies.behavior.SimpleSequenceViewBehavior;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
@@ -89,11 +86,6 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 	 */
 	Map<IPlayer, PlayerNameView> playersName = new HashMap<IPlayer, PlayerNameView>();
 	
-	/** 
-	 * Responsible for animate the buttons in the panel 
-	 * when the game is playing. 
-	 * */
-	private ISelectionViewBehavior selectionViewBehavior;
 	
 	/**
 	 * Empty Constructor
@@ -322,12 +314,25 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 
 	@Override
 	public void onSelected(SelectionEvent event) {
-		selectionViewBehavior.onSelected(event);
+		int x = event.getPosition().getX();
+		int y = event.getPosition().getY();
+		InstrumentType type = gameManager.getGameContext().getCurrentInstrumentType();
+		switch (type) {
+			case PERCUSIONS: 
+				padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected));
+				break;
+			case VOICES: 
+				padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected_blue)); 
+				break;
+		}
 	}
 
 	@Override
 	public void onDeselected(SelectionEvent event) {
-		selectionViewBehavior.onDeselected(event);
+		int x = event.getPosition().getX();
+		int y = event.getPosition().getY();
+		
+		padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonstopped)); //buttonVoiceSelected
 	}
 
 	@Override
@@ -459,24 +464,18 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.GROUP);				
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new GroupSelectionStrategy(gameManager));
-				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new SimpleSequenceViewBehavior(this, gameManager);
 				break;
 			case LINE:
 				// Configuring the sequence strategy in the sequencer
 				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.LINE);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new LineSelectionStrategy(gameManager));
-				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new LineSequenceViewBehavior(this, gameManager);
 				break;
 			case FREE:
 				// Configuring the sequence strategy in the sequencer
 				gameManager.setCurrentSequenceStrategy(SequenceStrategyType.FREE);
 				// Configuring the way that the squares are clicked.
 				gameManager.setSelectionControl(new FreeSelectionStrategy(gameManager));
-				// Configuring the way that the squares are animated.
-				selectionViewBehavior = new SimpleSequenceViewBehavior(this, gameManager);
 				break;
 		}
 	}
