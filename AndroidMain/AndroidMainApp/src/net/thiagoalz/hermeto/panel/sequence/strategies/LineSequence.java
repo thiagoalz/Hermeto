@@ -46,7 +46,7 @@ public class LineSequence {
 		Log.d(TAG, "Unscheduling the line sequence #" + playingLine);
 		if (timer != null) {
 			if (sequenceStrategy.getSequencer().getGameManager().getBPM() >= 60) {
-				synchronized (sequenceStrategy) {
+				synchronized (this) {
 					Log.d(TAG, "Cancelling timer.");
 					getTimer().cancel();
 				}
@@ -79,7 +79,7 @@ public class LineSequence {
 	private class LinearLineTimerTask extends TimerTask {
 				
 		public void run() {
-			synchronized(sequenceStrategy) {
+			synchronized(this) {
 				if (!running) {
 					stopTimer();
 				}
