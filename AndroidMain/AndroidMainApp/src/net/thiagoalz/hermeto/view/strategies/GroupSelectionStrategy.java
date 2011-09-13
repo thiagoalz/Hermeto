@@ -54,6 +54,5 @@ public class GroupSelectionStrategy extends AbstractSelectionStrategy {
 			notifyDeselection(null, position);
 		}
 		sequenceStrategy.setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
-		
 	}
 }
