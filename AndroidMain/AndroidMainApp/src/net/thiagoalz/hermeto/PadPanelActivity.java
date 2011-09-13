@@ -100,7 +100,6 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		
 		SoundManager soundManager = SoundManager.getInstance();
 		soundManager.initSounds(this);
-		soundManager.loadSounds();
 		
 		configureScreen();
 		configSequenceStrategy(SequenceStrategyType.GROUP);
