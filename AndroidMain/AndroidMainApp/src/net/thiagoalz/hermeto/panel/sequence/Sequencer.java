@@ -12,6 +12,7 @@ import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
 import net.thiagoalz.hermeto.panel.listeners.IExecutionListener;
 import net.thiagoalz.hermeto.panel.sequence.strategies.FreeSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.GroupSequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
@@ -192,6 +193,13 @@ public class Sequencer implements IExecutionControl {
 			case GROUP:
 			default:
 				return new GroupSequenceStrategy(this, soundManager);
+		}
+	}
+
+	public void setPositionBehavior(PositionBehavior behavior) {
+		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
+			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
+			strategy.setPositionBehavior(behavior);
 		}
 	}
 	

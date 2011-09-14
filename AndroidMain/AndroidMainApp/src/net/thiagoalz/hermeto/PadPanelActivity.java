@@ -18,7 +18,6 @@ import net.thiagoalz.hermeto.panel.listeners.IPlayerListener;
 import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
 import net.thiagoalz.hermeto.panel.listeners.MoveEvent;
 import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
-import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.IPlayer;
@@ -310,13 +309,12 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		bounce.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ISequenceStrategy strategy = gameManager.getSequencer().getCurrentSequenceStrategy();
 				if (bounce.isChecked()) {
 					Log.d(TAG, "Changin to bounce");
-		            strategy.setPositionBehavior(PositionBehavior.BOUNCE);
+					gameManager.setPositionBehavior(PositionBehavior.BOUNCE);
 		        } else {
 		        	Log.d(TAG, "Changin to repeat");
-		        	strategy.setPositionBehavior(PositionBehavior.REPEAT);
+		        	gameManager.setPositionBehavior(PositionBehavior.REPEAT);
 		        }
 			}
 		});

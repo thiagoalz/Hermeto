@@ -16,6 +16,7 @@ import net.thiagoalz.hermeto.panel.listeners.SelectionEvent;
 import net.thiagoalz.hermeto.panel.listeners.ISelectionListener;
 import net.thiagoalz.hermeto.panel.sequence.Sequencer;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy;
+import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.PositionBehavior;
 import net.thiagoalz.hermeto.panel.sequence.strategies.LineSequenceStrategy;
 import net.thiagoalz.hermeto.panel.sequence.strategies.ISequenceStrategy.SequenceStrategyType;
 import net.thiagoalz.hermeto.player.DefaultPlayer;
@@ -371,5 +372,9 @@ public class GameManager implements ISquarePanelManager, IPlayersManager,
 
 	public void setInstrumentyType(InstrumentType currentInstrumentType) {
 		gameContext.setCurrentInstrumentType(currentInstrumentType);
+	}
+
+	public void setPositionBehavior(PositionBehavior behavior) {
+		sequencer.setPositionBehavior(behavior);
 	}
 }
