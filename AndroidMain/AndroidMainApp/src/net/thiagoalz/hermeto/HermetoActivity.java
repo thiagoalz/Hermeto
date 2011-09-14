@@ -1,6 +1,5 @@
 package net.thiagoalz.hermeto;
 
-import net.thiagoalz.hermeto.panel.GameManager;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;

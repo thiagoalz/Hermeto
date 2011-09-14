@@ -158,6 +158,15 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		    case R.id.blue:
 		    	gameManager.setInstrumentyType(InstrumentType.VOICES);
 		    	return true;
+		    case R.id.groupStrategy:
+		    	configSequenceStrategy(SequenceStrategyType.GROUP);
+		    	return true;
+		    case R.id.freeStrategy:
+		    	configSequenceStrategy(SequenceStrategyType.FREE);
+		    	return true;
+		    case R.id.lineStrategy:
+		    	configSequenceStrategy(SequenceStrategyType.LINE);
+		    	return true;
 		    default:
 		    	return super.onOptionsItemSelected(item);
 	    }

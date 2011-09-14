@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/connect_adk"
-          android:title="Connect ADK Players"
-          android:icon="@drawable/menu_controlpad" />
+    <item android:id="@+id/change_sampler"
+          android:title="Change Sampler"
+          android:icon="@drawable/menu_controlpad">
+          <menu xmlns:android="http://schemas.android.com/apk/res/android">
+		    <group android:checkableBehavior="single">
+		        <item android:id="@+id/groupStrategy"
+		              android:title="Default" />
+		        <item android:id="@+id/freeStrategy"
+		              android:title="Free" />
+		        <item android:id="@+id/lineStrategy"
+		              android:title="Line" />
+		    </group>
+		</menu> 
+	</item>
     <item android:id="@+id/connect_xmpp"
           android:title="Allow Web Players"
           android:icon="@drawable/menu_phone_off" />
