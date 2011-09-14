@@ -296,7 +296,7 @@ public class GameManager implements ISquarePanelManager, IPlayersManager,
 
 	public void cleanUp() {
 		sequencer.stop();
-		sequencer.getCurrentSequenceStrategy().cleanUp();
+		//sequencer.getCurrentSequenceStrategy().reset();
 		sequencer = new Sequencer(this);
 		gameContext = new GameContextImpl(COLUMNS_CONF, ROWS_CONF);
 		selectionListeners = new ArrayList<ISelectionListener>();

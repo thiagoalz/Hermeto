@@ -31,7 +31,7 @@ public class FreeSequenceStrategy extends AbstractSequenceStrategy  {
 	}
 
 	@Override
-	public void cleanUp() {
+	public void reset() {
 		// Do nothing
 	}
 

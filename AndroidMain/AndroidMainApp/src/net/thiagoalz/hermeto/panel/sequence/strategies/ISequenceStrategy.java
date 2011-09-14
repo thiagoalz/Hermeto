@@ -42,7 +42,7 @@ public interface ISequenceStrategy {
 	/**
 	 * Clean up all the resources used by the sequence strategy.
 	 */
-	public void cleanUp();
+	public void reset();
 	
 	/**
 	 * Change the behavior of the strategy.

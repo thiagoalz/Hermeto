@@ -1,11 +1,13 @@
 package net.thiagoalz.hermeto.panel.sequence.strategies;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
+import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.IGameContext;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
@@ -14,6 +16,7 @@ import net.thiagoalz.hermeto.panel.sequence.Sequencer;
 import net.thiagoalz.hermeto.panel.sequence.positioner.BouncePositioner;
 import net.thiagoalz.hermeto.panel.sequence.positioner.Positioner;
 import net.thiagoalz.hermeto.panel.sequence.positioner.RepeatPositioner;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 /**
@@ -167,8 +170,14 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 	}
 	
 	@Override 
-	public void cleanUp() {
-		//getSoundManager().cleanUp();
+	public void reset() {
+		synchronized (getTimer()) {
+			// Deselect all the markedSquares and stop playing.
+			for (Position position : getMarkedSquares().keySet()) {
+				notifyDeselection(null, position);
+			}
+			setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
+		}
 	}
 	
 	private class GroupTimerTask extends TimerTask {
@@ -195,5 +204,11 @@ public class GroupSequenceStrategy extends AbstractSequenceStrategy {
 				positioner.nextPosition();
 			}
 		}
+	}
+	
+	
+	/////////////////////////////
+	protected void notifyDeselection(IPlayer player, Position position) {
+		GameManager.getInstance().notifyDeselection(player, position);
 	}
 }

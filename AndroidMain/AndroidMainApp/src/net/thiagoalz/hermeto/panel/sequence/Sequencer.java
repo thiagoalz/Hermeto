@@ -123,6 +123,7 @@ public class Sequencer implements IExecutionControl {
 		for (SequenceStrategyType sequenceStrategyType : sequenceStrategies.keySet()) {
 			ISequenceStrategy strategy = sequenceStrategies.get(sequenceStrategyType);
 			strategy.stop();
+			strategy.reset();
 		}
 		ExecutionEvent event = new ExecutionEvent();
 		for (IExecutionListener listener : executionListeners) {
@@ -202,7 +203,4 @@ public class Sequencer implements IExecutionControl {
 			strategy.setPositionBehavior(behavior);
 		}
 	}
-	
-	
-	
 }

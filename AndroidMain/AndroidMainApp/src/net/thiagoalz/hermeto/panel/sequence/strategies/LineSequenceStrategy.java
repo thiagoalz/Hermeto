@@ -8,6 +8,7 @@ import java.util.Map;
 
 import net.thiagoalz.hermeto.audio.InstrumentType;
 import net.thiagoalz.hermeto.audio.SoundManager;
+import net.thiagoalz.hermeto.panel.GameManager;
 import net.thiagoalz.hermeto.panel.IGameContext;
 import net.thiagoalz.hermeto.panel.Position;
 import net.thiagoalz.hermeto.panel.listeners.ExecutionEvent;
@@ -18,6 +19,7 @@ import net.thiagoalz.hermeto.panel.sequence.Sequencer;
 import net.thiagoalz.hermeto.panel.sequence.positioner.BouncePositioner;
 import net.thiagoalz.hermeto.panel.sequence.positioner.Positioner;
 import net.thiagoalz.hermeto.panel.sequence.positioner.RepeatPositioner;
+import net.thiagoalz.hermeto.player.IPlayer;
 import android.util.Log;
 
 /**
@@ -183,9 +185,11 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements IS
 	}
 	
 	@Override 
-	public void cleanUp() {
-		//soundManager.cleanUp();
-		
+	public void reset() {
+		for (Position position : getMarkedSquares().keySet()) {
+			deselectLine(null, position);
+		}
+		setMarkedSquares(new LinkedHashMap<Position, InstrumentType>());
 	}
 	
 	public Map<Integer, LineSequence> getLineSequences() {
@@ -202,5 +206,18 @@ public class LineSequenceStrategy extends AbstractSequenceStrategy implements IS
 
 	public void setPositionBehavior(PositionBehavior positionBehavior) {
 		this.positionBehavior = positionBehavior;
+	}
+	
+	
+	/////////////////////////////
+	protected void notifyDeselection(IPlayer player, Position position) {
+		GameManager.getInstance().notifyDeselection(player, position);
+	}
+	
+	private void deselectLine(IPlayer player, Position selectedPosition) {
+		for(int y=0; y<=selectedPosition.getY();y++){
+			Position pos=new Position(selectedPosition.getX(),y);
+			notifyDeselection(player, pos);
+		}
 	}
 }
