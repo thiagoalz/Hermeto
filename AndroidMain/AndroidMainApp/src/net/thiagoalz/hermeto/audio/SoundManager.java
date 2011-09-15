@@ -65,7 +65,7 @@ public class SoundManager {
 		this.addSound(currentIndex++, R.raw.m13);
 		this.addSound(currentIndex++, R.raw.m14);
 		this.addSound(currentIndex++, R.raw.m15);
-		this.addSound(currentIndex++, R.raw.m15);
+		this.addSound(currentIndex++, R.raw.m16);
 	}
 	
 	protected void loadVoices() {
