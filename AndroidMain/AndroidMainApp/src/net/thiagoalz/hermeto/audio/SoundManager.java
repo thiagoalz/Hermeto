@@ -46,45 +46,65 @@ public class SoundManager {
 	protected void loadSounds(){
 		currentIndex=0;
 		this.loadPercusion();
+		this.loadTones();
 		this.loadVoices();
 	}
 	
 	protected void loadPercusion() {
-		this.addSound(currentIndex++, R.raw.m1);
-		this.addSound(currentIndex++, R.raw.m2);
-		this.addSound(currentIndex++, R.raw.m3);
-		this.addSound(currentIndex++, R.raw.m4);
-		this.addSound(currentIndex++, R.raw.m5);
-		this.addSound(currentIndex++, R.raw.m6);
-		this.addSound(currentIndex++, R.raw.m7);
-		this.addSound(currentIndex++, R.raw.m8);
-		this.addSound(currentIndex++, R.raw.m9);
-		this.addSound(currentIndex++, R.raw.m10);
-		this.addSound(currentIndex++, R.raw.m11);
-		this.addSound(currentIndex++, R.raw.m12);
-		this.addSound(currentIndex++, R.raw.m13);
-		this.addSound(currentIndex++, R.raw.m14);
-		this.addSound(currentIndex++, R.raw.m15);
-		this.addSound(currentIndex++, R.raw.m16);
+		this.addSound(currentIndex++, R.raw.m1_1);
+		this.addSound(currentIndex++, R.raw.m1_2);
+		this.addSound(currentIndex++, R.raw.m1_3);
+		this.addSound(currentIndex++, R.raw.m1_4);
+		this.addSound(currentIndex++, R.raw.m1_5);
+		this.addSound(currentIndex++, R.raw.m1_6);
+		this.addSound(currentIndex++, R.raw.m1_7);
+		this.addSound(currentIndex++, R.raw.m1_8);
+		this.addSound(currentIndex++, R.raw.m1_9);
+		this.addSound(currentIndex++, R.raw.m1_10);
+		this.addSound(currentIndex++, R.raw.m1_11);
+		this.addSound(currentIndex++, R.raw.m1_12);
+		this.addSound(currentIndex++, R.raw.m1_13);
+		this.addSound(currentIndex++, R.raw.m1_14);
+		this.addSound(currentIndex++, R.raw.m1_15);
+		this.addSound(currentIndex++, R.raw.m1_16);
+	}
+	
+	protected void loadTones() {
+		this.addSound(currentIndex++, R.raw.m2_1);
+		this.addSound(currentIndex++, R.raw.m2_2);
+		this.addSound(currentIndex++, R.raw.m2_3);
+		this.addSound(currentIndex++, R.raw.m2_4);
+		this.addSound(currentIndex++, R.raw.m2_5);
+		this.addSound(currentIndex++, R.raw.m2_6);
+		this.addSound(currentIndex++, R.raw.m2_7);
+		this.addSound(currentIndex++, R.raw.m2_8);
+		this.addSound(currentIndex++, R.raw.m2_9);
+		this.addSound(currentIndex++, R.raw.m2_10);
+		this.addSound(currentIndex++, R.raw.m2_11);
+		this.addSound(currentIndex++, R.raw.m2_12);
+		this.addSound(currentIndex++, R.raw.m2_13);
+		this.addSound(currentIndex++, R.raw.m2_14);
+		this.addSound(currentIndex++, R.raw.m2_15);
+		this.addSound(currentIndex++, R.raw.m2_16);
 	}
 	
 	protected void loadVoices() {
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
-		this.addSound(currentIndex++, R.raw.m16a);
-		this.addSound(currentIndex++, R.raw.m16b);
+		this.addSound(currentIndex++, R.raw.m3_1);
+		this.addSound(currentIndex++, R.raw.m3_2);
+		this.addSound(currentIndex++, R.raw.m3_3);
+		this.addSound(currentIndex++, R.raw.m3_4);
+		this.addSound(currentIndex++, R.raw.m3_5);
+		this.addSound(currentIndex++, R.raw.m3_6);
+		this.addSound(currentIndex++, R.raw.m3_7);
+		this.addSound(currentIndex++, R.raw.m3_8);
+		this.addSound(currentIndex++, R.raw.m3_9);
+		this.addSound(currentIndex++, R.raw.m3_10);
+		this.addSound(currentIndex++, R.raw.m3_11);
+		this.addSound(currentIndex++, R.raw.m3_12);
+		this.addSound(currentIndex++, R.raw.m3_13);
+		this.addSound(currentIndex++, R.raw.m3_14);
+		this.addSound(currentIndex++, R.raw.m3_15);
+		this.addSound(currentIndex++, R.raw.m3_16);
 	}
 	
 	public void addSound(int index, int soundID) {

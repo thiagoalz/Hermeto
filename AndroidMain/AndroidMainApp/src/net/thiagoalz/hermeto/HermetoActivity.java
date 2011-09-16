@@ -33,7 +33,7 @@ public class HermetoActivity extends Activity{
 	@Override
 	public void onStart() {
 		super.onStart();
-		MediaPlayer mp = MediaPlayer.create(this, R.raw.m16b);
+		MediaPlayer mp = MediaPlayer.create(this, R.raw.m3_2);
 		mp.start();
 	}
 	

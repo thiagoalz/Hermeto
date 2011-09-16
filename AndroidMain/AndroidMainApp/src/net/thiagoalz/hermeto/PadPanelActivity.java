@@ -155,7 +155,10 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		        gameManager.setInstrumentyType(InstrumentType.PERCUSIONS);
 		        return true;
 		    case R.id.blue:
-		    	gameManager.setInstrumentyType(InstrumentType.VOICES);
+		    	gameManager.setInstrumentyType(InstrumentType.TONES);
+		    	return true;
+		    case R.id.green:
+		    	gameManager.setInstrumentyType(InstrumentType.HERMETO);
 		    	return true;
 		    case R.id.groupStrategy:
 		    	configSequenceStrategy(SequenceStrategyType.GROUP);
@@ -163,9 +166,9 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		    case R.id.freeStrategy:
 		    	configSequenceStrategy(SequenceStrategyType.FREE);
 		    	return true;
-		    case R.id.lineStrategy:
-		    	configSequenceStrategy(SequenceStrategyType.LINE);
-		    	return true;
+		    //case R.id.lineStrategy:
+		    	//configSequenceStrategy(SequenceStrategyType.LINE);
+		    	//return true;
 		    default:
 		    	return super.onOptionsItemSelected(item);
 	    }
@@ -329,8 +332,11 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 			case PERCUSIONS: 
 				padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected));
 				break;
-			case VOICES: 
+			case TONES: 
 				padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected_blue)); 
+				break;
+			case HERMETO: 
+				padsMatrix[x][y].setBackgroundDrawable(getResources().getDrawable(R.drawable.buttonselected_green)); 
 				break;
 		}
 	}
@@ -435,7 +441,8 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 		Log.d(TAG, "Printing selected buttons with selected color ");
 		
 		final Drawable buttonPercusionSelected = getResources().getDrawable(R.drawable.buttonselected);
-		final Drawable buttonVoiceSelected = getResources().getDrawable(R.drawable.buttonselected_blue);
+		final Drawable buttonToneSelected = getResources().getDrawable(R.drawable.buttonselected_blue);
+		final Drawable buttonHermetoSelected = getResources().getDrawable(R.drawable.buttonselected_green);
 		
 		Map<Position, InstrumentType> positions = event.getPositions();
 		for (final Position position : positions.keySet()) {
@@ -446,8 +453,11 @@ public class PadPanelActivity extends DemoKitActivity implements ISelectionListe
 						case PERCUSIONS: 
 							button.setBackgroundDrawable(buttonPercusionSelected);
 							break;
-						case VOICES: 
-							button.setBackgroundDrawable(buttonVoiceSelected);
+						case TONES: 
+							button.setBackgroundDrawable(buttonToneSelected);
+							break;
+						case HERMETO: 
+							button.setBackgroundDrawable(buttonHermetoSelected);
 							break;
 					}
 				}

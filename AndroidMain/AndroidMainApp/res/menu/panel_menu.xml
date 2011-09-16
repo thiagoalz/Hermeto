@@ -10,8 +10,8 @@
 		              android:title="Default" />
 		        <item android:id="@+id/freeStrategy"
 		              android:title="Free" />
-		        <item android:id="@+id/lineStrategy"
-		              android:title="Line" />
+		        <!-- <item android:id="@+id/lineStrategy"
+		              android:title="Line" />  -->
 		    </group>
 		</menu> 
 	</item>
@@ -26,7 +26,9 @@
 		        <item android:id="@+id/red"
 		              android:title="Percusion" />
 		        <item android:id="@+id/blue"
-		              android:title="Voices" />
+		              android:title="Tones" />
+		        <item android:id="@+id/green"
+		              android:title="Hermeto" />
 		    </group>
 		</menu>      
     </item>
