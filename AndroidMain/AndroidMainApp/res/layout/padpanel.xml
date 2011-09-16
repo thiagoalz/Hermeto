@@ -20,22 +20,33 @@
 			android:paddingBottom="10dp"
 			android:paddingRight="3dp" android:gravity="right" android:weightSum="1">
 			
+			<ToggleButton  
+				android:id="@+id/bouncebutton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@drawable/panel_bounce"
+		        android:paddingBottom="5dp" android:textOff="." android:textOn="."
+		        android:layout_marginRight="10dp"/>
+			
 			<ImageButton android:text="Button" android:id="@+id/minus" 
 				android:layout_width="wrap_content" 
 				android:layout_height="wrap_content"
-				android:background="@drawable/minus"
+				android:background="@drawable/panel_minus"
 				android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
-			<ImageButton android:text="Button" android:id="@+id/plus" 
-				android:layout_width="wrap_content" 
-				android:layout_height="wrap_content"
-				android:background="@drawable/plus"
-				android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
+			
 			<SeekBar android:layout_width="200dp" 
 				android:id="@+id/bpmBar" android:layout_height="wrap_content" 
 				android:layout_alignParentTop="true" 
 				android:layout_alignParentRight="true" 
 				android:layout_marginRight="10dp"
 				android:layout_marginTop="5dp"></SeekBar>
+			
+			<ImageButton android:text="Button" android:id="@+id/plus" 
+				android:layout_width="wrap_content" 
+				android:layout_height="wrap_content"
+				android:background="@drawable/panel_plus"
+				android:gravity="right" android:layout_marginRight="10dp"></ImageButton>
+			
 			
 			<TextView android:layout_width="wrap_content" 
 				android:layout_height="wrap_content" 
